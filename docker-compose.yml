@@ -1,0 +1,43 @@
+# Local development infrastructure for 3PL Egypt
+# Run: pnpm infra:up
+# Stop: pnpm infra:down
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: 3pl_egypt_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-threepl}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-threepl_dev_pwd}
+      POSTGRES_DB: ${POSTGRES_DB:-threepl_egypt}
+      TZ: Africa/Cairo
+      PGTZ: Africa/Cairo
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-threepl} -d ${POSTGRES_DB:-threepl_egypt}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: 3pl_egypt_redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_data:
+    name: 3pl_egypt_postgres_data
+  redis_data:
+    name: 3pl_egypt_redis_data

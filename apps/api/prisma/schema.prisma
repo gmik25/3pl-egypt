@@ -1,0 +1,414 @@
+// 3PL Egypt — primary Prisma schema
+// All EGP amounts stored as Int (piastres). Never use Float / Decimal-as-string.
+// All timestamps are UTC at rest; display layer converts to Africa/Cairo.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Enums (mirror packages/shared/src/enums.ts) ----------
+
+enum UserRoleName {
+  SUPER_ADMIN
+  WAREHOUSE_MANAGER
+  PICKER
+  DRIVER
+  FINANCE
+  CLIENT
+}
+
+enum GovernorateCode {
+  ALX
+  ASN
+  AST
+  BH
+  BNS
+  C
+  DK
+  DT
+  FYM
+  GH
+  GZ
+  IS
+  KB
+  KFS
+  KN
+  LX
+  MN
+  MNF
+  MT
+  PTS
+  BA
+  SHG
+  SHR
+  SIN
+  JS
+  SUZ
+  WAD
+}
+
+enum OrderState {
+  PENDING
+  PICKED
+  PACKED
+  DISPATCHED
+  DELIVERED
+  FAILED
+  RETURNED
+}
+
+enum PaymentMethod {
+  COD
+  INSTAPAY
+  FAWRY
+  BANK_TRANSFER
+  WALLET
+}
+
+enum IntakeSource {
+  SHOPIFY
+  WOOCOMMERCE
+  SALLA
+  ZID
+  CSV
+  MANUAL
+  API
+}
+
+enum KycDocType {
+  COMMERCIAL_REGISTRATION
+  TAX_CARD
+  NATIONAL_ID
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  MFA_ENROL
+  MFA_VERIFY
+  STATE_TRANSITION
+}
+
+enum CodLedgerType {
+  COLLECTED
+  REMITTED
+  ADJUSTMENT
+}
+
+// ---------- Admin / RBAC ----------
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  phone           String?   @unique
+  passwordHash    String
+  fullName        String
+  isActive        Boolean   @default(true)
+  // EG: regional managers are scoped to a subset of governorates.
+  // Empty list = no governorate scope restriction (e.g. Super Admin, head-office Finance).
+  scopedGovernorates GovernorateCode[] @default([])
+  // For role=CLIENT users, links to the Client they belong to.
+  clientId        String?
+  client          Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  mfaSecret       MfaSecret?
+  roles           UserRole[]
+  auditLogs       AuditLog[]
+  refreshTokens   RefreshToken[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([clientId])
+}
+
+model Role {
+  id          String      @id @default(cuid())
+  name        UserRoleName @unique
+  description String?
+  permissions RolePermission[]
+  users       UserRole[]
+  createdAt   DateTime    @default(now())
+}
+
+model Permission {
+  id          String  @id @default(cuid())
+  /// dot-namespaced key, e.g. "orders.read", "users.write", "audit.read"
+  key         String  @unique
+  description String?
+  roles       RolePermission[]
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model MfaSecret {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// base32-encoded TOTP secret
+  secret    String
+  /// has the user completed the enrol-then-verify handshake
+  confirmed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RefreshToken {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// sha256(rawToken) — never store the raw token
+  tokenHash   String    @unique
+  deviceLabel String?
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  userId     String?
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     AuditAction
+  /// "user", "order", "client", etc.
+  entity     String
+  entityId   String?
+  before     Json?
+  after      Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime    @default(now())
+
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+// ---------- Client & Contract ----------
+
+model Client {
+  id                  String         @id @default(cuid())
+  legalName           String
+  tradingName         String?
+  taxId               String?        @unique
+  commercialRegistration String?     @unique
+  contactName         String
+  contactEmail        String
+  contactPhone        String
+  /// EG: invoicing address — full Egyptian address breakdown
+  addressApartment    String?
+  addressFloor        String?
+  addressBuilding     String?
+  addressStreet       String?
+  addressDistrict     String?
+  governorate         GovernorateCode
+  /// COD commission %, expressed in basis points (e.g. 250 = 2.50%)
+  isActive            Boolean        @default(true)
+  kycDocuments        KycDocument[]
+  contracts           Contract[]
+  users               User[]
+  orders              Order[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@index([governorate])
+}
+
+model KycDocument {
+  id          String     @id @default(cuid())
+  clientId    String
+  client      Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  type        KycDocType
+  fileUrl     String
+  uploadedAt  DateTime   @default(now())
+  /// who reviewed/approved
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  approved    Boolean?   // null = pending review
+
+  @@index([clientId])
+}
+
+model Contract {
+  id              String        @id @default(cuid())
+  clientId        String
+  client          Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  startsOn        DateTime
+  endsOn          DateTime?
+  /// Pricing — all amounts in piastres
+  storagePerSkuPerDayPiastres Int @default(0)
+  pickAndPackPiastres         Int @default(0)
+  /// COD commission % in basis points
+  codCommissionBps            Int @default(250)
+  /// Return fee in piastres
+  returnFeePiastres           Int @default(0)
+  sla             Sla?
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([clientId])
+}
+
+model Sla {
+  id                       String    @id @default(cuid())
+  contractId               String    @unique
+  contract                 Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  handlingTimeMinutes      Int       @default(240)
+  deliveryWindowDaysCairo  Int       @default(2)
+  deliveryWindowDaysOther  Int       @default(4)
+  /// max return rate allowed, in basis points (e.g. 500 = 5.00%)
+  maxReturnRateBps         Int       @default(500)
+}
+
+// ---------- OMS (placeholder — fleshed out in OMS module) ----------
+
+model Warehouse {
+  id           String          @id @default(cuid())
+  code         String          @unique
+  name         String
+  governorate  GovernorateCode
+  isActive     Boolean         @default(true)
+  orders       Order[]
+  createdAt    DateTime        @default(now())
+
+  @@index([governorate])
+}
+
+model Sku {
+  id            String       @id @default(cuid())
+  /// client-scoped SKU code (unique per client)
+  code          String
+  clientId      String
+  nameAr        String
+  nameEn        String?
+  /// EAN-13 / UPC barcode, if any
+  barcode       String?
+  /// Default unit price for invoicing displays (in piastres). Real selling price comes from the order line.
+  defaultUnitPricePiastres Int @default(0)
+  isActive      Boolean      @default(true)
+  orderItems    OrderItem[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([clientId, code])
+  @@index([clientId])
+  @@index([barcode])
+}
+
+model Order {
+  id              String         @id @default(cuid())
+  /// Client-facing reference shown on packing slip, comms, etc.
+  reference       String         @unique
+  clientId        String
+  client          Client         @relation(fields: [clientId], references: [id])
+  warehouseId     String
+  warehouse       Warehouse      @relation(fields: [warehouseId], references: [id])
+  intakeSource    IntakeSource
+  /// Raw payload from the source (Shopify webhook, CSV row, etc.) — kept for traceability.
+  intakePayload   Json?
+  /// External reference from the source system (Shopify order id, Salla order id, etc.)
+  externalRef     String?
+  state           OrderState     @default(PENDING)
+  // ---- end customer ----
+  customerName    String
+  customerPhone   String
+  customerPhoneAlt String?
+  // ---- delivery address ----
+  addressApartment String?
+  addressFloor     String?
+  addressBuilding  String?
+  addressStreet    String?
+  addressDistrict  String?
+  governorate     GovernorateCode
+  notes           String?
+  // ---- payment ----
+  paymentMethod   PaymentMethod
+  /// gross amount the courier will collect on COD; null for prepaid orders
+  codAmountPiastres Int?
+  /// 3PL service-fee total (piastres, VAT-inclusive)
+  serviceFeePiastres Int           @default(0)
+  /// flagged by validation (duplicate, fraud heuristic, etc.)
+  flaggedReason    String?
+  items           OrderItem[]
+  transitions     OrderStateTransition[]
+  codLedger       CodLedgerEntry[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([clientId])
+  @@index([warehouseId])
+  @@index([governorate])
+  @@index([state])
+  @@index([createdAt])
+  @@index([externalRef])
+  @@index([customerPhone])
+}
+
+model OrderItem {
+  id            String  @id @default(cuid())
+  orderId       String
+  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  skuId         String
+  sku           Sku     @relation(fields: [skuId], references: [id])
+  quantity      Int
+  /// unit price snapshot in piastres at the time the order was created
+  unitPricePiastres Int
+
+  @@index([orderId])
+}
+
+model OrderStateTransition {
+  id        String     @id @default(cuid())
+  orderId   String
+  order     Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromState OrderState?
+  toState   OrderState
+  /// user id of the actor (nullable for system transitions, e.g. courier webhook)
+  actorId   String?
+  reason    String?
+  createdAt DateTime   @default(now())
+
+  @@index([orderId])
+}
+
+model CodLedgerEntry {
+  id             String        @id @default(cuid())
+  orderId        String
+  order          Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type           CodLedgerType
+  /// integer piastres; positive amounts collected/remitted
+  amountPiastres Int
+  /// actor (driver/finance) who recorded this entry
+  actorId        String?
+  note           String?
+  createdAt      DateTime      @default(now())
+
+  @@index([orderId])
+  @@index([createdAt])
+}

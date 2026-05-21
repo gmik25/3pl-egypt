@@ -1,0 +1,23 @@
+{
+  "name": "@3pl/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./governorates": "./src/governorates.ts",
+    "./money": "./src/money.ts",
+    "./enums": "./src/enums.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "lint": "echo 'no lint configured yet'",
+    "test": "echo 'no tests yet'"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

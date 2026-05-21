@@ -1,0 +1,15 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Allow post-install build scripts for trusted, well-known packages.
+# @prisma/* and argon2 are required (native binaries).
+# esbuild is required for Vite.
+# @nestjs/core runs an install hint script.
+allowBuilds:
+  '@nestjs/core': true
+  '@prisma/client': true
+  '@prisma/engines': true
+  argon2: true
+  esbuild: true
+  prisma: true

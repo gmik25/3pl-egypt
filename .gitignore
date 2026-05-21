@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Env files (never commit secrets)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Vite / React
+apps/web/dist/
+apps/web/.vite/
+
+# Nest
+apps/api/dist/
+
+# Prisma
+apps/api/prisma/migrations/dev.db*
+
+# Docker
+.docker-data/
+
+# Uploads (local dev only)
+apps/api/uploads/

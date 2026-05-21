@@ -1,0 +1,27 @@
+{
+  "name": "3pl-egypt",
+  "version": "0.0.1",
+  "private": true,
+  "description": "3PL Operations Management System — Egypt",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@11.1.3",
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "typecheck": "pnpm -r run typecheck",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "infra:logs": "docker compose logs -f",
+    "db:migrate": "pnpm --filter @3pl/api run prisma:migrate",
+    "db:seed": "pnpm --filter @3pl/api run prisma:seed",
+    "db:studio": "pnpm --filter @3pl/api run prisma:studio"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}
