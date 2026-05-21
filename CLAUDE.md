@@ -132,7 +132,7 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 | WMS | ✅ | ✅ | ✅ |
 | OMS | ✅ | ✅ | ✅ |
 | Last-Mile & Fleet | ⬜ | ⬜ | ⬜ |
-| COD & Finance | ⬜ | ⬜ | ⬜ |
+| COD & Finance | ✅ | ✅ | ✅ |
 | Returns | ⬜ | ⬜ | ⬜ |
 | Customs | ⬜ | ⬜ | ⬜ |
 | Reporting | ⬜ | ⬜ | ⬜ |

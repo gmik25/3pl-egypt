@@ -24,6 +24,10 @@
     "inventory": "Inventory",
     "receiving": "Receiving",
     "cycleCounts": "Cycle counts",
+    "remittances": "Remittances",
+    "wallets": "Wallets",
+    "payouts": "Payouts",
+    "invoices": "Invoices",
     "clients": "Clients",
     "users": "Users",
     "audit": "Audit log",
@@ -384,5 +388,62 @@
     "record": "Record",
     "reconcile": "Reconcile",
     "statuses": { "OPEN": "Open", "COUNTED": "Counted", "RECONCILED": "Reconciled" }
+  },
+  "remittance": {
+    "title": "COD remittances",
+    "submitTitle": "Submit a remittance",
+    "submit": "Submit remittance",
+    "submitError": "Could not submit remittance",
+    "noEligible": "No delivered COD orders awaiting remittance.",
+    "declared": "Declared",
+    "queue": "Remittance queue",
+    "reference": "Reference",
+    "driver": "Driver",
+    "orders": "orders",
+    "confirm": "Confirm",
+    "reject": "Reject",
+    "codByDriver": "COD by driver / day",
+    "day": "Day",
+    "statuses": { "PENDING": "Pending", "CONFIRMED": "Confirmed", "REJECTED": "Rejected" }
+  },
+  "wallets": {
+    "title": "Client wallets",
+    "balance": "Wallet balance",
+    "statement": "Statement of account",
+    "entryType": "Type",
+    "amount": "Amount",
+    "running": "Balance",
+    "noActivity": "No wallet activity yet.",
+    "types": {
+      "COD_CREDIT": "COD credit",
+      "COMMISSION_FEE": "Commission + VAT",
+      "PAYOUT": "Payout",
+      "ADJUSTMENT": "Adjustment"
+    }
+  },
+  "payouts": {
+    "title": "Payouts",
+    "create": "Create payout",
+    "createError": "Could not create payout",
+    "amountEgp": "Amount (EGP)",
+    "amount": "Amount",
+    "rail": "Rail",
+    "reference": "Reference",
+    "markPaid": "Mark paid",
+    "markFailed": "Mark failed",
+    "rails": { "INSTAPAY": "InstaPay", "FAWRY": "Fawry", "SWIFT": "SWIFT" },
+    "statuses": { "PENDING": "Pending", "PAID": "Paid", "FAILED": "Failed" }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "generate": "Generate invoice",
+    "generateError": "Could not generate invoice",
+    "from": "From",
+    "to": "To",
+    "reference": "Reference",
+    "issue": "Issue",
+    "viewEta": "View ETA document",
+    "etaNote": "Generates a draft from the period's service fees. ETA portal submission/signing is modelled but not live.",
+    "statuses": { "DRAFT": "Draft", "ISSUED": "Issued", "CANCELLED": "Cancelled" }
   }
 }

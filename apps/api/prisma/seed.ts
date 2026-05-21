@@ -37,6 +37,11 @@ const PERMISSIONS: { key: string; description: string; roles: UserRoleName[] }[]
   { key: 'warehouse.write',     description: 'Manage warehouses/zones/locations', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
   { key: 'inventory.read',      description: 'View stock + movements',        roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'PICKER', 'FINANCE'] },
   { key: 'inventory.write',     description: 'Receive, putaway, adjust, count', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'PICKER'] },
+  // COD & Finance
+  { key: 'finance.read',        description: 'View wallets, remittances, payouts, invoices', roles: ['SUPER_ADMIN', 'FINANCE'] },
+  { key: 'finance.write',       description: 'Confirm remittances, issue payouts + invoices',  roles: ['SUPER_ADMIN', 'FINANCE'] },
+  { key: 'remittance.submit',   description: 'Submit a driver COD remittance',  roles: ['SUPER_ADMIN', 'DRIVER'] },
+  { key: 'wallet.read.own',     description: 'View own wallet + statement (client portal)', roles: ['CLIENT'] },
 ];
 
 async function main() {

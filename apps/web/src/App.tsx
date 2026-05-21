@@ -21,6 +21,10 @@ import WarehousesPage from './pages/wms/WarehousesPage';
 import InventoryPage from './pages/wms/InventoryPage';
 import ReceivingPage from './pages/wms/ReceivingPage';
 import CycleCountPage from './pages/wms/CycleCountPage';
+import RemittancePage from './pages/finance/RemittancePage';
+import WalletsPage from './pages/finance/WalletsPage';
+import PayoutsPage from './pages/finance/PayoutsPage';
+import InvoicesPage from './pages/finance/InvoicesPage';
 
 export default function App() {
   return (
@@ -48,6 +52,10 @@ export default function App() {
                   <Route path="/inventory" element={<InventoryPage />} />
                   <Route path="/receiving" element={<ReceivingPage />} />
                   <Route path="/cycle-counts" element={<CycleCountPage />} />
+                  <Route path="/remittances" element={<RemittancePage />} />
+                  <Route path="/wallets" element={<WalletsPage />} />
+                  <Route path="/payouts" element={<PayoutsPage />} />
+                  <Route path="/invoices" element={<InvoicesPage />} />
                   <Route path="/portal" element={<ClientPortalPage />} />
                   <Route path="/mfa" element={<MfaPage />} />
                   <Route path="/audit" element={<AuditPage />} />

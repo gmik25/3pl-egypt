@@ -369,3 +369,114 @@ export interface CycleCount {
   createdAt: string;
   sku?: { code: string; nameAr: string };
 }
+
+// ---- COD & Finance ----
+
+export type WalletEntryType = 'COD_CREDIT' | 'COMMISSION_FEE' | 'PAYOUT' | 'ADJUSTMENT';
+export type RemittanceStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED';
+export type PayoutRail = 'INSTAPAY' | 'FAWRY' | 'SWIFT';
+export type PayoutStatus = 'PENDING' | 'PAID' | 'FAILED';
+export type InvoiceStatus = 'DRAFT' | 'ISSUED' | 'CANCELLED';
+
+export interface Wallet {
+  id: string | null;
+  clientId: string;
+  balancePiastres: number;
+  client?: { legalName: string };
+}
+
+export interface StatementEntry {
+  id: string;
+  type: WalletEntryType;
+  amountPiastres: number;
+  note: string | null;
+  createdAt: string;
+  runningBalancePiastres: number;
+}
+
+export interface Statement {
+  clientId: string;
+  openingPiastres: number;
+  closingPiastres: number;
+  currentBalancePiastres?: number;
+  entries: StatementEntry[];
+}
+
+export interface EligibleCodOrder {
+  id: string;
+  reference: string;
+  clientId: string;
+  codAmountPiastres: number | null;
+  customerName: string;
+  governorate: GovernorateCode;
+  client: { legalName: string };
+}
+
+export interface RemittanceItem {
+  id: string;
+  orderId: string;
+  clientId: string;
+  codAmountPiastres: number;
+}
+
+export interface Remittance {
+  id: string;
+  reference: string;
+  driverId: string;
+  status: RemittanceStatus;
+  declaredAmountPiastres: number;
+  confirmedAmountPiastres: number | null;
+  note: string | null;
+  createdAt: string;
+  driver?: { fullName: string };
+  items?: RemittanceItem[];
+  _count?: { items: number };
+}
+
+export interface CodByDriverRow {
+  driverId: string;
+  driverName: string;
+  day: string;
+  totalPiastres: number;
+  count: number;
+}
+
+export interface Payout {
+  id: string;
+  reference: string;
+  clientId: string;
+  amountPiastres: number;
+  rail: PayoutRail;
+  status: PayoutStatus;
+  externalRef: string | null;
+  createdAt: string;
+  paidAt: string | null;
+  client?: { legalName: string };
+}
+
+export interface InvoiceLine {
+  id: string;
+  description: string;
+  quantity: number;
+  unitNetPiastres: number;
+  netPiastres: number;
+  vatPiastres: number;
+  grossPiastres: number;
+}
+
+export interface Invoice {
+  id: string;
+  reference: string;
+  clientId: string;
+  periodStart: string;
+  periodEnd: string;
+  status: InvoiceStatus;
+  netPiastres: number;
+  vatPiastres: number;
+  grossPiastres: number;
+  etaUuid: string | null;
+  createdAt: string;
+  client?: { legalName: string };
+  lines?: InvoiceLine[];
+  _count?: { lines: number };
+}

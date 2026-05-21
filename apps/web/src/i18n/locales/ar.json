@@ -24,6 +24,10 @@
     "inventory": "المخزون",
     "receiving": "الاستلام",
     "cycleCounts": "الجرد الدوري",
+    "remittances": "توريدات التحصيل",
+    "wallets": "محافظ العملاء",
+    "payouts": "المدفوعات",
+    "invoices": "الفواتير",
     "clients": "العملاء",
     "users": "المستخدمون",
     "audit": "سجل التدقيق",
@@ -384,5 +388,62 @@
     "record": "تسجيل",
     "reconcile": "تسوية",
     "statuses": { "OPEN": "مفتوح", "COUNTED": "تم العد", "RECONCILED": "تمت التسوية" }
+  },
+  "remittance": {
+    "title": "توريدات التحصيل (COD)",
+    "submitTitle": "تقديم توريد",
+    "submit": "تقديم التوريد",
+    "submitError": "تعذّر تقديم التوريد",
+    "noEligible": "لا توجد طلبات دفع عند الاستلام مُسلَّمة بانتظار التوريد.",
+    "declared": "المُعلَن",
+    "queue": "قائمة التوريدات",
+    "reference": "المرجع",
+    "driver": "المندوب",
+    "orders": "طلبات",
+    "confirm": "تأكيد",
+    "reject": "رفض",
+    "codByDriver": "التحصيل حسب المندوب / اليوم",
+    "day": "اليوم",
+    "statuses": { "PENDING": "قيد الانتظار", "CONFIRMED": "مؤكد", "REJECTED": "مرفوض" }
+  },
+  "wallets": {
+    "title": "محافظ العملاء",
+    "balance": "رصيد المحفظة",
+    "statement": "كشف الحساب",
+    "entryType": "النوع",
+    "amount": "المبلغ",
+    "running": "الرصيد",
+    "noActivity": "لا توجد حركة على المحفظة بعد.",
+    "types": {
+      "COD_CREDIT": "إيداع تحصيل",
+      "COMMISSION_FEE": "عمولة + ضريبة",
+      "PAYOUT": "صرف",
+      "ADJUSTMENT": "تسوية"
+    }
+  },
+  "payouts": {
+    "title": "المدفوعات",
+    "create": "إنشاء دفعة",
+    "createError": "تعذّر إنشاء الدفعة",
+    "amountEgp": "المبلغ (ج.م)",
+    "amount": "المبلغ",
+    "rail": "القناة",
+    "reference": "المرجع",
+    "markPaid": "تحديد كمدفوع",
+    "markFailed": "تحديد كفاشل",
+    "rails": { "INSTAPAY": "إنستاباي", "FAWRY": "فوري", "SWIFT": "تحويل بنكي (SWIFT)" },
+    "statuses": { "PENDING": "قيد الانتظار", "PAID": "مدفوع", "FAILED": "فشل" }
+  },
+  "invoices": {
+    "title": "الفواتير",
+    "generate": "إنشاء فاتورة",
+    "generateError": "تعذّر إنشاء الفاتورة",
+    "from": "من",
+    "to": "إلى",
+    "reference": "المرجع",
+    "issue": "إصدار",
+    "viewEta": "عرض مستند ETA",
+    "etaNote": "تُنشأ مسودة من رسوم الخدمة للفترة. إرسال/توقيع بوابة ETA منمذج وليس فعليًا.",
+    "statuses": { "DRAFT": "مسودة", "ISSUED": "صادرة", "CANCELLED": "ملغاة" }
   }
 }

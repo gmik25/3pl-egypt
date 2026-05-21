@@ -174,6 +174,7 @@ model User {
   roles           UserRole[]
   auditLogs       AuditLog[]
   refreshTokens   RefreshToken[]
+  driverRemittances DriverRemittance[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
@@ -287,6 +288,9 @@ model Client {
   orders              Order[]
   skus                Sku[]
   purchaseOrders      PurchaseOrder[]
+  wallet              ClientWallet?
+  payouts             Payout[]
+  invoices            Invoice[]
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
@@ -630,4 +634,153 @@ model CodLedgerEntry {
 
   @@index([orderId])
   @@index([createdAt])
+}
+
+// ---------- COD & Finance ----------
+
+enum WalletEntryType {
+  COD_CREDIT      // gross COD collected, credited to the client
+  COMMISSION_FEE  // 3PL commission incl. VAT, debited
+  PAYOUT          // funds paid out to the client
+  ADJUSTMENT
+}
+
+enum RemittanceStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+}
+
+enum PayoutRail {
+  INSTAPAY
+  FAWRY
+  SWIFT
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  CANCELLED
+}
+
+model ClientWallet {
+  id              String        @id @default(cuid())
+  clientId        String        @unique
+  client          Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  /// EG: running balance in piastres; equals the sum of entries.
+  balancePiastres Int           @default(0)
+  entries         WalletEntry[]
+  payouts         Payout[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model WalletEntry {
+  id             String          @id @default(cuid())
+  walletId       String
+  wallet         ClientWallet    @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  type           WalletEntryType
+  /// signed: credits positive, debits negative
+  amountPiastres Int
+  orderId        String?
+  remittanceId   String?
+  payoutId       String?
+  note           String?
+  createdAt      DateTime        @default(now())
+
+  @@index([walletId])
+  @@index([createdAt])
+}
+
+model DriverRemittance {
+  id                      String           @id @default(cuid())
+  reference               String           @unique
+  driverId                String
+  driver                  User             @relation(fields: [driverId], references: [id])
+  status                  RemittanceStatus @default(PENDING)
+  /// cash the driver declares depositing
+  declaredAmountPiastres  Int
+  /// total COD across the covered orders, confirmed by finance
+  confirmedAmountPiastres Int?
+  confirmedById           String?
+  confirmedAt             DateTime?
+  note                    String?
+  items                   RemittanceItem[]
+  createdAt               DateTime         @default(now())
+
+  @@index([driverId])
+  @@index([status])
+}
+
+model RemittanceItem {
+  id                String           @id @default(cuid())
+  remittanceId      String
+  remittance        DriverRemittance @relation(fields: [remittanceId], references: [id], onDelete: Cascade)
+  /// snapshot — an order's COD can only be remitted once
+  orderId           String           @unique
+  clientId          String
+  codAmountPiastres Int
+
+  @@index([remittanceId])
+}
+
+model Payout {
+  id             String       @id @default(cuid())
+  reference      String       @unique
+  clientId       String
+  client         Client       @relation(fields: [clientId], references: [id])
+  walletId       String
+  wallet         ClientWallet @relation(fields: [walletId], references: [id])
+  amountPiastres Int
+  rail           PayoutRail
+  status         PayoutStatus @default(PENDING)
+  /// external transfer reference (Instapay/Fawry/SWIFT)
+  externalRef    String?
+  createdById    String?
+  createdAt      DateTime     @default(now())
+  paidAt         DateTime?
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  reference     String        @unique
+  clientId      String
+  client        Client        @relation(fields: [clientId], references: [id])
+  periodStart   DateTime
+  periodEnd     DateTime
+  status        InvoiceStatus @default(DRAFT)
+  netPiastres   Int           @default(0)
+  vatPiastres   Int           @default(0)
+  grossPiastres Int           @default(0)
+  /// EG: ETA e-invoice UUID once submitted to the Egyptian Tax Authority portal
+  etaUuid       String?
+  lines         InvoiceLine[]
+  createdAt     DateTime      @default(now())
+  issuedAt      DateTime?
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model InvoiceLine {
+  id              String  @id @default(cuid())
+  invoiceId       String
+  invoice         Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description     String
+  quantity        Int     @default(1)
+  unitNetPiastres Int
+  netPiastres     Int
+  vatPiastres     Int
+  grossPiastres   Int
+
+  @@index([invoiceId])
 }
