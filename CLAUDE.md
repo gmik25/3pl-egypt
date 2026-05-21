@@ -131,7 +131,7 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 | Client & Contract | ✅ | ✅ | ✅ |
 | WMS | ✅ | ✅ | ✅ |
 | OMS | ✅ | ✅ | ✅ |
-| Last-Mile & Fleet | ⬜ | ⬜ | ⬜ |
+| Last-Mile & Fleet | ✅ | ✅ | ✅ |
 | COD & Finance | ✅ | ✅ | ✅ |
 | Returns | ⬜ | ⬜ | ⬜ |
 | Customs | ⬜ | ⬜ | ⬜ |

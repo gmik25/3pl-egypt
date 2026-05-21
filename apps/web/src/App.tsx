@@ -25,6 +25,9 @@ import RemittancePage from './pages/finance/RemittancePage';
 import WalletsPage from './pages/finance/WalletsPage';
 import PayoutsPage from './pages/finance/PayoutsPage';
 import InvoicesPage from './pages/finance/InvoicesPage';
+import ShipmentsPage from './pages/fleet/ShipmentsPage';
+import ShipmentDetailPage from './pages/fleet/ShipmentDetailPage';
+import DriversPage from './pages/fleet/DriversPage';
 
 export default function App() {
   return (
@@ -56,6 +59,9 @@ export default function App() {
                   <Route path="/wallets" element={<WalletsPage />} />
                   <Route path="/payouts" element={<PayoutsPage />} />
                   <Route path="/invoices" element={<InvoicesPage />} />
+                  <Route path="/shipments" element={<ShipmentsPage />} />
+                  <Route path="/shipments/:id" element={<ShipmentDetailPage />} />
+                  <Route path="/drivers" element={<DriversPage />} />
                   <Route path="/portal" element={<ClientPortalPage />} />
                   <Route path="/mfa" element={<MfaPage />} />
                   <Route path="/audit" element={<AuditPage />} />

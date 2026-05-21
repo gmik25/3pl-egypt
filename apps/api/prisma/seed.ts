@@ -2,7 +2,7 @@
 // Idempotent: safe to re-run; uses upsert keyed on stable identifiers.
 // Run: pnpm db:seed
 
-import { PrismaClient, UserRoleName } from '@prisma/client';
+import { PrismaClient, UserRoleName, CourierName, GovernorateCode } from '@prisma/client';
 import * as argon2 from 'argon2';
 
 const prisma = new PrismaClient();
@@ -42,6 +42,10 @@ const PERMISSIONS: { key: string; description: string; roles: UserRoleName[] }[]
   { key: 'finance.write',       description: 'Confirm remittances, issue payouts + invoices',  roles: ['SUPER_ADMIN', 'FINANCE'] },
   { key: 'remittance.submit',   description: 'Submit a driver COD remittance',  roles: ['SUPER_ADMIN', 'DRIVER'] },
   { key: 'wallet.read.own',     description: 'View own wallet + statement (client portal)', roles: ['CLIENT'] },
+  // Last-Mile & Fleet
+  { key: 'fleet.read',          description: 'View shipments + drivers',        roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'DRIVER', 'FINANCE'] },
+  { key: 'fleet.write',         description: 'Create shipments, assign carriers, manage drivers', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
+  { key: 'delivery.execute',    description: 'Mark out-for-delivery, record attempts, capture POD', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'DRIVER'] },
 ];
 
 async function main() {
@@ -115,6 +119,22 @@ async function main() {
     }
   }
   console.log(`✓ Seeded ${warehouses.length} warehouses with zones + locations`);
+
+  // ---- Courier coverage (all couriers serve all 27 governorates) ----
+  // EG: Greater Cairo / Alexandria get a 2-day ETA; the rest 4 days. Tune per real SLAs.
+  const fastGovs: GovernorateCode[] = [GovernorateCode.C, GovernorateCode.GZ, GovernorateCode.ALX, GovernorateCode.KB];
+  let coverageCount = 0;
+  for (const courier of Object.values(CourierName)) {
+    for (const governorate of Object.values(GovernorateCode)) {
+      await prisma.courierCoverage.upsert({
+        where: { courier_governorate: { courier, governorate } },
+        update: {},
+        create: { courier, governorate, etaDays: fastGovs.includes(governorate) ? 2 : 4 },
+      });
+      coverageCount++;
+    }
+  }
+  console.log(`✓ Seeded ${coverageCount} courier-coverage rows`);
 
   // ---- Bootstrap super admin (dev only) ----
   // EG: in production, swap this for a one-time provisioning command behind 2FA.

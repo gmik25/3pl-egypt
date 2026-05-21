@@ -480,3 +480,75 @@ export interface Invoice {
   lines?: InvoiceLine[];
   _count?: { lines: number };
 }
+
+// ---- Last-Mile & Fleet ----
+
+export type CarrierType = 'COURIER' | 'IN_HOUSE';
+export type CourierName = 'ARAMEX' | 'BOSTA' | 'R2S' | 'MYLERZ' | 'JT';
+export type ShipmentStatus = 'PENDING' | 'ASSIGNED' | 'OUT_FOR_DELIVERY' | 'DELIVERED' | 'FAILED' | 'RETURNED';
+export type PodMethod = 'PHOTO' | 'SIGNATURE' | 'OTP';
+export type DeliveryFailureReason =
+  | 'CUSTOMER_UNREACHABLE'
+  | 'ADDRESS_NOT_FOUND'
+  | 'CUSTOMER_REFUSED'
+  | 'POSTPONED'
+  | 'OTHER';
+
+export interface Driver {
+  id: string;
+  userId: string;
+  vehicleType: string | null;
+  plateNumber: string | null;
+  isAvailable: boolean;
+  zones: GovernorateCode[];
+  user?: { id: string; fullName: string; phone: string | null; email: string };
+}
+
+export interface DeliveryAttempt {
+  id: string;
+  attemptNumber: number;
+  success: boolean;
+  failureReason: DeliveryFailureReason | null;
+  note: string | null;
+  createdAt: string;
+}
+
+export interface ProofOfDelivery {
+  id: string;
+  method: PodMethod;
+  photoUrl: string | null;
+  signatureUrl: string | null;
+  otpVerified: boolean;
+  recipientName: string | null;
+  capturedAt: string;
+}
+
+export interface ShipmentListItem {
+  id: string;
+  reference: string;
+  orderId: string;
+  carrierType: CarrierType;
+  courier: CourierName | null;
+  driverId: string | null;
+  trackingNumber: string | null;
+  status: ShipmentStatus;
+  governorate: GovernorateCode;
+  attemptCount: number;
+  scheduledFor: string | null;
+  createdAt: string;
+  order?: { reference: string; customerName: string; customerPhone: string; codAmountPiastres: number | null; paymentMethod: PaymentMethod };
+  driver?: { fullName: string } | null;
+  _count?: { attempts: number };
+}
+
+export interface ShipmentDetail extends ShipmentListItem {
+  order?: { reference: string; customerName: string; customerPhone: string; codAmountPiastres: number | null; paymentMethod: PaymentMethod; governorate: GovernorateCode };
+  driver?: { id: string; fullName: string } | null;
+  attempts: DeliveryAttempt[];
+  pod: ProofOfDelivery | null;
+}
+
+export interface CarrierSuggestion {
+  couriers: { courier: CourierName; etaDays: number }[];
+  inHouseDrivers: { driverId: string; name: string }[];
+}

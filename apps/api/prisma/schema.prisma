@@ -175,6 +175,8 @@ model User {
   auditLogs       AuditLog[]
   refreshTokens   RefreshToken[]
   driverRemittances DriverRemittance[]
+  driverProfile   DriverProfile?
+  shipmentsAsDriver Shipment[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
@@ -581,6 +583,7 @@ model Order {
   items           OrderItem[]
   transitions     OrderStateTransition[]
   codLedger       CodLedgerEntry[]
+  shipment        Shipment?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
@@ -783,4 +786,124 @@ model InvoiceLine {
   grossPiastres   Int
 
   @@index([invoiceId])
+}
+
+// ---------- Last-Mile & Fleet ----------
+
+enum CarrierType {
+  COURIER
+  IN_HOUSE
+}
+
+enum CourierName {
+  ARAMEX
+  BOSTA
+  R2S
+  MYLERZ
+  JT
+}
+
+enum ShipmentStatus {
+  PENDING            // created, not yet assigned
+  ASSIGNED           // courier label created / driver assigned
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED
+  RETURNED
+}
+
+enum PodMethod {
+  PHOTO
+  SIGNATURE
+  OTP
+}
+
+enum DeliveryFailureReason {
+  CUSTOMER_UNREACHABLE
+  ADDRESS_NOT_FOUND
+  CUSTOMER_REFUSED
+  POSTPONED
+  OTHER
+}
+
+model DriverProfile {
+  id          String            @id @default(cuid())
+  userId      String            @unique
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleType String?
+  plateNumber String?
+  isAvailable Boolean           @default(true)
+  /// EG: governorates this driver serves (for in-house assignment)
+  zones       GovernorateCode[] @default([])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model Shipment {
+  id             String         @id @default(cuid())
+  reference      String         @unique
+  orderId        String         @unique
+  order          Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  carrierType    CarrierType
+  /// set when carrierType = COURIER
+  courier        CourierName?
+  /// set when carrierType = IN_HOUSE
+  driverId       String?
+  driver         User?          @relation(fields: [driverId], references: [id])
+  trackingNumber String?
+  status         ShipmentStatus @default(PENDING)
+  /// denormalised from the order for zone queries
+  governorate    GovernorateCode
+  attemptCount   Int            @default(0)
+  scheduledFor   DateTime?
+  /// hashed delivery OTP + expiry (POD via OTP)
+  podOtpHash     String?
+  podOtpExpiresAt DateTime?
+  attempts       DeliveryAttempt[]
+  pod            ProofOfDelivery?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([status])
+  @@index([governorate])
+  @@index([driverId])
+  @@index([courier])
+}
+
+model DeliveryAttempt {
+  id            String                 @id @default(cuid())
+  shipmentId    String
+  shipment      Shipment               @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  attemptNumber Int
+  success       Boolean
+  failureReason DeliveryFailureReason?
+  note          String?
+  actorId       String?
+  createdAt     DateTime               @default(now())
+
+  @@index([shipmentId])
+}
+
+model ProofOfDelivery {
+  id            String    @id @default(cuid())
+  shipmentId    String    @unique
+  shipment      Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  method        PodMethod
+  photoUrl      String?
+  signatureUrl  String?
+  otpVerified   Boolean   @default(false)
+  recipientName String?
+  capturedById  String?
+  capturedAt    DateTime  @default(now())
+}
+
+model CourierCoverage {
+  id           String          @id @default(cuid())
+  courier      CourierName
+  governorate  GovernorateCode
+  etaDays      Int             @default(3)
+  isServiceable Boolean        @default(true)
+
+  @@unique([courier, governorate])
+  @@index([governorate])
 }

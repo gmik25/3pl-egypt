@@ -302,7 +302,22 @@ export class OrdersService {
     const order = await this.prisma.order.findUnique({ where: { id } });
     if (!order) throw new NotFoundException('Order not found');
     assertGovernorateInScope(actor, order.governorate);
+    return this.applyTransition(order, toState, reason, actor.id);
+  }
 
+  /** System-driven transition (e.g. courier webhook) — no governorate scope, null actor. */
+  async transitionSystem(id: string, toState: OrderState, reason: string | undefined) {
+    const order = await this.prisma.order.findUnique({ where: { id } });
+    if (!order) throw new NotFoundException('Order not found');
+    return this.applyTransition(order, toState, reason, null);
+  }
+
+  private async applyTransition(
+    order: { id: string; state: OrderState; paymentMethod: string; codAmountPiastres: number | null },
+    toState: OrderState,
+    reason: string | undefined,
+    actorId: string | null,
+  ) {
     const allowed = ORDER_STATE_TRANSITIONS[order.state] ?? [];
     if (!allowed.includes(toState)) {
       throw new BadRequestException(
@@ -314,33 +329,23 @@ export class OrdersService {
     }
 
     const updated = await this.prisma.$transaction(async (tx) => {
-      const u = await tx.order.update({ where: { id }, data: { state: toState } });
+      const u = await tx.order.update({ where: { id: order.id }, data: { state: toState } });
       await tx.orderStateTransition.create({
-        data: { orderId: id, fromState: order.state, toState, actorId: actor.id, reason: reason ?? null },
+        data: { orderId: order.id, fromState: order.state, toState, actorId, reason: reason ?? null },
       });
       return u;
     });
 
     // EG: COD is collected on delivery — record it in the COD ledger automatically.
-    if (
-      toState === OrderState.DELIVERED &&
-      order.paymentMethod === 'COD' &&
-      (order.codAmountPiastres ?? 0) > 0
-    ) {
-      await this.cod.addEntry(
-        id,
-        CodLedgerType.COLLECTED,
-        order.codAmountPiastres!,
-        actor.id,
-        'Auto-recorded on delivery',
-      );
+    if (toState === OrderState.DELIVERED && order.paymentMethod === 'COD' && (order.codAmountPiastres ?? 0) > 0) {
+      await this.cod.addEntry(order.id, CodLedgerType.COLLECTED, order.codAmountPiastres!, actorId, 'Auto-recorded on delivery');
     }
 
     await this.audit.record({
-      userId: actor.id,
+      userId: actorId,
       action: AuditAction.STATE_TRANSITION,
       entity: 'order',
-      entityId: id,
+      entityId: order.id,
       before: { state: order.state },
       after: { state: toState, reason },
     });

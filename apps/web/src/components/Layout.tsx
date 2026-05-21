@@ -23,6 +23,8 @@ const NAV: NavItem[] = [
   { to: '/inventory', labelKey: 'nav.inventory', permission: 'inventory.read' },
   { to: '/receiving', labelKey: 'nav.receiving', permission: 'inventory.read' },
   { to: '/cycle-counts', labelKey: 'nav.cycleCounts', permission: 'inventory.read' },
+  { to: '/shipments', labelKey: 'nav.shipments', permission: 'fleet.read' },
+  { to: '/drivers', labelKey: 'nav.drivers', permission: 'fleet.read' },
   { to: '/remittances', labelKey: 'nav.remittances', roles: ['DRIVER', 'FINANCE', 'SUPER_ADMIN'] },
   { to: '/wallets', labelKey: 'nav.wallets', permission: 'finance.read' },
   { to: '/payouts', labelKey: 'nav.payouts', permission: 'finance.read' },
