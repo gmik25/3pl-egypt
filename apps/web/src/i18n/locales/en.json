@@ -26,6 +26,7 @@
     "cycleCounts": "Cycle counts",
     "shipments": "Shipments",
     "drivers": "Drivers",
+    "returns": "Returns",
     "remittances": "Remittances",
     "wallets": "Wallets",
     "payouts": "Payouts",
@@ -510,5 +511,51 @@
     "available": "Available",
     "unavailable": "Unavailable",
     "noDriverUsers": "No users with the DRIVER role yet — create one in Users first."
+  },
+  "returns": {
+    "title": "Returns",
+    "selectPrompt": "Select a return to process.",
+    "items": "Items",
+    "approve": "Approve (issue RMA)",
+    "reject": "Reject",
+    "markReceived": "Mark received",
+    "markInspected": "Mark inspected",
+    "close": "Close & credit note",
+    "resellable": "Resellable",
+    "damaged": "Damaged",
+    "pendingInspection": "Pending inspection",
+    "approveDisposal": "Approve disposal",
+    "disposed": "Disposed of",
+    "creditNote": "Credit note",
+    "actionError": "Action failed",
+    "reasons": {
+      "DAMAGED": "Damaged",
+      "WRONG_ITEM": "Wrong item",
+      "CUSTOMER_REFUSAL": "Customer refusal",
+      "CHANGE_OF_MIND": "Change of mind"
+    },
+    "statuses": {
+      "REQUESTED": "Requested",
+      "APPROVED": "Approved",
+      "RECEIVED": "Received",
+      "INSPECTED": "Inspected",
+      "CLOSED": "Closed",
+      "REJECTED": "Rejected"
+    },
+    "dispositions": { "RESELLABLE": "Resellable", "DAMAGED": "Damaged" }
+  },
+  "portalReturn": {
+    "title": "Request a return",
+    "subtitle": "Enter your order reference and phone to start a return.",
+    "orderReference": "Order reference",
+    "findOrder": "Find my order",
+    "lookupError": "Order not found or phone mismatch.",
+    "hello": "Hi {{name}}, select the items to return:",
+    "reason": "Reason",
+    "note": "Note (optional)",
+    "selectItems": "Select at least one item.",
+    "submit": "Submit return request",
+    "submitError": "Could not submit the request.",
+    "success": "Your return request was submitted. Reference: {{rma}}"
   }
 }

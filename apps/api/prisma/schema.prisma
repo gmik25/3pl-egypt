@@ -293,6 +293,8 @@ model Client {
   wallet              ClientWallet?
   payouts             Payout[]
   invoices            Invoice[]
+  returnRequests      ReturnRequest[]
+  creditNotes         CreditNote[]
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
@@ -424,6 +426,7 @@ model Sku {
   stockMovements StockMovement[]
   cycleCounts   CycleCount[]
   poLines       PoLine[]
+  returnItems   ReturnItem[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
@@ -584,6 +587,7 @@ model Order {
   transitions     OrderStateTransition[]
   codLedger       CodLedgerEntry[]
   shipment        Shipment?
+  returns         ReturnRequest[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
@@ -906,4 +910,100 @@ model CourierCoverage {
 
   @@unique([courier, governorate])
   @@index([governorate])
+}
+
+// ---------- Returns (reverse logistics) ----------
+
+enum ReturnReason {
+  DAMAGED
+  WRONG_ITEM
+  CUSTOMER_REFUSAL
+  CHANGE_OF_MIND
+}
+
+enum ReturnStatus {
+  REQUESTED   // raised by customer/ops, awaiting approval
+  APPROVED    // RMA issued
+  RECEIVED    // goods back at the warehouse
+  INSPECTED   // each item dispositioned
+  CLOSED      // credit note issued, order marked returned
+  REJECTED
+}
+
+enum ReturnDisposition {
+  RESELLABLE  // back to available stock
+  DAMAGED     // to quarantine, pending disposal approval
+}
+
+model ReturnRequest {
+  id           String        @id @default(cuid())
+  rmaNumber    String        @unique
+  orderId      String
+  order        Order         @relation(fields: [orderId], references: [id])
+  clientId     String
+  client       Client        @relation(fields: [clientId], references: [id])
+  reason       ReturnReason
+  status       ReturnStatus  @default(REQUESTED)
+  /// free-text note from the end customer (Arabic-first portal)
+  customerNote String?
+  approvedById String?
+  receivedAt   DateTime?
+  inspectedAt  DateTime?
+  closedAt     DateTime?
+  items        ReturnItem[]
+  creditNote   CreditNote?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([orderId])
+  @@index([clientId])
+  @@index([status])
+}
+
+model ReturnItem {
+  id              String             @id @default(cuid())
+  returnRequestId String
+  returnRequest   ReturnRequest      @relation(fields: [returnRequestId], references: [id], onDelete: Cascade)
+  skuId           String
+  sku             Sku                @relation(fields: [skuId], references: [id])
+  quantity        Int
+  /// unit price snapshot from the original order line (piastres)
+  unitPricePiastres Int
+  /// set at inspection
+  disposition     ReturnDisposition?
+  /// location the resellable/damaged stock was put into
+  restockLocationId String?
+  disposalApproved  Boolean          @default(false)
+
+  @@index([returnRequestId])
+}
+
+model CreditNote {
+  id              String           @id @default(cuid())
+  reference       String           @unique
+  returnRequestId String           @unique
+  returnRequest   ReturnRequest    @relation(fields: [returnRequestId], references: [id], onDelete: Cascade)
+  clientId        String
+  client          Client           @relation(fields: [clientId], references: [id])
+  netPiastres     Int
+  vatPiastres     Int
+  grossPiastres   Int
+  lines           CreditNoteLine[]
+  createdAt       DateTime         @default(now())
+
+  @@index([clientId])
+}
+
+model CreditNoteLine {
+  id              String     @id @default(cuid())
+  creditNoteId    String
+  creditNote      CreditNote @relation(fields: [creditNoteId], references: [id], onDelete: Cascade)
+  description     String
+  quantity        Int
+  unitNetPiastres Int
+  netPiastres     Int
+  vatPiastres     Int
+  grossPiastres   Int
+
+  @@index([creditNoteId])
 }

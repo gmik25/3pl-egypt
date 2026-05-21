@@ -46,6 +46,9 @@ const PERMISSIONS: { key: string; description: string; roles: UserRoleName[] }[]
   { key: 'fleet.read',          description: 'View shipments + drivers',        roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'DRIVER', 'FINANCE'] },
   { key: 'fleet.write',         description: 'Create shipments, assign carriers, manage drivers', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
   { key: 'delivery.execute',    description: 'Mark out-for-delivery, record attempts, capture POD', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'DRIVER'] },
+  // Returns (reverse logistics)
+  { key: 'returns.read',        description: 'View return requests',            roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'FINANCE'] },
+  { key: 'returns.write',       description: 'Process returns: approve, inspect, dispose, credit note', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
 ];
 
 async function main() {

@@ -26,6 +26,7 @@
     "cycleCounts": "الجرد الدوري",
     "shipments": "الشحنات",
     "drivers": "المناديب",
+    "returns": "المرتجعات",
     "remittances": "توريدات التحصيل",
     "wallets": "محافظ العملاء",
     "payouts": "المدفوعات",
@@ -510,5 +511,51 @@
     "available": "متاح",
     "unavailable": "غير متاح",
     "noDriverUsers": "لا يوجد مستخدمون بدور المندوب بعد — أنشئ واحدًا في المستخدمين أولاً."
+  },
+  "returns": {
+    "title": "المرتجعات",
+    "selectPrompt": "اختر مرتجعًا لمعالجته.",
+    "items": "الأصناف",
+    "approve": "موافقة (إصدار RMA)",
+    "reject": "رفض",
+    "markReceived": "تأكيد الاستلام",
+    "markInspected": "تأكيد الفحص",
+    "close": "إغلاق وإصدار إشعار دائن",
+    "resellable": "قابل لإعادة البيع",
+    "damaged": "تالف",
+    "pendingInspection": "بانتظار الفحص",
+    "approveDisposal": "اعتماد الإتلاف",
+    "disposed": "تم الإتلاف",
+    "creditNote": "إشعار دائن",
+    "actionError": "فشل الإجراء",
+    "reasons": {
+      "DAMAGED": "تالف",
+      "WRONG_ITEM": "صنف خاطئ",
+      "CUSTOMER_REFUSAL": "رفض العميل",
+      "CHANGE_OF_MIND": "تغيير الرأي"
+    },
+    "statuses": {
+      "REQUESTED": "مطلوب",
+      "APPROVED": "موافَق عليه",
+      "RECEIVED": "مُستلَم",
+      "INSPECTED": "تم الفحص",
+      "CLOSED": "مغلق",
+      "REJECTED": "مرفوض"
+    },
+    "dispositions": { "RESELLABLE": "قابل لإعادة البيع", "DAMAGED": "تالف" }
+  },
+  "portalReturn": {
+    "title": "طلب إرجاع",
+    "subtitle": "أدخل رقم الطلب ورقم الهاتف لبدء الإرجاع.",
+    "orderReference": "رقم الطلب",
+    "findOrder": "ابحث عن طلبي",
+    "lookupError": "الطلب غير موجود أو رقم الهاتف غير مطابق.",
+    "hello": "مرحبًا {{name}}، اختر الأصناف المراد إرجاعها:",
+    "reason": "السبب",
+    "note": "ملاحظة (اختياري)",
+    "selectItems": "اختر صنفًا واحدًا على الأقل.",
+    "submit": "إرسال طلب الإرجاع",
+    "submitError": "تعذّر إرسال الطلب.",
+    "success": "تم إرسال طلب الإرجاع. الرقم المرجعي: {{rma}}"
   }
 }

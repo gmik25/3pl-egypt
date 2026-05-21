@@ -28,12 +28,15 @@ import InvoicesPage from './pages/finance/InvoicesPage';
 import ShipmentsPage from './pages/fleet/ShipmentsPage';
 import ShipmentDetailPage from './pages/fleet/ShipmentDetailPage';
 import DriversPage from './pages/fleet/DriversPage';
+import ReturnsPage from './pages/returns/ReturnsPage';
+import ReturnPortalPage from './pages/ReturnPortalPage';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/return-portal" element={<ReturnPortalPage />} />
         <Route
           path="/*"
           element={
@@ -62,6 +65,7 @@ export default function App() {
                   <Route path="/shipments" element={<ShipmentsPage />} />
                   <Route path="/shipments/:id" element={<ShipmentDetailPage />} />
                   <Route path="/drivers" element={<DriversPage />} />
+                  <Route path="/returns" element={<ReturnsPage />} />
                   <Route path="/portal" element={<ClientPortalPage />} />
                   <Route path="/mfa" element={<MfaPage />} />
                   <Route path="/audit" element={<AuditPage />} />

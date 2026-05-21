@@ -552,3 +552,70 @@ export interface CarrierSuggestion {
   couriers: { courier: CourierName; etaDays: number }[];
   inHouseDrivers: { driverId: string; name: string }[];
 }
+
+// ---- Returns ----
+
+export type ReturnReason = 'DAMAGED' | 'WRONG_ITEM' | 'CUSTOMER_REFUSAL' | 'CHANGE_OF_MIND';
+export type ReturnStatus = 'REQUESTED' | 'APPROVED' | 'RECEIVED' | 'INSPECTED' | 'CLOSED' | 'REJECTED';
+export type ReturnDisposition = 'RESELLABLE' | 'DAMAGED';
+
+export interface ReturnListItem {
+  id: string;
+  rmaNumber: string;
+  orderId: string;
+  clientId: string;
+  reason: ReturnReason;
+  status: ReturnStatus;
+  createdAt: string;
+  order?: { reference: string; customerName: string };
+  client?: { legalName: string };
+  _count?: { items: number };
+}
+
+export interface ReturnItemRow {
+  id: string;
+  skuId: string;
+  quantity: number;
+  unitPricePiastres: number;
+  disposition: ReturnDisposition | null;
+  restockLocationId: string | null;
+  disposalApproved: boolean;
+  sku?: { code: string; nameAr: string };
+}
+
+export interface CreditNoteLine {
+  id: string;
+  description: string;
+  quantity: number;
+  netPiastres: number;
+  vatPiastres: number;
+  grossPiastres: number;
+}
+
+export interface CreditNote {
+  id: string;
+  reference: string;
+  netPiastres: number;
+  vatPiastres: number;
+  grossPiastres: number;
+  lines?: CreditNoteLine[];
+}
+
+export interface ReturnDetail {
+  id: string;
+  rmaNumber: string;
+  reason: ReturnReason;
+  status: ReturnStatus;
+  customerNote: string | null;
+  createdAt: string;
+  order?: { reference: string; customerName: string; customerPhone: string; governorate: GovernorateCode; warehouseId: string; state: string };
+  client?: { id: string; legalName: string };
+  items: ReturnItemRow[];
+  creditNote: CreditNote | null;
+}
+
+export interface PortalLookup {
+  orderReference: string;
+  customerName: string;
+  items: { skuId: string; code: string; nameAr: string; quantity: number }[];
+}

@@ -231,6 +231,26 @@ export class InventoryService {
     });
   }
 
+  /** Remove quarantined stock (e.g. approved disposal of damaged returns). */
+  async dispose(skuId: string, locationId: string, quantity: number, actorId: string | null) {
+    await this.prisma.$transaction(async (tx) => {
+      const warehouseId = await this.locationWarehouse(tx, locationId);
+      await this.addStock(tx, { skuId, locationId, lotId: null, status: StockStatus.QUARANTINE, delta: -quantity });
+      await this.writeMovement(tx, {
+        warehouseId,
+        skuId,
+        lotId: null,
+        fromLocationId: locationId,
+        toLocationId: null,
+        quantity,
+        type: MovementType.DISPOSAL,
+        status: StockStatus.QUARANTINE,
+        actorId,
+        note: 'Disposal of damaged stock',
+      });
+    });
+  }
+
   // ---------- internals ----------
 
   private async locationWarehouse(tx: Tx, locationId: string): Promise<string> {
