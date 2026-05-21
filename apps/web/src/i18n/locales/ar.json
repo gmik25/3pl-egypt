@@ -19,6 +19,11 @@
     "dashboard": "لوحة التحكم",
     "orders": "الطلبات",
     "cod": "الدفع عند الاستلام",
+    "catalog": "كتالوج الأصناف",
+    "warehouses": "المخازن",
+    "inventory": "المخزون",
+    "receiving": "الاستلام",
+    "cycleCounts": "الجرد الدوري",
     "clients": "العملاء",
     "users": "المستخدمون",
     "audit": "سجل التدقيق",
@@ -288,5 +293,96 @@
       "REMITTED": "تم توريده",
       "ADJUSTMENT": "تسوية"
     }
+  },
+  "catalog": {
+    "title": "كتالوج المنتجات",
+    "create": "إضافة صنف",
+    "search": "بحث",
+    "searchPlaceholder": "الكود أو الاسم أو الباركود",
+    "name": "الاسم",
+    "nameAr": "الاسم (عربي)",
+    "nameEn": "الاسم (إنجليزي)",
+    "barcode": "الباركود",
+    "uom": "الوحدة",
+    "expiry": "الصلاحية",
+    "tracked": "متتبَّع",
+    "reorder": "حد إعادة الطلب",
+    "unitPriceEgp": "سعر الوحدة (ج.م)",
+    "expiryTracked": "تتبّع الصلاحية (FEFO)"
+  },
+  "warehouses": {
+    "title": "المخازن",
+    "create": "إضافة مخزن",
+    "code": "الكود",
+    "name": "الاسم",
+    "locations": "مواقع",
+    "selectPrompt": "اختر مخزنًا لعرض مناطقه ومواقعه.",
+    "zoneType": "نوع المنطقة",
+    "zone": "المنطقة",
+    "addZone": "إضافة منطقة",
+    "locationKind": "النوع",
+    "addLocation": "إضافة موقع",
+    "zoneTypes": {
+      "RECEIVING": "الاستلام",
+      "STORAGE": "التخزين",
+      "PACKING": "التغليف",
+      "DISPATCH": "الإرسال"
+    },
+    "kinds": { "BIN": "صندوق", "RACK": "رف", "SHELF": "رف علوي", "FLOOR": "أرضية" }
+  },
+  "inventory": {
+    "title": "المخزون",
+    "findSku": "ابحث عن صنف",
+    "location": "الموقع",
+    "status": "الحالة",
+    "lot": "التشغيلة / الصلاحية",
+    "qty": "الكمية",
+    "quarantine": "حجر",
+    "release": "إفراج",
+    "noStock": "لا يوجد مخزون مسجّل لهذا الصنف.",
+    "adjust": "تعديل المخزون",
+    "delta": "التغيير (+/-)",
+    "applyAdjust": "تطبيق التعديل",
+    "adjustError": "فشل التعديل",
+    "lowStock": "مخزون منخفض",
+    "noLowStock": "لا يوجد ما هو دون حد إعادة الطلب.",
+    "statuses": {
+      "AVAILABLE": "متاح",
+      "QUARANTINE": "محجوز",
+      "DAMAGED": "تالف"
+    }
+  },
+  "receiving": {
+    "title": "الاستلام",
+    "createPo": "أمر شراء جديد",
+    "selectPrompt": "اختر أمر شراء للاستلام عليه.",
+    "supplier": "المورّد",
+    "qtyOrdered": "الكمية المطلوبة",
+    "ordered": "مطلوب",
+    "received": "مُستلَم",
+    "qty": "الكمية",
+    "inspection": "الفحص",
+    "confirm": "تأكيد الاستلام",
+    "receive": "استلام",
+    "receiveError": "فشل الاستلام",
+    "statuses": {
+      "DRAFT": "مسودة",
+      "CONFIRMED": "مؤكد",
+      "PARTIALLY_RECEIVED": "مستلم جزئيًا",
+      "RECEIVED": "مستلم بالكامل",
+      "CANCELLED": "ملغي"
+    },
+    "inspections": { "PASS": "مقبول", "DAMAGED": "تالف", "REJECTED": "مرفوض" }
+  },
+  "counting": {
+    "title": "الجرد الدوري",
+    "openNew": "فتح جردة",
+    "open": "فتح الجرد",
+    "expected": "المتوقع",
+    "counted": "المعدود",
+    "variance": "الفرق",
+    "record": "تسجيل",
+    "reconcile": "تسوية",
+    "statuses": { "OPEN": "مفتوح", "COUNTED": "تم العد", "RECONCILED": "تمت التسوية" }
   }
 }

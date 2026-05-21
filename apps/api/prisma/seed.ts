@@ -30,6 +30,13 @@ const PERMISSIONS: { key: string; description: string; roles: UserRoleName[] }[]
   { key: 'orders.read',         description: 'View orders',                   roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'PICKER', 'DRIVER', 'FINANCE', 'CLIENT'] },
   { key: 'orders.write',        description: 'Create/edit orders',            roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'CLIENT'] },
   { key: 'orders.transition',   description: 'Move orders through states',    roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'PICKER', 'DRIVER'] },
+  // WMS — catalog, locations, inventory, inbound
+  { key: 'catalog.read',        description: 'View SKUs',                     roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'PICKER', 'FINANCE', 'CLIENT'] },
+  { key: 'catalog.write',       description: 'Create/edit SKUs',              roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
+  { key: 'warehouse.read',      description: 'View warehouses/zones/locations', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'PICKER'] },
+  { key: 'warehouse.write',     description: 'Manage warehouses/zones/locations', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
+  { key: 'inventory.read',      description: 'View stock + movements',        roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'PICKER', 'FINANCE'] },
+  { key: 'inventory.write',     description: 'Receive, putaway, adjust, count', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'PICKER'] },
 ];
 
 async function main() {
@@ -68,13 +75,41 @@ async function main() {
     { code: 'ALX-1', name: 'Alexandria Hub', governorate: 'ALX' as const },
   ];
   for (const w of warehouses) {
-    await prisma.warehouse.upsert({
+    const wh = await prisma.warehouse.upsert({
       where: { code: w.code },
       update: { name: w.name, governorate: w.governorate },
       create: w,
     });
+    // Each warehouse gets the 4 standard zones; STORAGE gets a few starter bins.
+    const zoneDefs = [
+      { type: 'RECEIVING' as const, code: 'RCV', name: 'Receiving', bins: 1 },
+      { type: 'STORAGE' as const, code: 'STG', name: 'Storage', bins: 6 },
+      { type: 'PACKING' as const, code: 'PCK', name: 'Packing', bins: 1 },
+      { type: 'DISPATCH' as const, code: 'DSP', name: 'Dispatch', bins: 1 },
+    ];
+    for (const z of zoneDefs) {
+      const zone = await prisma.zone.upsert({
+        where: { warehouseId_code: { warehouseId: wh.id, code: z.code } },
+        update: { name: z.name, type: z.type },
+        create: { warehouseId: wh.id, code: z.code, name: z.name, type: z.type },
+      });
+      for (let i = 1; i <= z.bins; i++) {
+        const code = `${z.code}-${String(i).padStart(2, '0')}`;
+        await prisma.location.upsert({
+          where: { warehouseId_code: { warehouseId: wh.id, code } },
+          update: {},
+          create: {
+            warehouseId: wh.id,
+            zoneId: zone.id,
+            code,
+            type: z.type === 'STORAGE' ? 'BIN' : 'FLOOR',
+            barcode: `${wh.code}-${code}`,
+          },
+        });
+      }
+    }
   }
-  console.log(`✓ Seeded ${warehouses.length} warehouses`);
+  console.log(`✓ Seeded ${warehouses.length} warehouses with zones + locations`);
 
   // ---- Bootstrap super admin (dev only) ----
   // EG: in production, swap this for a one-time provisioning command behind 2FA.

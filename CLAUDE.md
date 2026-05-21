@@ -129,7 +129,7 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 | Module | Schema | API | UI |
 |---|---|---|---|
 | Client & Contract | ✅ | ✅ | ✅ |
-| WMS | ⬜ | ⬜ | ⬜ |
+| WMS | ✅ | ✅ | ✅ |
 | OMS | ✅ | ✅ | ✅ |
 | Last-Mile & Fleet | ⬜ | ⬜ | ⬜ |
 | COD & Finance | ⬜ | ⬜ | ⬜ |

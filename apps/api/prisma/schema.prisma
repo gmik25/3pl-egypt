@@ -103,6 +103,58 @@ enum CodLedgerType {
   ADJUSTMENT
 }
 
+// ---------- WMS enums ----------
+
+enum ZoneType {
+  RECEIVING
+  STORAGE
+  PACKING
+  DISPATCH
+}
+
+enum LocationType {
+  BIN
+  RACK
+  SHELF
+  FLOOR
+}
+
+enum StockStatus {
+  AVAILABLE
+  QUARANTINE
+  DAMAGED
+}
+
+enum MovementType {
+  RECEIPT
+  PUTAWAY
+  PICK
+  ADJUSTMENT
+  TRANSFER
+  QUARANTINE
+  RELEASE
+  DISPOSAL
+  COUNT_ADJUST
+}
+
+enum PurchaseOrderStatus {
+  DRAFT
+  CONFIRMED
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CANCELLED
+}
+
+// NB: InspectionResult is a transient receiving input (not persisted on a model),
+// so it lives as a TS enum in the inbound module rather than here — Prisma only
+// generates enums referenced by a model.
+
+enum CycleCountStatus {
+  OPEN
+  COUNTED
+  RECONCILED
+}
+
 // ---------- Admin / RBAC ----------
 
 model User {
@@ -233,6 +285,8 @@ model Client {
   contracts           Contract[]
   users               User[]
   orders              Order[]
+  skus                Sku[]
+  purchaseOrders      PurchaseOrder[]
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
@@ -286,7 +340,7 @@ model Sla {
   maxReturnRateBps         Int       @default(500)
 }
 
-// ---------- OMS (placeholder — fleshed out in OMS module) ----------
+// ---------- WMS: warehouses, zones, locations, inventory ----------
 
 model Warehouse {
   id           String          @id @default(cuid())
@@ -295,9 +349,48 @@ model Warehouse {
   governorate  GovernorateCode
   isActive     Boolean         @default(true)
   orders       Order[]
+  zones        Zone[]
+  locations    Location[]
+  stockMovements StockMovement[]
+  purchaseOrders PurchaseOrder[]
+  cycleCounts  CycleCount[]
   createdAt    DateTime        @default(now())
 
   @@index([governorate])
+}
+
+model Zone {
+  id          String     @id @default(cuid())
+  warehouseId String
+  warehouse   Warehouse  @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  type        ZoneType
+  code        String
+  name        String
+  locations   Location[]
+  createdAt   DateTime   @default(now())
+
+  @@unique([warehouseId, code])
+  @@index([warehouseId])
+}
+
+model Location {
+  id          String       @id @default(cuid())
+  zoneId      String
+  zone        Zone         @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  /// denormalised for fast warehouse-scoped queries
+  warehouseId String
+  warehouse   Warehouse    @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  code        String
+  type        LocationType @default(BIN)
+  /// scannable location barcode for handheld terminals
+  barcode     String?
+  isActive    Boolean      @default(true)
+  stockLevels StockLevel[]
+  createdAt   DateTime     @default(now())
+
+  @@unique([warehouseId, code])
+  @@index([zoneId])
+  @@index([barcode])
 }
 
 model Sku {
@@ -305,20 +398,146 @@ model Sku {
   /// client-scoped SKU code (unique per client)
   code          String
   clientId      String
+  client        Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
   nameAr        String
   nameEn        String?
   /// EAN-13 / UPC barcode, if any
   barcode       String?
   /// Default unit price for invoicing displays (in piastres). Real selling price comes from the order line.
   defaultUnitPricePiastres Int @default(0)
+  /// unit of measure, e.g. EA (each), BOX, KG
+  unitOfMeasure String       @default("EA")
+  /// EG: FMCG/pharma need expiry tracking → enables FEFO picking + lot capture on receipt
+  expiryTracked Boolean      @default(false)
+  /// low-stock alert threshold (total available across locations)
+  reorderPointQty Int        @default(0)
   isActive      Boolean      @default(true)
   orderItems    OrderItem[]
+  lots          Lot[]
+  stockLevels   StockLevel[]
+  stockMovements StockMovement[]
+  cycleCounts   CycleCount[]
+  poLines       PoLine[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
   @@unique([clientId, code])
   @@index([clientId])
   @@index([barcode])
+}
+
+model Lot {
+  id          String       @id @default(cuid())
+  skuId       String
+  sku         Sku          @relation(fields: [skuId], references: [id], onDelete: Cascade)
+  lotNumber   String
+  /// EG: expiry drives FEFO (first-expired-first-out) picking
+  expiryDate  DateTime?
+  stockLevels StockLevel[]
+  createdAt   DateTime     @default(now())
+
+  @@unique([skuId, lotNumber])
+  @@index([skuId])
+  @@index([expiryDate])
+}
+
+model StockLevel {
+  id         String      @id @default(cuid())
+  skuId      String
+  sku        Sku         @relation(fields: [skuId], references: [id], onDelete: Cascade)
+  locationId String
+  location   Location    @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  lotId      String?
+  lot        Lot?        @relation(fields: [lotId], references: [id], onDelete: SetNull)
+  status     StockStatus @default(AVAILABLE)
+  quantity   Int         @default(0)
+  updatedAt  DateTime    @updatedAt
+
+  @@index([skuId])
+  @@index([locationId])
+  @@index([skuId, status])
+}
+
+model StockMovement {
+  id             String       @id @default(cuid())
+  warehouseId    String
+  warehouse      Warehouse    @relation(fields: [warehouseId], references: [id])
+  skuId          String
+  sku            Sku          @relation(fields: [skuId], references: [id])
+  lotId          String?
+  fromLocationId String?
+  toLocationId   String?
+  quantity       Int
+  type           MovementType
+  status         StockStatus  @default(AVAILABLE)
+  /// optional links for traceability
+  orderId        String?
+  purchaseOrderId String?
+  actorId        String?
+  note           String?
+  createdAt      DateTime     @default(now())
+
+  @@index([warehouseId])
+  @@index([skuId])
+  @@index([createdAt])
+}
+
+// ---------- WMS: inbound ----------
+
+model PurchaseOrder {
+  id           String              @id @default(cuid())
+  reference    String              @unique
+  clientId     String
+  client       Client              @relation(fields: [clientId], references: [id])
+  warehouseId  String
+  warehouse    Warehouse           @relation(fields: [warehouseId], references: [id])
+  supplierName String?
+  status       PurchaseOrderStatus @default(DRAFT)
+  expectedDate DateTime?
+  notes        String?
+  lines        PoLine[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([clientId])
+  @@index([warehouseId])
+  @@index([status])
+}
+
+model PoLine {
+  id               String        @id @default(cuid())
+  purchaseOrderId  String
+  purchaseOrder    PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  skuId            String
+  sku              Sku           @relation(fields: [skuId], references: [id])
+  quantityOrdered  Int
+  quantityReceived Int           @default(0)
+  /// optional lot/expiry captured at PO time (else captured on receipt)
+  lotNumber        String?
+  expiryDate       DateTime?
+
+  @@index([purchaseOrderId])
+}
+
+// ---------- WMS: cycle counting ----------
+
+model CycleCount {
+  id           String           @id @default(cuid())
+  warehouseId  String
+  warehouse    Warehouse        @relation(fields: [warehouseId], references: [id])
+  locationId   String
+  skuId        String
+  sku          Sku              @relation(fields: [skuId], references: [id])
+  status       CycleCountStatus @default(OPEN)
+  expectedQty  Int
+  countedQty   Int?
+  varianceQty  Int?
+  countedById  String?
+  createdAt    DateTime         @default(now())
+  reconciledAt DateTime?
+
+  @@index([warehouseId])
+  @@index([status])
 }
 
 model Order {

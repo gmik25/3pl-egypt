@@ -151,12 +151,12 @@ export class OrdersService {
     // Resolve/auto-create SKUs (WMS will own these later)
     const skuIdByCode = await this.resolveSkus(input.clientId, input.items);
 
-    // Route to a warehouse
+    // Route to a warehouse (stock-aware, falls back to governorate match / first active)
     const warehouseId =
       input.warehouseId ??
       (await this.routing.pickWarehouse(
         input.governorate,
-        input.items.map((i) => i.skuCode),
+        input.items.map((i) => ({ skuId: skuIdByCode[i.skuCode]!, quantity: i.quantity })),
       ));
 
     const order = await this.prisma.order.create({

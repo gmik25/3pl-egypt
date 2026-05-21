@@ -12,6 +12,7 @@ import { RolesModule } from './modules/roles/roles.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { ClientsModule } from './modules/clients/clients.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { WmsModule } from './modules/wms/wms.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { PermissionsGuard } from './modules/auth/guards/permissions.guard';
@@ -31,6 +32,7 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
     UsersModule,
     RolesModule,
     ClientsModule,
+    WmsModule,
     OrdersModule,
   ],
   controllers: [HealthController],

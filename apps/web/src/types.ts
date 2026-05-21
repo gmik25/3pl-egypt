@@ -236,3 +236,136 @@ export interface CsvImportResult {
   created: number;
   failed: { row: number; reason: string }[];
 }
+
+// ---- WMS ----
+
+export type ZoneType = 'RECEIVING' | 'STORAGE' | 'PACKING' | 'DISPATCH';
+export type LocationKind = 'BIN' | 'RACK' | 'SHELF' | 'FLOOR';
+export type StockStatus = 'AVAILABLE' | 'QUARANTINE' | 'DAMAGED';
+export type PurchaseOrderStatus =
+  | 'DRAFT'
+  | 'CONFIRMED'
+  | 'PARTIALLY_RECEIVED'
+  | 'RECEIVED'
+  | 'CANCELLED';
+export type InspectionResult = 'PASS' | 'DAMAGED' | 'REJECTED';
+export type CycleCountStatus = 'OPEN' | 'COUNTED' | 'RECONCILED';
+
+export interface Sku {
+  id: string;
+  clientId: string;
+  code: string;
+  nameAr: string;
+  nameEn: string | null;
+  barcode: string | null;
+  unitOfMeasure: string;
+  expiryTracked: boolean;
+  reorderPointQty: number;
+  defaultUnitPricePiastres: number;
+  isActive: boolean;
+  createdAt: string;
+  client?: { legalName: string };
+}
+
+export interface Warehouse {
+  id: string;
+  code: string;
+  name: string;
+  governorate: GovernorateCode;
+  isActive: boolean;
+  _count?: { zones: number; locations: number };
+}
+
+export interface Zone {
+  id: string;
+  warehouseId: string;
+  type: ZoneType;
+  code: string;
+  name: string;
+  _count?: { locations: number };
+}
+
+export interface WarehouseDetail extends Warehouse {
+  zones: Zone[];
+}
+
+export interface WmsLocation {
+  id: string;
+  warehouseId: string;
+  zoneId: string;
+  code: string;
+  type: LocationKind;
+  barcode: string | null;
+  isActive: boolean;
+  zone?: { type: ZoneType; name: string };
+}
+
+export interface StockLevel {
+  id: string;
+  skuId: string;
+  locationId: string;
+  lotId: string | null;
+  status: StockStatus;
+  quantity: number;
+  location?: { code: string; warehouseId: string; zone?: { type: ZoneType } };
+  sku?: { code: string; nameAr: string };
+  lot?: { lotNumber: string; expiryDate: string | null } | null;
+}
+
+export interface LowStockRow {
+  skuId: string;
+  code: string;
+  nameAr: string;
+  available: number;
+  reorderPointQty: number;
+}
+
+export interface StockMovement {
+  id: string;
+  type: string;
+  quantity: number;
+  status: StockStatus;
+  fromLocationId: string | null;
+  toLocationId: string | null;
+  note: string | null;
+  createdAt: string;
+}
+
+export interface PoLine {
+  id: string;
+  skuId: string;
+  quantityOrdered: number;
+  quantityReceived: number;
+  lotNumber: string | null;
+  expiryDate: string | null;
+  sku?: { code: string; nameAr: string; expiryTracked: boolean };
+}
+
+export interface PurchaseOrder {
+  id: string;
+  reference: string;
+  clientId: string;
+  warehouseId: string;
+  supplierName: string | null;
+  status: PurchaseOrderStatus;
+  expectedDate: string | null;
+  notes: string | null;
+  createdAt: string;
+  client?: { legalName: string };
+  warehouse?: { code: string; name: string };
+  lines?: PoLine[];
+  _count?: { lines: number };
+}
+
+export interface CycleCount {
+  id: string;
+  warehouseId: string;
+  locationId: string;
+  skuId: string;
+  status: CycleCountStatus;
+  expectedQty: number;
+  countedQty: number | null;
+  varianceQty: number | null;
+  createdAt: string;
+  sku?: { code: string; nameAr: string };
+}

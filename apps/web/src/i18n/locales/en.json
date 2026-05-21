@@ -19,6 +19,11 @@
     "dashboard": "Dashboard",
     "orders": "Orders",
     "cod": "COD",
+    "catalog": "Catalog",
+    "warehouses": "Warehouses",
+    "inventory": "Inventory",
+    "receiving": "Receiving",
+    "cycleCounts": "Cycle counts",
     "clients": "Clients",
     "users": "Users",
     "audit": "Audit log",
@@ -288,5 +293,96 @@
       "REMITTED": "Remitted",
       "ADJUSTMENT": "Adjustment"
     }
+  },
+  "catalog": {
+    "title": "Product catalog",
+    "create": "Add SKU",
+    "search": "Search",
+    "searchPlaceholder": "Code, name or barcode",
+    "name": "Name",
+    "nameAr": "Name (Arabic)",
+    "nameEn": "Name (English)",
+    "barcode": "Barcode",
+    "uom": "Unit",
+    "expiry": "Expiry",
+    "tracked": "Tracked",
+    "reorder": "Reorder point",
+    "unitPriceEgp": "Unit price (EGP)",
+    "expiryTracked": "Track expiry (FEFO)"
+  },
+  "warehouses": {
+    "title": "Warehouses",
+    "create": "Add warehouse",
+    "code": "Code",
+    "name": "Name",
+    "locations": "locations",
+    "selectPrompt": "Select a warehouse to view its zones and locations.",
+    "zoneType": "Zone type",
+    "zone": "Zone",
+    "addZone": "Add zone",
+    "locationKind": "Type",
+    "addLocation": "Add location",
+    "zoneTypes": {
+      "RECEIVING": "Receiving",
+      "STORAGE": "Storage",
+      "PACKING": "Packing",
+      "DISPATCH": "Dispatch"
+    },
+    "kinds": { "BIN": "Bin", "RACK": "Rack", "SHELF": "Shelf", "FLOOR": "Floor" }
+  },
+  "inventory": {
+    "title": "Inventory",
+    "findSku": "Find SKU",
+    "location": "Location",
+    "status": "Status",
+    "lot": "Lot / expiry",
+    "qty": "Qty",
+    "quarantine": "Quarantine",
+    "release": "Release",
+    "noStock": "No stock recorded for this SKU.",
+    "adjust": "Adjust stock",
+    "delta": "Delta (+/-)",
+    "applyAdjust": "Apply adjustment",
+    "adjustError": "Adjustment failed",
+    "lowStock": "Low stock",
+    "noLowStock": "Nothing below reorder point.",
+    "statuses": {
+      "AVAILABLE": "Available",
+      "QUARANTINE": "Quarantine",
+      "DAMAGED": "Damaged"
+    }
+  },
+  "receiving": {
+    "title": "Receiving",
+    "createPo": "New PO",
+    "selectPrompt": "Select a purchase order to receive against.",
+    "supplier": "Supplier",
+    "qtyOrdered": "Qty ordered",
+    "ordered": "Ordered",
+    "received": "Received",
+    "qty": "Qty",
+    "inspection": "Inspection",
+    "confirm": "Confirm receipt",
+    "receive": "Receive",
+    "receiveError": "Receipt failed",
+    "statuses": {
+      "DRAFT": "Draft",
+      "CONFIRMED": "Confirmed",
+      "PARTIALLY_RECEIVED": "Partially received",
+      "RECEIVED": "Received",
+      "CANCELLED": "Cancelled"
+    },
+    "inspections": { "PASS": "Pass", "DAMAGED": "Damaged", "REJECTED": "Rejected" }
+  },
+  "counting": {
+    "title": "Cycle counts",
+    "openNew": "Open a count",
+    "open": "Open count",
+    "expected": "Expected",
+    "counted": "Counted",
+    "variance": "Variance",
+    "record": "Record",
+    "reconcile": "Reconcile",
+    "statuses": { "OPEN": "Open", "COUNTED": "Counted", "RECONCILED": "Reconciled" }
   }
 }

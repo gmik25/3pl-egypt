@@ -16,6 +16,11 @@ import OrderDetailPage from './pages/OrderDetailPage';
 import OrderCreatePage from './pages/OrderCreatePage';
 import OrderImportPage from './pages/OrderImportPage';
 import CodPage from './pages/CodPage';
+import SkuCatalogPage from './pages/wms/SkuCatalogPage';
+import WarehousesPage from './pages/wms/WarehousesPage';
+import InventoryPage from './pages/wms/InventoryPage';
+import ReceivingPage from './pages/wms/ReceivingPage';
+import CycleCountPage from './pages/wms/CycleCountPage';
 
 export default function App() {
   return (
@@ -38,6 +43,11 @@ export default function App() {
                   <Route path="/orders/import" element={<OrderImportPage />} />
                   <Route path="/orders/:id" element={<OrderDetailPage />} />
                   <Route path="/cod" element={<CodPage />} />
+                  <Route path="/catalog" element={<SkuCatalogPage />} />
+                  <Route path="/warehouses" element={<WarehousesPage />} />
+                  <Route path="/inventory" element={<InventoryPage />} />
+                  <Route path="/receiving" element={<ReceivingPage />} />
+                  <Route path="/cycle-counts" element={<CycleCountPage />} />
                   <Route path="/portal" element={<ClientPortalPage />} />
                   <Route path="/mfa" element={<MfaPage />} />
                   <Route path="/audit" element={<AuditPage />} />
