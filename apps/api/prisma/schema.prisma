@@ -295,6 +295,7 @@ model Client {
   invoices            Invoice[]
   returnRequests      ReturnRequest[]
   creditNotes         CreditNote[]
+  importShipments     ImportShipment[]
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
@@ -356,12 +357,15 @@ model Warehouse {
   name         String
   governorate  GovernorateCode
   isActive     Boolean         @default(true)
+  /// EG: bonded zone — duty/VAT on imported goods is deferred until release
+  isBonded     Boolean         @default(false)
   orders       Order[]
   zones        Zone[]
   locations    Location[]
   stockMovements StockMovement[]
   purchaseOrders PurchaseOrder[]
   cycleCounts  CycleCount[]
+  importShipments ImportShipment[]
   createdAt    DateTime        @default(now())
 
   @@index([governorate])
@@ -411,6 +415,8 @@ model Sku {
   nameEn        String?
   /// EAN-13 / UPC barcode, if any
   barcode       String?
+  /// EG: Harmonized System tariff code (for customs duty lookup on imports)
+  hsCode        String?
   /// Default unit price for invoicing displays (in piastres). Real selling price comes from the order line.
   defaultUnitPricePiastres Int @default(0)
   /// unit of measure, e.g. EA (each), BOX, KG
@@ -427,6 +433,7 @@ model Sku {
   cycleCounts   CycleCount[]
   poLines       PoLine[]
   returnItems   ReturnItem[]
+  importLines   ImportShipmentLine[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
@@ -1006,4 +1013,70 @@ model CreditNoteLine {
   grossPiastres   Int
 
   @@index([creditNoteId])
+}
+
+// ---------- Customs & Compliance (importers) ----------
+
+enum ImportStatus {
+  DRAFT
+  DECLARED          // ECA declaration number assigned
+  UNDER_INSPECTION
+  CLEARED           // duties/VAT assessed + paid
+  RELEASED          // goods received into the warehouse
+  CANCELLED
+}
+
+/// Harmonized System tariff reference for duty lookup.
+model HsCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String
+  /// import duty rate in basis points (1400 = 14%)
+  dutyRateBps Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model ImportShipment {
+  id                   String               @id @default(cuid())
+  reference            String               @unique
+  clientId             String
+  client               Client               @relation(fields: [clientId], references: [id])
+  warehouseId          String?
+  warehouse            Warehouse?           @relation(fields: [warehouseId], references: [id])
+  /// EG: Egyptian Customs Authority declaration number
+  ecaDeclarationNumber String?
+  status               ImportStatus         @default(DRAFT)
+  originCountry        String?
+  supplierName         String?
+  /// CIF components, in piastres
+  freightCostPiastres   Int                 @default(0)
+  insuranceCostPiastres Int                 @default(0)
+  /// whether goods are held in a bonded zone (duty deferred until release)
+  bonded               Boolean              @default(false)
+  declaredAt           DateTime?
+  clearedAt            DateTime?
+  releasedAt           DateTime?
+  lines                ImportShipmentLine[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model ImportShipmentLine {
+  id               String         @id @default(cuid())
+  importShipmentId String
+  importShipment   ImportShipment @relation(fields: [importShipmentId], references: [id], onDelete: Cascade)
+  skuId            String
+  sku              Sku            @relation(fields: [skuId], references: [id])
+  /// HS code snapshot at declaration time
+  hsCode           String
+  /// duty rate snapshot (bps) at declaration time
+  dutyRateBps      Int            @default(0)
+  quantity         Int
+  /// goods unit cost (FOB), in piastres
+  unitCostPiastres Int
+
+  @@index([importShipmentId])
 }

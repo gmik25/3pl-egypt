@@ -134,7 +134,7 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 | Last-Mile & Fleet | ✅ | ✅ | ✅ |
 | COD & Finance | ✅ | ✅ | ✅ |
 | Returns | ✅ | ✅ | ✅ |
-| Customs | ⬜ | ⬜ | ⬜ |
+| Customs | ✅ | ✅ | ✅ |
 | Reporting | ⬜ | ⬜ | ⬜ |
 | Notifications | ⬜ | ⬜ | ⬜ |
 | Admin & RBAC | ✅ | ✅ | ✅ |

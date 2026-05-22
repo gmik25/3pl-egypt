@@ -258,6 +258,7 @@ export interface Sku {
   nameAr: string;
   nameEn: string | null;
   barcode: string | null;
+  hsCode: string | null;
   unitOfMeasure: string;
   expiryTracked: boolean;
   reorderPointQty: number;
@@ -273,6 +274,7 @@ export interface Warehouse {
   name: string;
   governorate: GovernorateCode;
   isActive: boolean;
+  isBonded?: boolean;
   _count?: { zones: number; locations: number };
 }
 
@@ -618,4 +620,65 @@ export interface PortalLookup {
   orderReference: string;
   customerName: string;
   items: { skuId: string; code: string; nameAr: string; quantity: number }[];
+}
+
+// ---- Customs & Compliance ----
+
+export type ImportStatus = 'DRAFT' | 'DECLARED' | 'UNDER_INSPECTION' | 'CLEARED' | 'RELEASED' | 'CANCELLED';
+
+export interface HsCode {
+  id: string;
+  code: string;
+  description: string;
+  dutyRateBps: number;
+  createdAt: string;
+}
+
+export interface ImportLine {
+  id: string;
+  skuId: string;
+  hsCode: string;
+  dutyRateBps: number;
+  quantity: number;
+  unitCostPiastres: number;
+  sku?: { code: string; nameAr: string };
+}
+
+export interface ImportShipmentListItem {
+  id: string;
+  reference: string;
+  clientId: string;
+  status: ImportStatus;
+  originCountry: string | null;
+  supplierName: string | null;
+  bonded: boolean;
+  ecaDeclarationNumber: string | null;
+  createdAt: string;
+  client?: { legalName: string };
+  _count?: { lines: number };
+}
+
+export interface ImportShipmentDetail extends ImportShipmentListItem {
+  warehouseId: string | null;
+  warehouse?: { id: string; code: string; name: string; isBonded: boolean } | null;
+  freightCostPiastres: number;
+  insuranceCostPiastres: number;
+  declaredAt: string | null;
+  clearedAt: string | null;
+  releasedAt: string | null;
+  lines: ImportLine[];
+}
+
+export interface LandedCost {
+  goodsTotalPiastres: number;
+  freightPiastres: number;
+  insurancePiastres: number;
+  cifPiastres: number;
+  totalDutyPiastres: number;
+  vatRateBps: number;
+  vatPiastres: number;
+  landedTotalPiastres: number;
+  lines: { ref: string; goodsPiastres: number; cifSharePiastres: number; dutyPiastres: number }[];
+  bonded: boolean;
+  dutyDeferred: boolean;
 }

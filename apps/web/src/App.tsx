@@ -30,6 +30,8 @@ import ShipmentDetailPage from './pages/fleet/ShipmentDetailPage';
 import DriversPage from './pages/fleet/DriversPage';
 import ReturnsPage from './pages/returns/ReturnsPage';
 import ReturnPortalPage from './pages/ReturnPortalPage';
+import HsCodesPage from './pages/customs/HsCodesPage';
+import ImportsPage from './pages/customs/ImportsPage';
 
 export default function App() {
   return (
@@ -66,6 +68,8 @@ export default function App() {
                   <Route path="/shipments/:id" element={<ShipmentDetailPage />} />
                   <Route path="/drivers" element={<DriversPage />} />
                   <Route path="/returns" element={<ReturnsPage />} />
+                  <Route path="/hs-codes" element={<HsCodesPage />} />
+                  <Route path="/imports" element={<ImportsPage />} />
                   <Route path="/portal" element={<ClientPortalPage />} />
                   <Route path="/mfa" element={<MfaPage />} />
                   <Route path="/audit" element={<AuditPage />} />

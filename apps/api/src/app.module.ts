@@ -16,6 +16,7 @@ import { WmsModule } from './modules/wms/wms.module';
 import { FinanceModule } from './modules/finance/finance.module';
 import { FleetModule } from './modules/fleet/fleet.module';
 import { ReturnsModule } from './modules/returns/returns.module';
+import { CustomsModule } from './modules/customs/customs.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { PermissionsGuard } from './modules/auth/guards/permissions.guard';
@@ -40,6 +41,7 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
     FinanceModule,
     FleetModule,
     ReturnsModule,
+    CustomsModule,
   ],
   controllers: [HealthController],
   providers: [

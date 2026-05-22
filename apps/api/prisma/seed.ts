@@ -49,6 +49,9 @@ const PERMISSIONS: { key: string; description: string; roles: UserRoleName[] }[]
   // Returns (reverse logistics)
   { key: 'returns.read',        description: 'View return requests',            roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'FINANCE'] },
   { key: 'returns.write',       description: 'Process returns: approve, inspect, dispose, credit note', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
+  // Customs & Compliance
+  { key: 'customs.read',        description: 'View HS codes + import shipments', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'FINANCE'] },
+  { key: 'customs.write',       description: 'Manage HS codes + import shipments, clear/release', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
 ];
 
 async function main() {
@@ -138,6 +141,19 @@ async function main() {
     }
   }
   console.log(`✓ Seeded ${coverageCount} courier-coverage rows`);
+
+  // ---- HS code tariff reference (sample rates; replace with the real ECA tariff schedule) ----
+  const hsCodes = [
+    { code: '6109.10', description: 'T-shirts, cotton', dutyRateBps: 3000 },
+    { code: '8517.12', description: 'Mobile phones', dutyRateBps: 0 },
+    { code: '3304.99', description: 'Cosmetics / skincare', dutyRateBps: 4000 },
+    { code: '9503.00', description: 'Toys', dutyRateBps: 2000 },
+    { code: '2106.90', description: 'Food preparations', dutyRateBps: 500 },
+  ];
+  for (const h of hsCodes) {
+    await prisma.hsCode.upsert({ where: { code: h.code }, update: { description: h.description, dutyRateBps: h.dutyRateBps }, create: h });
+  }
+  console.log(`✓ Seeded ${hsCodes.length} HS codes`);
 
   // ---- Bootstrap super admin (dev only) ----
   // EG: in production, swap this for a one-time provisioning command behind 2FA.
