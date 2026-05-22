@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-unit:
+    name: Typecheck, build, unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Generate Prisma client
+        run: pnpm --filter @3pl/api exec prisma generate
+      - name: Build shared package
+        run: pnpm --filter @3pl/shared run build
+      - name: Typecheck (all workspaces)
+        run: pnpm -r run typecheck
+      - name: Build api + web
+        run: pnpm -r run build
+      - name: Unit tests
+        run: pnpm --filter @3pl/api run test
+
+  e2e:
+    name: API e2e (Postgres)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: threepl
+          POSTGRES_PASSWORD: threepl_dev_pwd
+          POSTGRES_DB: threepl_egypt_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U threepl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://threepl:threepl_dev_pwd@localhost:5432/threepl_egypt_test?schema=public
+      REDIS_URL: redis://localhost:6379
+      JWT_ACCESS_SECRET: ci_access_secret_minimum_32_characters_long
+      JWT_REFRESH_SECRET: ci_refresh_secret_minimum_32_characters_long
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Generate Prisma client
+        run: pnpm --filter @3pl/api exec prisma generate
+      - name: Build shared package
+        run: pnpm --filter @3pl/shared run build
+      - name: Apply migrations + seed test DB
+        working-directory: apps/api
+        run: |
+          pnpm exec prisma migrate deploy
+          pnpm exec tsx prisma/seed.ts
+      - name: Run e2e tests
+        run: pnpm --filter @3pl/api run test:e2e

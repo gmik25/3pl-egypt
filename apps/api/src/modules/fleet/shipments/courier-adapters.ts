@@ -36,9 +36,11 @@ export function createCourierShipment(courier: CourierName, _req: CourierShipmen
 /** Map a courier webhook status string to our ShipmentStatus. */
 export function mapCourierStatus(raw: string): 'OUT_FOR_DELIVERY' | 'DELIVERED' | 'FAILED' | 'RETURNED' | null {
   const s = raw.toLowerCase();
-  if (s.includes('deliver') && !s.includes('out')) return 'DELIVERED';
-  if (s.includes('out_for') || s.includes('out for') || s.includes('in_transit') || s.includes('transit')) return 'OUT_FOR_DELIVERY';
+  // Order matters: "delivery failed"/"returned" also contain "deliver", so check the
+  // negative outcomes and in-transit states before the success match.
   if (s.includes('return')) return 'RETURNED';
   if (s.includes('fail') || s.includes('unreach')) return 'FAILED';
+  if (s.includes('out') || s.includes('transit')) return 'OUT_FOR_DELIVERY';
+  if (s.includes('deliver')) return 'DELIVERED';
   return null;
 }
