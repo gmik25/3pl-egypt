@@ -36,6 +36,12 @@ export class CreateSkuDto {
   @Matches(/^\d{8,14}$/, { message: 'barcode must be 8–14 digits' })
   barcode?: string;
 
+  @ApiPropertyOptional({ description: 'HS tariff code (for customs duty on imports)', example: '6109.10' })
+  @IsOptional()
+  @IsString()
+  @Length(2, 20)
+  hsCode?: string;
+
   @ApiPropertyOptional({ default: 'EA' })
   @IsOptional()
   @IsString()
