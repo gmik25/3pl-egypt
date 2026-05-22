@@ -16,6 +16,7 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { to: '/', labelKey: 'nav.dashboard' },
+  { to: '/ops', labelKey: 'nav.ops', permission: 'reports.read' },
   { to: '/orders', labelKey: 'nav.orders', permission: 'orders.read' },
   { to: '/cod', labelKey: 'nav.cod', permission: 'orders.read' },
   { to: '/catalog', labelKey: 'nav.catalog', permission: 'catalog.read' },

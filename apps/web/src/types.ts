@@ -748,3 +748,25 @@ export interface Notification {
   createdAt: string;
   sentAt: string | null;
 }
+
+// ---- Dashboards ----
+
+export interface PortalSummary {
+  client: { id: string; legalName: string };
+  totalOrders: number;
+  ordersByState: Record<OrderState, number>;
+  cod: { expectedPiastres: number; collectedPiastres: number; walletBalancePiastres: number };
+  returns: { open: number; total: number };
+  lowStock: { code: string; nameAr: string; available: number; reorderPointQty: number }[];
+  recentInvoices: { reference: string; grossPiastres: number; status: InvoiceStatus; periodEnd: string }[];
+}
+
+export interface OpsOverview {
+  totals: { activeClients: number; warehouses: number; drivers: number; openOrders: number; todayOrders: number; weekOrders: number };
+  ordersByState: Record<OrderState, number>;
+  cod: { collectedPiastres: number; walletLiabilityPiastres: number };
+  queues: { returnsPending: number; remittancesPending: number; importsInFlight: number; shipmentsOut: number; failedShipments: number };
+  warehouses: { code: string; name: string; isBonded: boolean; orders: number; availableUnits: number }[];
+  couriers: CourierScore[];
+  alerts: { lowStock: number; slaBreaches: number; failedSpike: number };
+}

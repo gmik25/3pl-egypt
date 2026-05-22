@@ -17,6 +17,7 @@
   },
   "nav": {
     "dashboard": "لوحة التحكم",
+    "ops": "مركز العمليات",
     "orders": "الطلبات",
     "cod": "الدفع عند الاستلام",
     "catalog": "كتالوج الأصناف",
@@ -591,6 +592,33 @@
       "DIGEST": "ملخص",
       "OTHER": "أخرى"
     }
+  },
+  "ops": {
+    "title": "مركز العمليات",
+    "autoRefresh": "يُحدَّث تلقائيًا كل 30 ثانية",
+    "activeClients": "العملاء النشطون",
+    "warehouses": "المخازن",
+    "drivers": "المناديب",
+    "openOrders": "طلبات مفتوحة",
+    "todayOrders": "طلبات اليوم",
+    "weekOrders": "طلبات الأسبوع",
+    "activeAlerts": "التنبيهات النشطة",
+    "allClear": "لا توجد تنبيهات",
+    "codCollected": "تحصيل الدفع عند الاستلام",
+    "walletLiability": "مستحق للعملاء (المحافظ)",
+    "actionQueues": "قوائم الإجراءات",
+    "returnsPending": "مرتجعات للمعالجة",
+    "remittancesPending": "توريدات للتأكيد",
+    "importsInFlight": "واردات في الجمارك",
+    "failedShipments": "شحنات فاشلة",
+    "warehouseOps": "عمليات المخازن",
+    "availableUnits": "وحدات متاحة"
+  },
+  "portalDash": {
+    "totalOrders": "إجمالي الطلبات",
+    "codCollected": "تم تحصيله",
+    "walletBalance": "رصيد المحفظة",
+    "openReturns": "مرتجعات مفتوحة"
   },
   "reports": {
     "title": "التقارير والتحليلات",

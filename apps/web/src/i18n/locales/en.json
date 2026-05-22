@@ -17,6 +17,7 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "ops": "Operations",
     "orders": "Orders",
     "cod": "COD",
     "catalog": "Catalog",
@@ -591,6 +592,33 @@
       "DIGEST": "Digest",
       "OTHER": "Other"
     }
+  },
+  "ops": {
+    "title": "Operations command center",
+    "autoRefresh": "Auto-refreshes every 30s",
+    "activeClients": "Active clients",
+    "warehouses": "Warehouses",
+    "drivers": "Drivers",
+    "openOrders": "Open orders",
+    "todayOrders": "Orders today",
+    "weekOrders": "Orders this week",
+    "activeAlerts": "Active alerts",
+    "allClear": "All clear",
+    "codCollected": "COD collected",
+    "walletLiability": "Owed to clients (wallets)",
+    "actionQueues": "Action queues",
+    "returnsPending": "Returns to process",
+    "remittancesPending": "Remittances to confirm",
+    "importsInFlight": "Imports in customs",
+    "failedShipments": "Failed shipments",
+    "warehouseOps": "Warehouse operations",
+    "availableUnits": "Available units"
+  },
+  "portalDash": {
+    "totalOrders": "Total orders",
+    "codCollected": "COD collected",
+    "walletBalance": "Wallet balance",
+    "openReturns": "Open returns"
   },
   "reports": {
     "title": "Reports & analytics",

@@ -34,6 +34,7 @@ import HsCodesPage from './pages/customs/HsCodesPage';
 import ImportsPage from './pages/customs/ImportsPage';
 import ReportsPage from './pages/ReportsPage';
 import NotificationsPage from './pages/NotificationsPage';
+import OpsDashboardPage from './pages/OpsDashboardPage';
 
 export default function App() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
               <Layout>
                 <Routes>
                   <Route path="/" element={<DashboardPage />} />
+                  <Route path="/ops" element={<OpsDashboardPage />} />
                   <Route path="/users" element={<UsersPage />} />
                   <Route path="/users/:id" element={<UserFormPage />} />
                   <Route path="/clients" element={<ClientsPage />} />
