@@ -32,6 +32,7 @@ import ReturnsPage from './pages/returns/ReturnsPage';
 import ReturnPortalPage from './pages/ReturnPortalPage';
 import HsCodesPage from './pages/customs/HsCodesPage';
 import ImportsPage from './pages/customs/ImportsPage';
+import ReportsPage from './pages/ReportsPage';
 
 export default function App() {
   return (
@@ -70,6 +71,7 @@ export default function App() {
                   <Route path="/returns" element={<ReturnsPage />} />
                   <Route path="/hs-codes" element={<HsCodesPage />} />
                   <Route path="/imports" element={<ImportsPage />} />
+                  <Route path="/reports" element={<ReportsPage />} />
                   <Route path="/portal" element={<ClientPortalPage />} />
                   <Route path="/mfa" element={<MfaPage />} />
                   <Route path="/audit" element={<AuditPage />} />

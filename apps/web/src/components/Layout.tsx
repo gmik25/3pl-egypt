@@ -32,6 +32,7 @@ const NAV: NavItem[] = [
   { to: '/wallets', labelKey: 'nav.wallets', permission: 'finance.read' },
   { to: '/payouts', labelKey: 'nav.payouts', permission: 'finance.read' },
   { to: '/invoices', labelKey: 'nav.invoices', permission: 'finance.read' },
+  { to: '/reports', labelKey: 'nav.reports', permission: 'reports.read' },
   { to: '/clients', labelKey: 'nav.clients', permission: 'clients.read' },
   { to: '/users', labelKey: 'nav.users', permission: 'users.read' },
   { to: '/audit', labelKey: 'nav.audit', permission: 'audit.read' },

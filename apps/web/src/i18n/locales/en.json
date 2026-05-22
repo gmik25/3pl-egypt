@@ -33,6 +33,7 @@
     "wallets": "Wallets",
     "payouts": "Payouts",
     "invoices": "Invoices",
+    "reports": "Reports",
     "clients": "Clients",
     "users": "Users",
     "audit": "Audit log",
@@ -559,6 +560,23 @@
     "submit": "Submit return request",
     "submitError": "Could not submit the request.",
     "success": "Your return request was submitted. Reference: {{rma}}"
+  },
+  "reports": {
+    "title": "Reports & analytics",
+    "print": "Print / Save as PDF",
+    "exportCsv": "Export CSV",
+    "totalOrders": "Total orders",
+    "fulfilmentRate": "Fulfilment rate",
+    "onTime": "On-time delivery",
+    "measured": "of {{count}} measured",
+    "codCollection": "COD collection",
+    "orderStates": "Order states",
+    "revenuePerClient": "Revenue per client (EGP)",
+    "inventoryByWarehouse": "Available stock by warehouse",
+    "courierScorecard": "Courier scorecard",
+    "shipments": "Shipments",
+    "deliveryRate": "Delivery %",
+    "avgAttempts": "Avg attempts"
   },
   "customs": {
     "hsTitle": "HS tariff codes",

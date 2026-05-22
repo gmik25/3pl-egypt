@@ -682,3 +682,40 @@ export interface LandedCost {
   bonded: boolean;
   dutyDeferred: boolean;
 }
+
+// ---- Reporting & Analytics ----
+
+export interface OpsKpis {
+  totalOrders: number;
+  stateCounts: Partial<Record<OrderState, number>>;
+  fulfilmentRatePct: number;
+  failedOrders: number;
+  returnedOrders: number;
+  onTimeDeliveryPct: number;
+  onTimeMeasured: number;
+  codExpectedPiastres: number;
+  codCollectedPiastres: number;
+  codCollectionRatePct: number;
+}
+
+export interface RevenueRow {
+  client: string;
+  revenuePiastres: number;
+}
+
+export interface CourierScore {
+  courier: string;
+  shipments: number;
+  delivered: number;
+  failed: number;
+  returned: number;
+  deliveryRatePct: number;
+  avgAttempts: number;
+}
+
+export interface InventoryRow {
+  warehouse: string;
+  availableUnits: number;
+  quarantineUnits: number;
+  damagedUnits: number;
+}

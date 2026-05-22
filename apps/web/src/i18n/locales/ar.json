@@ -33,6 +33,7 @@
     "wallets": "محافظ العملاء",
     "payouts": "المدفوعات",
     "invoices": "الفواتير",
+    "reports": "التقارير",
     "clients": "العملاء",
     "users": "المستخدمون",
     "audit": "سجل التدقيق",
@@ -559,6 +560,23 @@
     "submit": "إرسال طلب الإرجاع",
     "submitError": "تعذّر إرسال الطلب.",
     "success": "تم إرسال طلب الإرجاع. الرقم المرجعي: {{rma}}"
+  },
+  "reports": {
+    "title": "التقارير والتحليلات",
+    "print": "طباعة / حفظ PDF",
+    "exportCsv": "تصدير CSV",
+    "totalOrders": "إجمالي الطلبات",
+    "fulfilmentRate": "معدل التنفيذ",
+    "onTime": "التسليم في الموعد",
+    "measured": "من {{count}} مقاسة",
+    "codCollection": "تحصيل الدفع عند الاستلام",
+    "orderStates": "حالات الطلبات",
+    "revenuePerClient": "الإيراد لكل عميل (ج.م)",
+    "inventoryByWarehouse": "المخزون المتاح حسب المخزن",
+    "courierScorecard": "تقييم شركات الشحن",
+    "shipments": "الشحنات",
+    "deliveryRate": "نسبة التسليم %",
+    "avgAttempts": "متوسط المحاولات"
   },
   "customs": {
     "hsTitle": "أكواد التعريفة الجمركية (HS)",

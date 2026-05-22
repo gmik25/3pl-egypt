@@ -135,7 +135,7 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 | COD & Finance | ✅ | ✅ | ✅ |
 | Returns | ✅ | ✅ | ✅ |
 | Customs | ✅ | ✅ | ✅ |
-| Reporting | ⬜ | ⬜ | ⬜ |
+| Reporting | ✅ | ✅ | ✅ |
 | Notifications | ⬜ | ⬜ | ⬜ |
 | Admin & RBAC | ✅ | ✅ | ✅ |
 
