@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { CarrierType, CourierName, GovernorateCode, ShipmentStatus } from '@prisma/client';
+import { CarrierType, GovernorateCode, ShipmentStatus } from '@prisma/client';
 
 import { ShipmentsService } from './shipments.service';
 import { CapturePodMetaDto, CapturePodOtpDto, CreateShipmentDto, RecordFailedAttemptDto } from './dto/shipment-dtos';
@@ -125,14 +125,14 @@ export class ShipmentsController {
   // ---- Courier webhook (public) ----
 
   @Public()
-  @Post('shipments/webhook/:courier/:shipmentId')
+  @Post('shipments/webhook/:courierCode/:shipmentId')
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiOperation({ summary: 'Courier status callback' })
+  @ApiOperation({ summary: 'Courier status callback (by courier code)' })
   webhook(
-    @Param('courier', new ParseEnumPipe(CourierName)) courier: CourierName,
+    @Param('courierCode') courierCode: string,
     @Param('shipmentId') shipmentId: string,
     @Body() payload: { status?: string },
   ) {
-    return this.shipments.webhook(courier, shipmentId, payload);
+    return this.shipments.webhook(courierCode, shipmentId, payload);
   }
 }

@@ -66,7 +66,7 @@ export default function ShipmentDetailPage() {
 
       <Card className="p-6">
         <dl className="grid grid-cols-2 gap-2 text-sm">
-          <div><dt className="text-slate-500">{t('fleet.carrier')}</dt><dd>{s.carrierType === 'COURIER' ? t(`fleet.couriers.${s.courier}`) : (s.driver?.fullName ?? t('fleet.inHouse'))}</dd></div>
+          <div><dt className="text-slate-500">{t('fleet.carrier')}</dt><dd>{s.carrierType === 'COURIER' ? (s.courierAccount?.name ?? '—') : (s.driver?.fullName ?? t('fleet.inHouse'))}</dd></div>
           {s.trackingNumber && <div><dt className="text-slate-500">{t('fleet.tracking')}</dt><dd dir="ltr">{s.trackingNumber}</dd></div>}
           <div><dt className="text-slate-500">{t('orders.customer')}</dt><dd>{s.order?.customerName}</dd></div>
           <div><dt className="text-slate-500">{t('orders.phone')}</dt><dd dir="ltr">{s.order?.customerPhone}</dd></div>

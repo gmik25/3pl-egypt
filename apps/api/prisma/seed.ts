@@ -2,7 +2,7 @@
 // Idempotent: safe to re-run; uses upsert keyed on stable identifiers.
 // Run: pnpm db:seed
 
-import { PrismaClient, UserRoleName, CourierName, GovernorateCode } from '@prisma/client';
+import { PrismaClient, UserRoleName, GovernorateCode } from '@prisma/client';
 import * as argon2 from 'argon2';
 
 const prisma = new PrismaClient();
@@ -131,16 +131,30 @@ async function main() {
   }
   console.log(`✓ Seeded ${warehouses.length} warehouses with zones + locations`);
 
-  // ---- Courier coverage (all couriers serve all 27 governorates) ----
+  // ---- Courier accounts (data-driven; credentials added later via onboarding) ----
+  const builtInCouriers = [
+    { code: 'ARAMEX', name: 'Aramex Egypt' },
+    { code: 'BOSTA', name: 'Bosta' },
+    { code: 'R2S', name: 'R2S' },
+    { code: 'MYLERZ', name: 'Mylerz' },
+    { code: 'JT', name: 'J&T Express Egypt' },
+  ];
+  const courierAccounts = [];
+  for (const c of builtInCouriers) {
+    courierAccounts.push(await prisma.courierAccount.upsert({ where: { code: c.code }, update: { name: c.name }, create: c }));
+  }
+  console.log(`✓ Seeded ${courierAccounts.length} courier accounts`);
+
+  // ---- Courier coverage (every courier serves all 27 governorates) ----
   // EG: Greater Cairo / Alexandria get a 2-day ETA; the rest 4 days. Tune per real SLAs.
   const fastGovs: GovernorateCode[] = [GovernorateCode.C, GovernorateCode.GZ, GovernorateCode.ALX, GovernorateCode.KB];
   let coverageCount = 0;
-  for (const courier of Object.values(CourierName)) {
+  for (const account of courierAccounts) {
     for (const governorate of Object.values(GovernorateCode)) {
       await prisma.courierCoverage.upsert({
-        where: { courier_governorate: { courier, governorate } },
+        where: { courierId_governorate: { courierId: account.id, governorate } },
         update: {},
-        create: { courier, governorate, etaDays: fastGovs.includes(governorate) ? 2 : 4 },
+        create: { courierId: account.id, governorate, etaDays: fastGovs.includes(governorate) ? 2 : 4 },
       });
       coverageCount++;
     }

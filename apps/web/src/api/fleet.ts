@@ -3,7 +3,6 @@ import type { GovernorateCode } from '@3pl/shared';
 import type {
   CarrierSuggestion,
   CarrierType,
-  CourierName,
   DeliveryFailureReason,
   Driver,
   ShipmentDetail,
@@ -46,7 +45,7 @@ export async function suggestCarriers(governorate: GovernorateCode): Promise<Car
   const { data } = await api.get<CarrierSuggestion>(`/fleet/shipments/coverage/${governorate}`);
   return data;
 }
-export async function createShipment(input: { orderId: string; carrierType: CarrierType; courier?: CourierName; driverId?: string }): Promise<ShipmentDetail> {
+export async function createShipment(input: { orderId: string; carrierType: CarrierType; courierId?: string; driverId?: string }): Promise<ShipmentDetail> {
   const { data } = await api.post<ShipmentDetail>('/fleet/shipments', input);
   return data;
 }

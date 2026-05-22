@@ -530,7 +530,8 @@ export interface ShipmentListItem {
   reference: string;
   orderId: string;
   carrierType: CarrierType;
-  courier: CourierName | null;
+  courierId: string | null;
+  courierAccount?: { code: string; name: string } | null;
   driverId: string | null;
   trackingNumber: string | null;
   status: ShipmentStatus;
@@ -551,7 +552,7 @@ export interface ShipmentDetail extends ShipmentListItem {
 }
 
 export interface CarrierSuggestion {
-  couriers: { courier: CourierName; etaDays: number }[];
+  couriers: { courierId: string; code: string; name: string; etaDays: number }[];
   inHouseDrivers: { driverId: string; name: string }[];
 }
 

@@ -6,7 +6,6 @@ import * as path from 'node:path';
 import {
   AuditAction,
   CarrierType,
-  CourierName,
   DeliveryFailureReason,
   PodMethod,
   ShipmentStatus,
@@ -54,6 +53,7 @@ export class ShipmentsService {
       include: {
         order: { select: { reference: true, customerName: true, customerPhone: true, codAmountPiastres: true, paymentMethod: true } },
         driver: { select: { fullName: true } },
+        courierAccount: { select: { code: true, name: true } },
         _count: { select: { attempts: true } },
       },
       take: 200,
@@ -66,6 +66,7 @@ export class ShipmentsService {
       include: {
         order: { select: { reference: true, customerName: true, customerPhone: true, codAmountPiastres: true, paymentMethod: true, governorate: true } },
         driver: { select: { id: true, fullName: true } },
+        courierAccount: { select: { code: true, name: true } },
         attempts: { orderBy: { createdAt: 'asc' } },
         pod: true,
       },
@@ -83,14 +84,16 @@ export class ShipmentsService {
       throw new BadRequestException(`Order must be PACKED to dispatch (currently ${order.state})`);
     }
 
-    let courier: CourierName | null = null;
+    let courierId: string | null = null;
     let driverId: string | null = null;
     let trackingNumber: string | null = null;
 
     if (dto.carrierType === CarrierType.COURIER) {
-      if (!dto.courier) throw new BadRequestException('courier is required for COURIER shipments');
-      courier = dto.courier;
-      const res = createCourierShipment(courier, {
+      if (!dto.courierId) throw new BadRequestException('courierId is required for COURIER shipments');
+      const account = await this.prisma.courierAccount.findUnique({ where: { id: dto.courierId } });
+      if (!account || !account.isActive) throw new BadRequestException('Courier account not found or inactive');
+      courierId = account.id;
+      const res = createCourierShipment(account.code, {
         orderReference: order.reference,
         customerName: order.customerName,
         customerPhone: order.customerPhone,
@@ -110,7 +113,7 @@ export class ShipmentsService {
         reference: `SHP-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`,
         orderId: order.id,
         carrierType: dto.carrierType,
-        courier,
+        courierId,
         driverId,
         trackingNumber,
         governorate: order.governorate,
@@ -239,10 +242,12 @@ export class ShipmentsService {
   // ---- coverage / webhook ----
 
   async suggestCarriers(governorate: GovernorateCode) {
-    const couriers = await this.prisma.courierCoverage.findMany({
-      where: { governorate, isServiceable: true },
+    const coverage = await this.prisma.courierCoverage.findMany({
+      where: { governorate, isServiceable: true, courierAccount: { isActive: true } },
       orderBy: { etaDays: 'asc' },
+      include: { courierAccount: { select: { id: true, code: true, name: true } } },
     });
+    const couriers = coverage.map((c) => ({ courierId: c.courierAccount.id, code: c.courierAccount.code, name: c.courierAccount.name, etaDays: c.etaDays }));
     const inHouse = await this.prisma.driverProfile.findMany({
       where: { isAvailable: true, zones: { has: governorate } },
       include: { user: { select: { id: true, fullName: true } } },
@@ -250,10 +255,13 @@ export class ShipmentsService {
     return { couriers, inHouseDrivers: inHouse.map((d) => ({ driverId: d.userId, name: d.user.fullName })) };
   }
 
-  /** Courier status webhook (public). TODO(security): verify per-courier HMAC signature. */
-  async webhook(courier: CourierName, shipmentId: string, payload: { status?: string }) {
-    const s = await this.prisma.shipment.findUnique({ where: { id: shipmentId }, include: { order: { select: { state: true } } } });
-    if (!s || s.courier !== courier) throw new NotFoundException('Shipment not found for courier');
+  /** Courier status webhook (public). Resolved by courier code; HMAC verified in the controller. */
+  async webhook(courierCode: string, shipmentId: string, payload: { status?: string }) {
+    const s = await this.prisma.shipment.findUnique({
+      where: { id: shipmentId },
+      include: { order: { select: { state: true } }, courierAccount: { select: { code: true } } },
+    });
+    if (!s || s.courierAccount?.code !== courierCode) throw new NotFoundException('Shipment not found for courier');
     const mapped = mapCourierStatus(payload.status ?? '');
     if (!mapped) return { ok: true, ignored: payload.status };
 
@@ -261,7 +269,7 @@ export class ShipmentsService {
       await this.prisma.shipment.update({ where: { id: shipmentId }, data: { status: ShipmentStatus.DELIVERED } });
       if (s.order.state === 'DISPATCHED') {
         // system actor (courier callback) — null actor on the COD ledger
-        await this.orders.transitionSystem(s.orderId, 'DELIVERED', `Courier ${courier} webhook`);
+        await this.orders.transitionSystem(s.orderId, 'DELIVERED', `Courier ${courierCode} webhook`);
       }
     } else {
       await this.prisma.shipment.update({ where: { id: shipmentId }, data: { status: ShipmentStatus[mapped] } });

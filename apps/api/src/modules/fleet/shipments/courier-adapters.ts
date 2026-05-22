@@ -1,9 +1,9 @@
 import * as crypto from 'node:crypto';
-import type { CourierName } from '@prisma/client';
 
 // EG: stubbed courier integrations. Each real courier (Aramex/Bosta/R2S/Mylerz/J&T) exposes a
 // create-shipment API returning a tracking number + label. These stubs simulate that contract so
-// the rest of the system is wired correctly; swap in real HTTP clients + credentials per courier.
+// the rest of the system is wired correctly; swap in real HTTP clients (per CourierAccount
+// apiBaseUrl + decrypted credentials) here.
 
 export interface CourierShipmentRequest {
   orderReference: string;
@@ -19,7 +19,7 @@ export interface CourierShipmentResult {
   labelUrl: string;
 }
 
-const PREFIX: Record<CourierName, string> = {
+const PREFIX: Record<string, string> = {
   ARAMEX: 'ARMX',
   BOSTA: 'BOSTA',
   R2S: 'R2S',
@@ -27,9 +27,10 @@ const PREFIX: Record<CourierName, string> = {
   JT: 'JT',
 };
 
-export function createCourierShipment(courier: CourierName, _req: CourierShipmentRequest): CourierShipmentResult {
+export function createCourierShipment(courierCode: string, _req: CourierShipmentRequest): CourierShipmentResult {
   // TODO(integration): replace with the courier's real create-shipment API call (auth, HMAC, retries).
-  const tracking = `${PREFIX[courier]}-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
+  const prefix = PREFIX[courierCode] ?? courierCode.slice(0, 5).toUpperCase();
+  const tracking = `${prefix}-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
   return { trackingNumber: tracking, labelUrl: `/labels/${tracking}.pdf` };
 }
 

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { CarrierType, CourierName, DeliveryFailureReason } from '@prisma/client';
+import { CarrierType, DeliveryFailureReason } from '@prisma/client';
 import { IsEnum, IsOptional, IsString, Length, ValidateIf } from 'class-validator';
 
 export class CreateShipmentDto {
@@ -11,10 +11,10 @@ export class CreateShipmentDto {
   @IsEnum(CarrierType)
   carrierType!: CarrierType;
 
-  @ApiPropertyOptional({ enum: CourierName, description: 'Required when carrierType=COURIER' })
+  @ApiPropertyOptional({ description: 'CourierAccount id; required when carrierType=COURIER' })
   @ValidateIf((o) => o.carrierType === CarrierType.COURIER)
-  @IsEnum(CourierName)
-  courier?: CourierName;
+  @IsString()
+  courierId?: string;
 
   @ApiPropertyOptional({ description: 'Driver user id; required when carrierType=IN_HOUSE' })
   @ValidateIf((o) => o.carrierType === CarrierType.IN_HOUSE)

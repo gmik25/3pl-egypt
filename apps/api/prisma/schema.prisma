@@ -806,14 +806,6 @@ enum CarrierType {
   IN_HOUSE
 }
 
-enum CourierName {
-  ARAMEX
-  BOSTA
-  R2S
-  MYLERZ
-  JT
-}
-
 enum ShipmentStatus {
   PENDING            // created, not yet assigned
   ASSIGNED           // courier label created / driver assigned
@@ -857,7 +849,8 @@ model Shipment {
   order          Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
   carrierType    CarrierType
   /// set when carrierType = COURIER
-  courier        CourierName?
+  courierId      String?
+  courierAccount CourierAccount? @relation(fields: [courierId], references: [id])
   /// set when carrierType = IN_HOUSE
   driverId       String?
   driver         User?          @relation(fields: [driverId], references: [id])
@@ -878,7 +871,7 @@ model Shipment {
   @@index([status])
   @@index([governorate])
   @@index([driverId])
-  @@index([courier])
+  @@index([courierId])
 }
 
 model DeliveryAttempt {
@@ -908,14 +901,32 @@ model ProofOfDelivery {
   capturedAt    DateTime  @default(now())
 }
 
-model CourierCoverage {
-  id           String          @id @default(cuid())
-  courier      CourierName
-  governorate  GovernorateCode
-  etaDays      Int             @default(3)
-  isServiceable Boolean        @default(true)
+/// A carrier integration that can be onboarded at runtime (credentials encrypted at rest).
+model CourierAccount {
+  id                  String            @id @default(cuid())
+  /// short code, e.g. ARAMEX, BOSTA (stable identifier used in labels + i18n)
+  code                String            @unique
+  name                String
+  apiBaseUrl          String?
+  /// AES-256-GCM ciphertext (never returned to clients)
+  apiKeyEncrypted     String?
+  webhookSecretEncrypted String?
+  isActive            Boolean           @default(true)
+  shipments           Shipment[]
+  coverage            CourierCoverage[]
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
 
-  @@unique([courier, governorate])
+model CourierCoverage {
+  id            String          @id @default(cuid())
+  courierId     String
+  courierAccount CourierAccount @relation(fields: [courierId], references: [id], onDelete: Cascade)
+  governorate   GovernorateCode
+  etaDays       Int             @default(3)
+  isServiceable Boolean         @default(true)
+
+  @@unique([courierId, governorate])
   @@index([governorate])
 }
 

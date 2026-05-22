@@ -13,6 +13,8 @@ const envSchema = z.object({
   DEFAULT_TZ: z.string().default('Africa/Cairo'),
   DEFAULT_LOCALE: z.string().default('ar-EG'),
   VAT_RATE_BPS: z.coerce.number().int().nonnegative().default(1400),
+  // Credential encryption key (32 bytes, base64/hex). Dev default below; use a secret manager in prod.
+  INTEGRATIONS_ENC_KEY: z.string().min(32).default('ZGV2LW9ubHktMzJieXRlLWtleS1jaGFuZ2UtbWUtcGxz'),
 });
 
 export type AppEnv = z.infer<typeof envSchema>;

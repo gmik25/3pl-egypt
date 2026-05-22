@@ -6,7 +6,7 @@ import { GOVERNORATES, type GovernorateCode } from '@3pl/shared';
 
 import { listOrders } from '../../api/orders';
 import { createShipment, listShipments, suggestCarriers } from '../../api/fleet';
-import type { CourierName, OrderListItem, ShipmentStatus } from '../../types';
+import type { OrderListItem, ShipmentStatus } from '../../types';
 import { Button, Card, Select, Spinner, Badge } from '../../components/ui';
 import { ShipmentStatusBadge } from '../../components/fleet/ShipmentStatusBadge';
 import { currentLocale } from '../../i18n';
@@ -74,7 +74,7 @@ export default function ShipmentsPage() {
                       <Link to={`/shipments/${s.id}`} className="text-brand-600 hover:underline font-medium" dir="ltr">{s.reference}</Link>
                       {s.trackingNumber && <span className="block text-xs text-slate-400" dir="ltr">{s.trackingNumber}</span>}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{s.carrierType === 'COURIER' ? t(`fleet.couriers.${s.courier}`) : (s.driver?.fullName ?? t('fleet.inHouse'))}</td>
+                    <td className="px-4 py-3 text-slate-600">{s.carrierType === 'COURIER' ? (s.courierAccount?.name ?? '—') : (s.driver?.fullName ?? t('fleet.inHouse'))}</td>
                     <td className="px-4 py-3">{s.order?.customerName}<span className="block text-xs text-slate-400">{govName(s.governorate)}</span></td>
                     <td className="px-4 py-3 text-slate-600">{s.attemptCount}</td>
                     <td className="px-4 py-3"><ShipmentStatusBadge status={s.status} /></td>
@@ -98,7 +98,7 @@ function DispatchRow({ order, govName }: { order: OrderListItem; govName: (c: Go
   const suggestion = useQuery({ queryKey: ['coverage', order.governorate], queryFn: () => suggestCarriers(order.governorate), enabled: open });
 
   const dispatch = useMutation({
-    mutationFn: (input: { carrierType: 'COURIER' | 'IN_HOUSE'; courier?: CourierName; driverId?: string }) =>
+    mutationFn: (input: { carrierType: 'COURIER' | 'IN_HOUSE'; courierId?: string; driverId?: string }) =>
       createShipment({ orderId: order.id, ...input }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['orders', 'packed'] });
@@ -123,8 +123,8 @@ function DispatchRow({ order, govName }: { order: OrderListItem; govName: (c: Go
                 <p className="text-xs text-slate-500 mb-1">{t('fleet.couriersLabel')}</p>
                 <div className="flex flex-wrap gap-2">
                   {suggestion.data?.couriers.map((c) => (
-                    <Button key={c.courier} variant="secondary" disabled={dispatch.isPending} onClick={() => dispatch.mutate({ carrierType: 'COURIER', courier: c.courier })}>
-                      {t(`fleet.couriers.${c.courier}`)} <span className="text-slate-400 ms-1">{c.etaDays}{t('fleet.daysShort')}</span>
+                    <Button key={c.courierId} variant="secondary" disabled={dispatch.isPending} onClick={() => dispatch.mutate({ carrierType: 'COURIER', courierId: c.courierId })}>
+                      {c.name} <span className="text-slate-400 ms-1">{c.etaDays}{t('fleet.daysShort')}</span>
                     </Button>
                   ))}
                 </div>

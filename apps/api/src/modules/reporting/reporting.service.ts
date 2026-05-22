@@ -99,11 +99,11 @@ export class ReportingService {
   async courierScorecard(range: DateRange) {
     const shipments = await this.prisma.shipment.findMany({
       where: { carrierType: 'COURIER', createdAt: { gte: range.from, lte: range.to } },
-      select: { courier: true, status: true, attemptCount: true },
+      select: { status: true, attemptCount: true, courierAccount: { select: { code: true } } },
     });
     const map = new Map<string, { courier: string; total: number; delivered: number; failed: number; returned: number; attempts: number }>();
     for (const s of shipments) {
-      const k = s.courier ?? 'UNKNOWN';
+      const k = s.courierAccount?.code ?? 'UNKNOWN';
       const row = map.get(k) ?? { courier: k, total: 0, delivered: 0, failed: 0, returned: 0, attempts: 0 };
       row.total++;
       row.attempts += s.attemptCount;
