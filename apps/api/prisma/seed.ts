@@ -54,6 +54,9 @@ const PERMISSIONS: { key: string; description: string; roles: UserRoleName[] }[]
   { key: 'customs.write',       description: 'Manage HS codes + import shipments, clear/release', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
   // Reporting & Analytics
   { key: 'reports.read',        description: 'View reports + analytics',        roles: ['SUPER_ADMIN', 'FINANCE', 'WAREHOUSE_MANAGER'] },
+  // Notifications & Communications
+  { key: 'notifications.read',  description: 'View notification feed + alerts',  roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'FINANCE'] },
+  { key: 'notifications.send',  description: 'Send messages, run alert checks, digests', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
 ];
 
 async function main() {

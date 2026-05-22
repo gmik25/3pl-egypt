@@ -719,3 +719,32 @@ export interface InventoryRow {
   quarantineUnits: number;
   damagedUnits: number;
 }
+
+// ---- Notifications ----
+
+export type NotificationChannel = 'SMS' | 'WHATSAPP' | 'EMAIL' | 'INTERNAL';
+export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED';
+export type NotificationCategory =
+  | 'ORDER_UPDATE'
+  | 'DELIVERY'
+  | 'RETURN'
+  | 'LOW_STOCK'
+  | 'SLA_BREACH'
+  | 'FAILED_DELIVERY_SPIKE'
+  | 'DIGEST'
+  | 'OTHER';
+export type SmsProvider = 'VODAFONE' | 'ETISALAT';
+
+export interface Notification {
+  id: string;
+  channel: NotificationChannel;
+  category: NotificationCategory;
+  recipient: string;
+  locale: string;
+  subject: string | null;
+  body: string;
+  status: NotificationStatus;
+  provider: SmsProvider | null;
+  createdAt: string;
+  sentAt: string | null;
+}

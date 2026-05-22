@@ -16,6 +16,7 @@ import {
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuditService } from '../../audit/audit.service';
 import { OrdersService } from '../../orders/orders.service';
+import { NotificationsService } from '../../notifications/notifications.service';
 import type { AuthenticatedUser } from '../../../common/types/authenticated-request';
 import { createCourierShipment, mapCourierStatus } from './courier-adapters';
 import type { CreateShipmentDto } from './dto/shipment-dtos';
@@ -32,11 +33,15 @@ export class ShipmentsService {
     private readonly audit: AuditService,
     private readonly orders: OrdersService,
     private readonly config: ConfigService,
+    private readonly notifications: NotificationsService,
   ) {}
 
-  // EG: stub for the Notifications module — Arabic SMS/WhatsApp on delivery events.
+  // EG: Arabic WhatsApp/SMS to the customer on delivery events. Fire-and-forget so a
+  // notification failure never blocks the delivery flow.
   private notify(phone: string, message: string) {
-    this.logger.log(`[notify→${this.maskPhone(phone)}] ${message}`);
+    void this.notifications
+      .send({ channel: 'WHATSAPP', category: 'DELIVERY', recipient: phone, body: message })
+      .catch((e) => this.logger.warn(`notify failed: ${e instanceof Error ? e.message : e}`));
   }
   private maskPhone(phone: string) {
     return phone.length > 5 ? `${phone.slice(0, 4)}****${phone.slice(-3)}` : '***';

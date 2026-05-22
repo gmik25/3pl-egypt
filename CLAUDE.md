@@ -136,7 +136,7 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 | Returns | ✅ | ✅ | ✅ |
 | Customs | ✅ | ✅ | ✅ |
 | Reporting | ✅ | ✅ | ✅ |
-| Notifications | ⬜ | ⬜ | ⬜ |
+| Notifications | ✅ | ✅ | ✅ |
 | Admin & RBAC | ✅ | ✅ | ✅ |
 
 > Schema rows for Client & Contract and OMS are marked done because their Prisma models

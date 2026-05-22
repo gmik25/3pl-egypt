@@ -1080,3 +1080,60 @@ model ImportShipmentLine {
 
   @@index([importShipmentId])
 }
+
+// ---------- Notifications & Communications ----------
+
+enum NotificationChannel {
+  SMS
+  WHATSAPP
+  EMAIL
+  INTERNAL   // in-app operational alert
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum NotificationCategory {
+  ORDER_UPDATE
+  DELIVERY
+  RETURN
+  LOW_STOCK
+  SLA_BREACH
+  FAILED_DELIVERY_SPIKE
+  DIGEST
+  OTHER
+}
+
+enum SmsProvider {
+  VODAFONE
+  ETISALAT
+}
+
+model Notification {
+  id            String               @id @default(cuid())
+  channel       NotificationChannel
+  category      NotificationCategory @default(OTHER)
+  /// phone (SMS/WhatsApp), email address, or a role/user label for INTERNAL
+  recipient     String
+  locale        String               @default("ar")
+  subject       String?
+  body          String
+  status        NotificationStatus   @default(PENDING)
+  /// SMS provider used, when channel = SMS
+  provider      SmsProvider?
+  /// provider message id (stub)
+  providerRef   String?
+  error         String?
+  relatedEntity String?
+  relatedId     String?
+  createdAt     DateTime             @default(now())
+  sentAt        DateTime?
+
+  @@index([channel])
+  @@index([category])
+  @@index([status])
+  @@index([createdAt])
+}
