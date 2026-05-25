@@ -10,6 +10,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log'],
+    rawBody: true, // needed for HMAC verification of inbound courier/platform webhooks
   });
 
   app.use(helmet());

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs/promises';
@@ -18,6 +18,7 @@ import { OrdersService } from '../../orders/orders.service';
 import { NotificationsService } from '../../notifications/notifications.service';
 import type { AuthenticatedUser } from '../../../common/types/authenticated-request';
 import { createCourierShipment, mapCourierStatus } from './courier-adapters';
+import { decryptSecret, hmacSha256Base64, safeEqual } from '../../../common/crypto/secret-box';
 import type { CreateShipmentDto } from './dto/shipment-dtos';
 
 const MAX_ATTEMPTS = 3;
@@ -255,13 +256,24 @@ export class ShipmentsService {
     return { couriers, inHouseDrivers: inHouse.map((d) => ({ driverId: d.userId, name: d.user.fullName })) };
   }
 
-  /** Courier status webhook (public). Resolved by courier code; HMAC verified in the controller. */
-  async webhook(courierCode: string, shipmentId: string, payload: { status?: string }) {
+  /** Courier status webhook (public). Resolved by courier code; HMAC-verified when the courier has a secret. */
+  async webhook(courierCode: string, shipmentId: string, payload: { status?: string }, rawBody?: Buffer, signature?: string | null) {
     const s = await this.prisma.shipment.findUnique({
       where: { id: shipmentId },
-      include: { order: { select: { state: true } }, courierAccount: { select: { code: true } } },
+      include: { order: { select: { state: true } }, courierAccount: { select: { code: true, webhookSecretEncrypted: true } } },
     });
     if (!s || s.courierAccount?.code !== courierCode) throw new NotFoundException('Shipment not found for courier');
+
+    // EG: verify HMAC only when the courier has a webhook secret configured (onboarded). Built-in
+    // seeded couriers without a secret skip verification (dev) — onboarding a secret enforces it.
+    if (s.courierAccount.webhookSecretEncrypted) {
+      const secret = decryptSecret(s.courierAccount.webhookSecretEncrypted);
+      const expected = hmacSha256Base64(secret, rawBody ?? Buffer.from(JSON.stringify(payload)));
+      if (!signature || !safeEqual(signature, expected)) {
+        throw new UnauthorizedException('Invalid webhook signature');
+      }
+    }
+
     const mapped = mapCourierStatus(payload.status ?? '');
     if (!mapped) return { ok: true, ignored: payload.status };
 

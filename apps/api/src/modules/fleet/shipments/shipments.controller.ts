@@ -9,9 +9,12 @@ import {
   ParseEnumPipe,
   Post,
   Query,
+  Req,
   UploadedFile,
   UseInterceptors,
+  type RawBodyRequest,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CarrierType, GovernorateCode, ShipmentStatus } from '@prisma/client';
@@ -132,7 +135,9 @@ export class ShipmentsController {
     @Param('courierCode') courierCode: string,
     @Param('shipmentId') shipmentId: string,
     @Body() payload: { status?: string },
+    @Req() req: RawBodyRequest<Request>,
   ) {
-    return this.shipments.webhook(courierCode, shipmentId, payload);
+    const signature = (req.headers['x-webhook-signature'] as string | undefined) ?? null;
+    return this.shipments.webhook(courierCode, shipmentId, payload, req.rawBody, signature);
   }
 }

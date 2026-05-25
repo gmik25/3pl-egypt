@@ -296,6 +296,7 @@ model Client {
   returnRequests      ReturnRequest[]
   creditNotes         CreditNote[]
   importShipments     ImportShipment[]
+  storeConnections    StoreConnection[]
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
@@ -928,6 +929,43 @@ model CourierCoverage {
 
   @@unique([courierId, governorate])
   @@index([governorate])
+}
+
+enum StorePlatform {
+  SHOPIFY
+  WOOCOMMERCE
+  SALLA
+  ZID
+}
+
+enum StoreConnectionStatus {
+  PENDING    // OAuth initiated, awaiting callback
+  CONNECTED  // token stored, receiving webhooks
+  REVOKED    // disconnected / uninstalled
+}
+
+/// A seller's e-commerce storefront linked via OAuth. Order webhooks resolve the client by shopDomain.
+model StoreConnection {
+  id                     String                @id @default(cuid())
+  clientId               String
+  client                 Client                @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  platform               StorePlatform
+  /// canonical store host, e.g. acme.myshopify.com / acme.salla.sa (resolves inbound webhooks → client)
+  shopDomain             String                @unique
+  status                 StoreConnectionStatus @default(PENDING)
+  /// AES-256-GCM ciphertext (never returned to clients)
+  accessTokenEncrypted   String?
+  /// per-store secret for verifying inbound webhook HMAC
+  webhookSecretEncrypted String?
+  scopes                 String?
+  /// CSRF nonce echoed back on the OAuth callback
+  oauthState             String?
+  installedAt            DateTime?
+  lastEventAt            DateTime?
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+
+  @@index([clientId])
 }
 
 // ---------- Returns (reverse logistics) ----------

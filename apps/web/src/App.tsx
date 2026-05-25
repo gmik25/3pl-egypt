@@ -35,6 +35,8 @@ import ImportsPage from './pages/customs/ImportsPage';
 import ReportsPage from './pages/ReportsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import OpsDashboardPage from './pages/OpsDashboardPage';
+import CouriersPage from './pages/integrations/CouriersPage';
+import StoresPage from './pages/integrations/StoresPage';
 
 export default function App() {
   return (
@@ -76,6 +78,8 @@ export default function App() {
                   <Route path="/imports" element={<ImportsPage />} />
                   <Route path="/reports" element={<ReportsPage />} />
                   <Route path="/notifications" element={<NotificationsPage />} />
+                  <Route path="/integrations/couriers" element={<CouriersPage />} />
+                  <Route path="/integrations/stores" element={<StoresPage />} />
                   <Route path="/portal" element={<ClientPortalPage />} />
                   <Route path="/mfa" element={<MfaPage />} />
                   <Route path="/audit" element={<AuditPage />} />

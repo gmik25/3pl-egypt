@@ -138,6 +138,11 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 | Reporting | ✅ | ✅ | ✅ |
 | Notifications | ✅ | ✅ | ✅ |
 | Admin & RBAC | ✅ | ✅ | ✅ |
+| Integrations (carrier onboarding + store-connect) | ✅ | ✅ | ✅ |
+
+> Integrations: data-driven `CourierAccount` onboarding (encrypted credentials, per-courier
+> webhook HMAC) + OAuth store-connect for Shopify/Salla/Zid/WooCommerce (credentials-deferred,
+> simulated token exchange in sandbox; inbound order webhooks resolved by domain + HMAC-verified).
 
 > Schema rows for Client & Contract and OMS are marked done because their Prisma models
 > live in the shared `apps/api/prisma/schema.prisma`; their API + UI are still pending.

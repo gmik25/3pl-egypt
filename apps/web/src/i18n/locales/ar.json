@@ -13,7 +13,8 @@
     "previous": "السابق",
     "next": "التالي",
     "noResults": "لا توجد نتائج",
-    "loadError": "تعذّر تحميل البيانات"
+    "loadError": "تعذّر تحميل البيانات",
+    "close": "إغلاق"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -40,7 +41,9 @@
     "users": "المستخدمون",
     "audit": "سجل التدقيق",
     "portal": "حسابي",
-    "mfa": "المصادقة الثنائية"
+    "mfa": "المصادقة الثنائية",
+    "couriers": "شركات الشحن",
+    "stores": "المتاجر"
   },
   "auth": {
     "signIn": "تسجيل الدخول",
@@ -340,7 +343,12 @@
       "PACKING": "التغليف",
       "DISPATCH": "الإرسال"
     },
-    "kinds": { "BIN": "صندوق", "RACK": "رف", "SHELF": "رف علوي", "FLOOR": "أرضية" }
+    "kinds": {
+      "BIN": "صندوق",
+      "RACK": "رف",
+      "SHELF": "رف علوي",
+      "FLOOR": "أرضية"
+    }
   },
   "inventory": {
     "title": "المخزون",
@@ -384,7 +392,11 @@
       "RECEIVED": "مستلم بالكامل",
       "CANCELLED": "ملغي"
     },
-    "inspections": { "PASS": "مقبول", "DAMAGED": "تالف", "REJECTED": "مرفوض" }
+    "inspections": {
+      "PASS": "مقبول",
+      "DAMAGED": "تالف",
+      "REJECTED": "مرفوض"
+    }
   },
   "counting": {
     "title": "الجرد الدوري",
@@ -395,7 +407,11 @@
     "variance": "الفرق",
     "record": "تسجيل",
     "reconcile": "تسوية",
-    "statuses": { "OPEN": "مفتوح", "COUNTED": "تم العد", "RECONCILED": "تمت التسوية" }
+    "statuses": {
+      "OPEN": "مفتوح",
+      "COUNTED": "تم العد",
+      "RECONCILED": "تمت التسوية"
+    }
   },
   "remittance": {
     "title": "توريدات التحصيل (COD)",
@@ -412,7 +428,11 @@
     "reject": "رفض",
     "codByDriver": "التحصيل حسب المندوب / اليوم",
     "day": "اليوم",
-    "statuses": { "PENDING": "قيد الانتظار", "CONFIRMED": "مؤكد", "REJECTED": "مرفوض" }
+    "statuses": {
+      "PENDING": "قيد الانتظار",
+      "CONFIRMED": "مؤكد",
+      "REJECTED": "مرفوض"
+    }
   },
   "wallets": {
     "title": "محافظ العملاء",
@@ -439,8 +459,16 @@
     "reference": "المرجع",
     "markPaid": "تحديد كمدفوع",
     "markFailed": "تحديد كفاشل",
-    "rails": { "INSTAPAY": "إنستاباي", "FAWRY": "فوري", "SWIFT": "تحويل بنكي (SWIFT)" },
-    "statuses": { "PENDING": "قيد الانتظار", "PAID": "مدفوع", "FAILED": "فشل" }
+    "rails": {
+      "INSTAPAY": "إنستاباي",
+      "FAWRY": "فوري",
+      "SWIFT": "تحويل بنكي (SWIFT)"
+    },
+    "statuses": {
+      "PENDING": "قيد الانتظار",
+      "PAID": "مدفوع",
+      "FAILED": "فشل"
+    }
   },
   "invoices": {
     "title": "الفواتير",
@@ -452,7 +480,11 @@
     "issue": "إصدار",
     "viewEta": "عرض مستند ETA",
     "etaNote": "تُنشأ مسودة من رسوم الخدمة للفترة. إرسال/توقيع بوابة ETA منمذج وليس فعليًا.",
-    "statuses": { "DRAFT": "مسودة", "ISSUED": "صادرة", "CANCELLED": "ملغاة" }
+    "statuses": {
+      "DRAFT": "مسودة",
+      "ISSUED": "صادرة",
+      "CANCELLED": "ملغاة"
+    }
   },
   "fleet": {
     "title": "الشحنات",
@@ -494,8 +526,18 @@
       "FAILED": "فشل",
       "RETURNED": "مرتجع"
     },
-    "couriers": { "ARAMEX": "أرامكس", "BOSTA": "بوسطة", "R2S": "R2S", "MYLERZ": "ميلرز", "JT": "J&T" },
-    "podMethods": { "PHOTO": "صورة", "SIGNATURE": "توقيع", "OTP": "رمز OTP" },
+    "couriers": {
+      "ARAMEX": "أرامكس",
+      "BOSTA": "بوسطة",
+      "R2S": "R2S",
+      "MYLERZ": "ميلرز",
+      "JT": "J&T"
+    },
+    "podMethods": {
+      "PHOTO": "صورة",
+      "SIGNATURE": "توقيع",
+      "OTP": "رمز OTP"
+    },
     "failureReasons": {
       "CUSTOMER_UNREACHABLE": "تعذّر الوصول للعميل",
       "ADDRESS_NOT_FOUND": "العنوان غير موجود",
@@ -547,7 +589,10 @@
       "CLOSED": "مغلق",
       "REJECTED": "مرفوض"
     },
-    "dispositions": { "RESELLABLE": "قابل لإعادة البيع", "DAMAGED": "تالف" }
+    "dispositions": {
+      "RESELLABLE": "قابل لإعادة البيع",
+      "DAMAGED": "تالف"
+    }
   },
   "portalReturn": {
     "title": "طلب إرجاع",
@@ -580,8 +625,17 @@
     "digestSent": "تم إرسال الملخص.",
     "category": "الفئة",
     "message": "الرسالة",
-    "channels": { "SMS": "رسالة نصية", "WHATSAPP": "واتساب", "EMAIL": "بريد إلكتروني", "INTERNAL": "داخلي" },
-    "statuses": { "PENDING": "قيد الانتظار", "SENT": "أُرسلت", "FAILED": "فشل" },
+    "channels": {
+      "SMS": "رسالة نصية",
+      "WHATSAPP": "واتساب",
+      "EMAIL": "بريد إلكتروني",
+      "INTERNAL": "داخلي"
+    },
+    "statuses": {
+      "PENDING": "قيد الانتظار",
+      "SENT": "أُرسلت",
+      "FAILED": "فشل"
+    },
     "categories": {
       "ORDER_UPDATE": "تحديث طلب",
       "DELIVERY": "توصيل",
@@ -681,6 +735,72 @@
       "CLEARED": "مُخلّص",
       "RELEASED": "مُفرج عنه",
       "CANCELLED": "ملغي"
+    }
+  },
+  "couriers": {
+    "title": "تكامل شركات الشحن",
+    "subtitle": "ربط شركاء التوصيل وإدارة مفاتيح الـ API ونطاق التغطية.",
+    "onboard": "إضافة شركة شحن",
+    "manage": "إدارة",
+    "code": "الرمز",
+    "name": "الاسم",
+    "credentials": "بيانات الاعتماد",
+    "coverage": "التغطية",
+    "status": "الحالة",
+    "apiKey": "مفتاح API",
+    "webhook": "Webhook",
+    "webhookSecret": "مفتاح Webhook السري",
+    "apiBaseUrl": "رابط API الأساسي",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "configured": "(مُعيَّن)",
+    "connection": "الاتصال",
+    "secretsNote": "تُخزَّن بيانات الاعتماد مشفّرة (AES-256-GCM) ولا تُعرض مرة أخرى.",
+    "rotateNote": "اتركه فارغًا للإبقاء على القيمة الحالية، أو أدخل قيمة جديدة لتغييرها.",
+    "createError": "تعذّرت إضافة شركة الشحن — قد يكون الرمز مستخدمًا بالفعل.",
+    "codeHint": "من 2 إلى 20 حرفًا: A–Z و0–9 وشرطة سفلية.",
+    "testConnection": "اختبار الاتصال",
+    "testOk": "الاتصال ناجح",
+    "testFail": "فشل الاتصال",
+    "coverageMap": "نطاق التوصيل",
+    "saveCoverage": "حفظ التغطية",
+    "etaDays": "المدة (أيام)",
+    "govCount": "{{count}} محافظة",
+    "shipmentCount": "{{count}} شحنة"
+  },
+  "stores": {
+    "title": "ربط المتاجر",
+    "subtitle": "اربط متاجر التجار الإلكترونية لتتدفق الطلبات مباشرةً إلى سير العمل.",
+    "connect": "ربط متجر",
+    "beginOAuth": "بدء التفويض",
+    "disconnect": "فصل",
+    "store": "المتجر",
+    "platform": "المنصة",
+    "client": "التاجر",
+    "shopDomain": "نطاق المتجر",
+    "lastEvent": "آخر طلب",
+    "statusLabel": "الحالة",
+    "domainHint": "أدخل اسم مضيف المتجر فقط، مثل acme.myshopify.com — بدون https://",
+    "connectError": "تعذّر بدء الربط. قد يكون النطاق مرتبطًا بالفعل.",
+    "authorizeTitle": "تفويض الربط",
+    "authorizeHelp": "افتح صفحة التفويض ووافق على الوصول. ستعود إلى هنا بعد الاتصال.",
+    "openAuthorize": "فتح صفحة التفويض",
+    "webhookSecret": "مفتاح توقيع Webhook",
+    "secretOnce": "يُعرض مرة واحدة — احفظه الآن. يجب توقيع طلبات Webhook به.",
+    "simulatedConnect": "وضع التجربة: لا توجد بيانات اعتماد فعلية، لذا تُحاكى عملية تبادل الرمز.",
+    "simulatedNote": "(تجريبي)",
+    "connectedBanner": "تم ربط متجر {{platform}}.",
+    "oauthError": "فشل التفويض: {{reason}}",
+    "platforms": {
+      "SHOPIFY": "شوبيفاي",
+      "WOOCOMMERCE": "ووكومرس",
+      "SALLA": "سلة",
+      "ZID": "زد"
+    },
+    "statuses": {
+      "PENDING": "قيد الانتظار",
+      "CONNECTED": "متصل",
+      "REVOKED": "مفصول"
     }
   }
 }

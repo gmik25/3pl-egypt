@@ -13,7 +13,8 @@
     "previous": "Previous",
     "next": "Next",
     "noResults": "No results",
-    "loadError": "Failed to load data"
+    "loadError": "Failed to load data",
+    "close": "Close"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -40,7 +41,9 @@
     "users": "Users",
     "audit": "Audit log",
     "portal": "My account",
-    "mfa": "Two-factor auth"
+    "mfa": "Two-factor auth",
+    "couriers": "Carriers",
+    "stores": "Stores"
   },
   "auth": {
     "signIn": "Sign in",
@@ -340,7 +343,12 @@
       "PACKING": "Packing",
       "DISPATCH": "Dispatch"
     },
-    "kinds": { "BIN": "Bin", "RACK": "Rack", "SHELF": "Shelf", "FLOOR": "Floor" }
+    "kinds": {
+      "BIN": "Bin",
+      "RACK": "Rack",
+      "SHELF": "Shelf",
+      "FLOOR": "Floor"
+    }
   },
   "inventory": {
     "title": "Inventory",
@@ -384,7 +392,11 @@
       "RECEIVED": "Received",
       "CANCELLED": "Cancelled"
     },
-    "inspections": { "PASS": "Pass", "DAMAGED": "Damaged", "REJECTED": "Rejected" }
+    "inspections": {
+      "PASS": "Pass",
+      "DAMAGED": "Damaged",
+      "REJECTED": "Rejected"
+    }
   },
   "counting": {
     "title": "Cycle counts",
@@ -395,7 +407,11 @@
     "variance": "Variance",
     "record": "Record",
     "reconcile": "Reconcile",
-    "statuses": { "OPEN": "Open", "COUNTED": "Counted", "RECONCILED": "Reconciled" }
+    "statuses": {
+      "OPEN": "Open",
+      "COUNTED": "Counted",
+      "RECONCILED": "Reconciled"
+    }
   },
   "remittance": {
     "title": "COD remittances",
@@ -412,7 +428,11 @@
     "reject": "Reject",
     "codByDriver": "COD by driver / day",
     "day": "Day",
-    "statuses": { "PENDING": "Pending", "CONFIRMED": "Confirmed", "REJECTED": "Rejected" }
+    "statuses": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "REJECTED": "Rejected"
+    }
   },
   "wallets": {
     "title": "Client wallets",
@@ -439,8 +459,16 @@
     "reference": "Reference",
     "markPaid": "Mark paid",
     "markFailed": "Mark failed",
-    "rails": { "INSTAPAY": "InstaPay", "FAWRY": "Fawry", "SWIFT": "SWIFT" },
-    "statuses": { "PENDING": "Pending", "PAID": "Paid", "FAILED": "Failed" }
+    "rails": {
+      "INSTAPAY": "InstaPay",
+      "FAWRY": "Fawry",
+      "SWIFT": "SWIFT"
+    },
+    "statuses": {
+      "PENDING": "Pending",
+      "PAID": "Paid",
+      "FAILED": "Failed"
+    }
   },
   "invoices": {
     "title": "Invoices",
@@ -452,7 +480,11 @@
     "issue": "Issue",
     "viewEta": "View ETA document",
     "etaNote": "Generates a draft from the period's service fees. ETA portal submission/signing is modelled but not live.",
-    "statuses": { "DRAFT": "Draft", "ISSUED": "Issued", "CANCELLED": "Cancelled" }
+    "statuses": {
+      "DRAFT": "Draft",
+      "ISSUED": "Issued",
+      "CANCELLED": "Cancelled"
+    }
   },
   "fleet": {
     "title": "Shipments",
@@ -494,8 +526,18 @@
       "FAILED": "Failed",
       "RETURNED": "Returned"
     },
-    "couriers": { "ARAMEX": "Aramex", "BOSTA": "Bosta", "R2S": "R2S", "MYLERZ": "Mylerz", "JT": "J&T" },
-    "podMethods": { "PHOTO": "Photo", "SIGNATURE": "Signature", "OTP": "OTP" },
+    "couriers": {
+      "ARAMEX": "Aramex",
+      "BOSTA": "Bosta",
+      "R2S": "R2S",
+      "MYLERZ": "Mylerz",
+      "JT": "J&T"
+    },
+    "podMethods": {
+      "PHOTO": "Photo",
+      "SIGNATURE": "Signature",
+      "OTP": "OTP"
+    },
     "failureReasons": {
       "CUSTOMER_UNREACHABLE": "Customer unreachable",
       "ADDRESS_NOT_FOUND": "Address not found",
@@ -547,7 +589,10 @@
       "CLOSED": "Closed",
       "REJECTED": "Rejected"
     },
-    "dispositions": { "RESELLABLE": "Resellable", "DAMAGED": "Damaged" }
+    "dispositions": {
+      "RESELLABLE": "Resellable",
+      "DAMAGED": "Damaged"
+    }
   },
   "portalReturn": {
     "title": "Request a return",
@@ -580,8 +625,17 @@
     "digestSent": "Digest sent.",
     "category": "Category",
     "message": "Message",
-    "channels": { "SMS": "SMS", "WHATSAPP": "WhatsApp", "EMAIL": "Email", "INTERNAL": "Internal" },
-    "statuses": { "PENDING": "Pending", "SENT": "Sent", "FAILED": "Failed" },
+    "channels": {
+      "SMS": "SMS",
+      "WHATSAPP": "WhatsApp",
+      "EMAIL": "Email",
+      "INTERNAL": "Internal"
+    },
+    "statuses": {
+      "PENDING": "Pending",
+      "SENT": "Sent",
+      "FAILED": "Failed"
+    },
     "categories": {
       "ORDER_UPDATE": "Order update",
       "DELIVERY": "Delivery",
@@ -681,6 +735,72 @@
       "CLEARED": "Cleared",
       "RELEASED": "Released",
       "CANCELLED": "Cancelled"
+    }
+  },
+  "couriers": {
+    "title": "Carrier integrations",
+    "subtitle": "Onboard courier partners, manage API credentials and delivery coverage.",
+    "onboard": "Onboard courier",
+    "manage": "Manage",
+    "code": "Code",
+    "name": "Name",
+    "credentials": "Credentials",
+    "coverage": "Coverage",
+    "status": "Status",
+    "apiKey": "API key",
+    "webhook": "Webhook",
+    "webhookSecret": "Webhook secret",
+    "apiBaseUrl": "API base URL",
+    "active": "Active",
+    "inactive": "Inactive",
+    "configured": "(set)",
+    "connection": "Connection",
+    "secretsNote": "Credentials are encrypted at rest (AES-256-GCM) and are never shown again.",
+    "rotateNote": "Leave blank to keep the current secret; enter a value to rotate it.",
+    "createError": "Could not onboard courier — the code may already be in use.",
+    "codeHint": "2–20 chars: A–Z, 0–9, underscore.",
+    "testConnection": "Test connection",
+    "testOk": "Connection OK",
+    "testFail": "Connection failed",
+    "coverageMap": "Delivery coverage",
+    "saveCoverage": "Save coverage",
+    "etaDays": "ETA (days)",
+    "govCount": "{{count}} governorates",
+    "shipmentCount": "{{count}} shipments"
+  },
+  "stores": {
+    "title": "Store connections",
+    "subtitle": "Connect sellers’ e-commerce stores so orders flow straight into the pipeline.",
+    "connect": "Connect store",
+    "beginOAuth": "Begin authorization",
+    "disconnect": "Disconnect",
+    "store": "Store",
+    "platform": "Platform",
+    "client": "Seller",
+    "shopDomain": "Store domain",
+    "lastEvent": "Last order",
+    "statusLabel": "Status",
+    "domainHint": "Enter the bare store host, e.g. acme.myshopify.com — no https://",
+    "connectError": "Could not start the connection. The domain may already be linked.",
+    "authorizeTitle": "Authorize the connection",
+    "authorizeHelp": "Open the authorization page and approve access. You’ll be returned here once connected.",
+    "openAuthorize": "Open authorization page",
+    "webhookSecret": "Webhook signing secret",
+    "secretOnce": "Shown once — store it now. Order webhooks must be signed with it.",
+    "simulatedConnect": "Sandbox mode: no live app credentials are configured, so the token exchange is simulated.",
+    "simulatedNote": "(sandbox)",
+    "connectedBanner": "{{platform}} store connected.",
+    "oauthError": "Authorization failed: {{reason}}",
+    "platforms": {
+      "SHOPIFY": "Shopify",
+      "WOOCOMMERCE": "WooCommerce",
+      "SALLA": "Salla",
+      "ZID": "Zid"
+    },
+    "statuses": {
+      "PENDING": "Pending",
+      "CONNECTED": "Connected",
+      "REVOKED": "Disconnected"
     }
   }
 }

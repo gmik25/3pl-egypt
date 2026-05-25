@@ -57,6 +57,9 @@ const PERMISSIONS: { key: string; description: string; roles: UserRoleName[] }[]
   // Notifications & Communications
   { key: 'notifications.read',  description: 'View notification feed + alerts',  roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER', 'FINANCE'] },
   { key: 'notifications.send',  description: 'Send messages, run alert checks, digests', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
+  // Integrations (carrier onboarding + store-connect)
+  { key: 'integrations.read',   description: 'View courier + store integrations', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
+  { key: 'integrations.write',  description: 'Onboard couriers + manage store connections', roles: ['SUPER_ADMIN', 'WAREHOUSE_MANAGER'] },
 ];
 
 async function main() {

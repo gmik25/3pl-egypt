@@ -771,3 +771,62 @@ export interface OpsOverview {
   couriers: CourierScore[];
   alerts: { lowStock: number; slaBreaches: number; failedSpike: number };
 }
+
+// ---- Integrations: couriers ----
+
+export interface CourierAccount {
+  id: string;
+  code: string;
+  name: string;
+  apiBaseUrl: string | null;
+  isActive: boolean;
+  hasApiKey: boolean;
+  hasWebhookSecret: boolean;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { coverage: number; shipments: number };
+  coverage?: CourierCoverage[];
+}
+
+export interface CourierCoverage {
+  id: string;
+  courierId: string;
+  governorate: GovernorateCode;
+  etaDays: number;
+  isServiceable: boolean;
+}
+
+export interface CourierTestResult {
+  ok: boolean;
+  courier: string;
+  apiBaseUrl: string | null;
+  hasCredentials: boolean;
+  note: string;
+}
+
+export type StorePlatform = 'SHOPIFY' | 'WOOCOMMERCE' | 'SALLA' | 'ZID';
+export type StoreConnectionStatus = 'PENDING' | 'CONNECTED' | 'REVOKED';
+
+export interface StoreConnection {
+  id: string;
+  clientId: string;
+  platform: StorePlatform;
+  shopDomain: string;
+  status: StoreConnectionStatus;
+  hasAccessToken: boolean;
+  hasWebhookSecret: boolean;
+  scopes: string | null;
+  installedAt: string | null;
+  lastEventAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  client?: { id: string; legalName: string };
+}
+
+export interface ConnectStoreResult {
+  id: string;
+  shopDomain: string;
+  authorizeUrl: string;
+  webhookSecret?: string;
+  simulated: boolean;
+}

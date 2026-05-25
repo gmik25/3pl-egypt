@@ -26,6 +26,8 @@ const NAV: NavItem[] = [
   { to: '/cycle-counts', labelKey: 'nav.cycleCounts', permission: 'inventory.read' },
   { to: '/shipments', labelKey: 'nav.shipments', permission: 'fleet.read' },
   { to: '/drivers', labelKey: 'nav.drivers', permission: 'fleet.read' },
+  { to: '/integrations/couriers', labelKey: 'nav.couriers', permission: 'integrations.read' },
+  { to: '/integrations/stores', labelKey: 'nav.stores', permission: 'integrations.read' },
   { to: '/returns', labelKey: 'nav.returns', permission: 'returns.read' },
   { to: '/imports', labelKey: 'nav.imports', permission: 'customs.read' },
   { to: '/hs-codes', labelKey: 'nav.hsCodes', permission: 'customs.read' },

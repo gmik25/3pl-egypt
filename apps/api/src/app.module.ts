@@ -20,6 +20,7 @@ import { CustomsModule } from './modules/customs/customs.module';
 import { ReportingModule } from './modules/reporting/reporting.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { IntegrationsModule } from './modules/integrations/integrations.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { PermissionsGuard } from './modules/auth/guards/permissions.guard';
@@ -48,6 +49,7 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
     ReportingModule,
     NotificationsModule,
     DashboardModule,
+    IntegrationsModule,
   ],
   controllers: [HealthController],
   providers: [

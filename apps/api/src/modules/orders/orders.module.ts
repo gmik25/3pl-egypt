@@ -13,6 +13,6 @@ import { WmsModule } from '../wms/wms.module';
   imports: [WmsModule], // RoutingService consults InventoryService for stock-aware routing
   providers: [OrdersService, RoutingService, OrderValidationService, CodService, IntakeService],
   controllers: [OrdersController, IntakeController],
-  exports: [OrdersService, CodService],
+  exports: [OrdersService, CodService, IntakeService],
 })
 export class OrdersModule {}
