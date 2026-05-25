@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuditAction, StoreConnectionStatus, StorePlatform } from '@prisma/client';
 import { randomBytes } from 'node:crypto';
@@ -91,14 +91,44 @@ export class StoresService {
       state,
     });
 
+    const simulated = !this.clientId(dto.platform);
     return {
       id: conn.id,
       shopDomain,
       authorizeUrl,
       // returned once so a seller can paste it into a manual webhook config
       webhookSecret: existing ? undefined : webhookSecret,
-      simulated: !this.clientId(dto.platform),
+      simulated,
+      // EG: sandbox shortcut — in dev there's no real OAuth app to redirect back, so expose a
+      // direct callback link that completes the (simulated) handshake when clicked.
+      sandboxCallbackUrl: simulated ? `${this.redirectUri(dto.platform)}?state=${state}&code=sandbox_${state.slice(0, 8)}` : undefined,
     };
+  }
+
+  // ---- Portal (seller self-serve): clientId resolved server-side, never trusted from input ----
+
+  private async resolveClientId(userId: string): Promise<string> {
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { clientId: true } });
+    if (!user.clientId) throw new ForbiddenException('This account is not linked to a client');
+    return user.clientId;
+  }
+
+  async listForUser(userId: string) {
+    const clientId = await this.resolveClientId(userId);
+    const rows = await this.prisma.storeConnection.findMany({ where: { clientId }, orderBy: { createdAt: 'desc' } });
+    return rows.map((r) => this.redact(r));
+  }
+
+  async connectForUser(userId: string, input: { platform: StorePlatform; shopDomain: string }) {
+    const clientId = await this.resolveClientId(userId);
+    return this.connect({ clientId, platform: input.platform, shopDomain: input.shopDomain }, userId);
+  }
+
+  async disconnectForUser(userId: string, id: string) {
+    const clientId = await this.resolveClientId(userId);
+    const conn = await this.prisma.storeConnection.findUnique({ where: { id } });
+    if (!conn || conn.clientId !== clientId) throw new NotFoundException('Store connection not found');
+    return this.disconnect(id, userId);
   }
 
   /**
@@ -107,7 +137,8 @@ export class StoresService {
    */
   async handleCallback(platform: StorePlatform, query: { code?: string; state?: string; shop?: string }): Promise<string> {
     const web = this.config.get<string>('webPublicUrl', 'http://localhost:5173');
-    const fail = (reason: string) => `${web}/integrations/stores?error=${encodeURIComponent(reason)}`;
+    // EG: neutral landing reachable by both ops users and CLIENT sellers (not permission-gated).
+    const fail = (reason: string) => `${web}/stores/connected?status=error&reason=${encodeURIComponent(reason)}`;
 
     if (!query.state) return fail('missing_state');
     const conn = await this.prisma.storeConnection.findFirst({ where: { oauthState: query.state, platform } });
@@ -134,7 +165,7 @@ export class StoresService {
         },
       });
       await this.audit.record({ userId: null, action: AuditAction.UPDATE, entity: 'storeConnection', entityId: conn.id, after: { status: 'CONNECTED', simulated: token.simulated } });
-      return `${web}/integrations/stores?connected=${platform}${token.simulated ? '&simulated=1' : ''}`;
+      return `${web}/stores/connected?status=ok&platform=${platform}${token.simulated ? '&simulated=1' : ''}`;
     } catch (e) {
       this.logger.warn(`OAuth callback failed for ${conn.shopDomain}: ${e instanceof Error ? e.message : 'unknown'}`);
       return fail('exchange_failed');

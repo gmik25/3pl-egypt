@@ -41,6 +41,7 @@ const NAV: NavItem[] = [
   { to: '/users', labelKey: 'nav.users', permission: 'users.read' },
   { to: '/audit', labelKey: 'nav.audit', permission: 'audit.read' },
   { to: '/portal', labelKey: 'nav.portal', roles: ['CLIENT'] },
+  { to: '/portal/stores', labelKey: 'nav.myStores', roles: ['CLIENT'] },
   { to: '/mfa', labelKey: 'nav.mfa' },
 ];
 

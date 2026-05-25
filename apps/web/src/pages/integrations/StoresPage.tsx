@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -19,17 +18,9 @@ const STATUS_TONE: Record<StoreConnectionStatus, 'green' | 'amber' | 'red'> = {
 export default function StoresPage() {
   const { t } = useTranslation();
   const qc = useQueryClient();
-  const [params, setParams] = useSearchParams();
   const [showNew, setShowNew] = useState(false);
 
   const stores = useQuery({ queryKey: ['stores'], queryFn: listStores });
-
-  // Banner after the OAuth round-trip lands back on /integrations/stores?connected=…
-  const connected = params.get('connected');
-  const oauthError = params.get('error');
-  useEffect(() => {
-    if (connected || oauthError) void qc.invalidateQueries({ queryKey: ['stores'] });
-  }, [connected, oauthError, qc]);
 
   const disconnect = useMutation({
     mutationFn: (id: string) => disconnectStore(id),
@@ -46,23 +37,10 @@ export default function StoresPage() {
         <Button onClick={() => setShowNew((o) => !o)}>{showNew ? t('common.cancel') : t('stores.connect')}</Button>
       </div>
 
-      {connected && (
-        <Alert tone="green">
-          {t('stores.connectedBanner', { platform: connected })}
-          {params.get('simulated') && <span className="ms-1">{t('stores.simulatedNote')}</span>}
-        </Alert>
-      )}
-      {oauthError && <Alert tone="red">{t('stores.oauthError', { reason: oauthError })}</Alert>}
-
       {showNew && (
         <ConnectForm
-          onConnected={() => {
-            void qc.invalidateQueries({ queryKey: ['stores'] });
-          }}
-          onClose={() => {
-            setShowNew(false);
-            setParams({}, { replace: true });
-          }}
+          onConnected={() => void qc.invalidateQueries({ queryKey: ['stores'] })}
+          onClose={() => setShowNew(false)}
         />
       )}
 
@@ -134,8 +112,9 @@ function ConnectForm({ onConnected, onClose }: { onConnected: () => void; onClos
         <h2 className="text-lg font-semibold">{t('stores.authorizeTitle')}</h2>
         {result.simulated && <Alert tone="amber">{t('stores.simulatedConnect')}</Alert>}
         <p className="text-sm text-slate-600">{t('stores.authorizeHelp')}</p>
-        <a href={result.authorizeUrl} target="_blank" rel="noreferrer">
-          <Button>{t('stores.openAuthorize')}</Button>
+        {/* In sandbox the real platform has no app to redirect back, so offer the completion shortcut. */}
+        <a href={result.sandboxCallbackUrl ?? result.authorizeUrl} target={result.sandboxCallbackUrl ? '_self' : '_blank'} rel="noreferrer">
+          <Button>{result.sandboxCallbackUrl ? t('stores.completeSandbox') : t('stores.openAuthorize')}</Button>
         </a>
         {result.webhookSecret && (
           <div className="space-y-1">

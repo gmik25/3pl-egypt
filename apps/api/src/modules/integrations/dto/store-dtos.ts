@@ -2,11 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { StorePlatform } from '@prisma/client';
 import { IsEnum, IsString, Length, Matches } from 'class-validator';
 
-export class ConnectStoreDto {
-  @ApiProperty()
-  @IsString()
-  clientId!: string;
-
+export class PortalConnectStoreDto {
   @ApiProperty({ enum: StorePlatform })
   @IsEnum(StorePlatform)
   platform!: StorePlatform;
@@ -16,4 +12,10 @@ export class ConnectStoreDto {
   @Matches(/^[a-z0-9.-]{3,120}$/i, { message: 'shopDomain must be a bare host, e.g. acme.myshopify.com' })
   @Length(3, 120)
   shopDomain!: string;
+}
+
+export class ConnectStoreDto extends PortalConnectStoreDto {
+  @ApiProperty()
+  @IsString()
+  clientId!: string;
 }

@@ -43,7 +43,8 @@
     "portal": "حسابي",
     "mfa": "المصادقة الثنائية",
     "couriers": "شركات الشحن",
-    "stores": "المتاجر"
+    "stores": "المتاجر",
+    "myStores": "متاجري"
   },
   "auth": {
     "signIn": "تسجيل الدخول",
@@ -801,6 +802,48 @@
       "PENDING": "قيد الانتظار",
       "CONNECTED": "متصل",
       "REVOKED": "مفصول"
+    },
+    "completeSandbox": "إكمال الربط التجريبي"
+  },
+  "myStores": {
+    "title": "متاجري",
+    "subtitle": "اربط متجرك الإلكتروني لتتدفق الطلبات مباشرةً إلى المستودع.",
+    "connect": "ربط متجر",
+    "beginOAuth": "بدء التفويض",
+    "disconnect": "فصل",
+    "store": "المتجر",
+    "platform": "المنصة",
+    "shopDomain": "نطاق المتجر",
+    "lastEvent": "آخر طلب",
+    "statusLabel": "الحالة",
+    "empty": "لا توجد متاجر مرتبطة بعد. اربط متجرًا لتبدأ باستقبال الطلبات تلقائيًا.",
+    "domainHint": "أدخل اسم مضيف متجرك، مثل my-store.myshopify.com — بدون https://",
+    "connectError": "تعذّر بدء الربط. قد يكون النطاق مرتبطًا بالفعل.",
+    "authorizeTitle": "تفويض الربط",
+    "authorizeHelp": "وافق على الوصول من منصتك. ستعود إلى هنا بعد الاتصال.",
+    "openAuthorize": "فتح صفحة التفويض",
+    "completeSandbox": "إكمال الربط التجريبي",
+    "simulatedConnect": "وضع التجربة: لا توجد بيانات اعتماد فعلية، لذا يُحاكى الربط.",
+    "webhookSecret": "مفتاح توقيع Webhook",
+    "secretOnce": "يُعرض مرة واحدة — احتفظ به. تُوقَّع طلبات متجرك به.",
+    "platforms": {
+      "SHOPIFY": "شوبيفاي",
+      "WOOCOMMERCE": "ووكومرس",
+      "SALLA": "سلة",
+      "ZID": "زد"
+    },
+    "statuses": {
+      "PENDING": "قيد الانتظار",
+      "CONNECTED": "متصل",
+      "REVOKED": "مفصول"
     }
+  },
+  "storeConnected": {
+    "okTitle": "تم ربط المتجر",
+    "okBody": "تم ربط متجر {{platform}}. ستصل الطلبات الجديدة تلقائيًا.",
+    "simulated": "وضع التجربة — تمت محاكاة تبادل الرمز.",
+    "failTitle": "فشل الربط",
+    "failBody": "تعذّر إكمال الربط: {{reason}}",
+    "back": "العودة إلى المتاجر"
   }
 }

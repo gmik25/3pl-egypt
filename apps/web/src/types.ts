@@ -829,4 +829,6 @@ export interface ConnectStoreResult {
   authorizeUrl: string;
   webhookSecret?: string;
   simulated: boolean;
+  /** Present only in sandbox (deferred credentials): completes the simulated handshake when opened. */
+  sandboxCallbackUrl?: string;
 }

@@ -43,7 +43,8 @@
     "portal": "My account",
     "mfa": "Two-factor auth",
     "couriers": "Carriers",
-    "stores": "Stores"
+    "stores": "Stores",
+    "myStores": "My stores"
   },
   "auth": {
     "signIn": "Sign in",
@@ -801,6 +802,48 @@
       "PENDING": "Pending",
       "CONNECTED": "Connected",
       "REVOKED": "Disconnected"
+    },
+    "completeSandbox": "Complete sandbox connection"
+  },
+  "myStores": {
+    "title": "My stores",
+    "subtitle": "Connect your online store so orders flow straight to the warehouse.",
+    "connect": "Connect a store",
+    "beginOAuth": "Begin authorization",
+    "disconnect": "Disconnect",
+    "store": "Store",
+    "platform": "Platform",
+    "shopDomain": "Store domain",
+    "lastEvent": "Last order",
+    "statusLabel": "Status",
+    "empty": "No stores connected yet. Connect one to start receiving orders automatically.",
+    "domainHint": "Enter your store host, e.g. my-store.myshopify.com — no https://",
+    "connectError": "Could not start the connection. The domain may already be linked.",
+    "authorizeTitle": "Authorize the connection",
+    "authorizeHelp": "Approve access on your platform. You will be returned here once connected.",
+    "openAuthorize": "Open authorization page",
+    "completeSandbox": "Complete sandbox connection",
+    "simulatedConnect": "Sandbox mode: live credentials aren’t configured, so the connection is simulated.",
+    "webhookSecret": "Webhook signing secret",
+    "secretOnce": "Shown once — keep it safe. Your store’s order webhooks are signed with it.",
+    "platforms": {
+      "SHOPIFY": "Shopify",
+      "WOOCOMMERCE": "WooCommerce",
+      "SALLA": "Salla",
+      "ZID": "Zid"
+    },
+    "statuses": {
+      "PENDING": "Pending",
+      "CONNECTED": "Connected",
+      "REVOKED": "Disconnected"
     }
+  },
+  "storeConnected": {
+    "okTitle": "Store connected",
+    "okBody": "Your {{platform}} store is connected. New orders will arrive automatically.",
+    "simulated": "Sandbox mode — the token exchange was simulated.",
+    "failTitle": "Connection failed",
+    "failBody": "We could not complete the connection: {{reason}}",
+    "back": "Back to stores"
   }
 }
