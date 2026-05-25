@@ -143,9 +143,12 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 > Integrations: data-driven `CourierAccount` onboarding (encrypted credentials, per-courier
 > webhook HMAC) + OAuth store-connect for Shopify/Salla/Zid/WooCommerce (credentials-deferred,
 > simulated token exchange in sandbox; inbound order webhooks resolved by domain + HMAC-verified)
-> + ops & seller self-serve store management. Two-way sync: inbound orders → OMS, and **outbound
-> fulfillment push** (us → store) on dispatch/delivery via a BullMQ queue (retries + backoff),
-> recorded per-shipment (`storeSyncStatus`); Shopify wired live, others stubbed; sandbox-simulated.
+> + ops & seller self-serve store management. Two-way sync: **inbound** — on connect we auto-register
+> order webhooks on the platform + queue a historical **backfill** (BullMQ), then live orders arrive
+> by HMAC-verified webhook → OMS; **outbound** — fulfillment/tracking push (us → store) on
+> dispatch/delivery via BullMQ (retries + backoff), recorded per-shipment (`storeSyncStatus`).
+> Shopify wired live, others stubbed; sandbox-simulated. Inbound HMAC accepts the platform app
+> secret (live) or the per-store secret (sandbox/manual).
 
 > Schema rows for Client & Contract and OMS are marked done because their Prisma models
 > live in the shared `apps/api/prisma/schema.prisma`; their API + UI are still pending.

@@ -70,3 +70,8 @@ export async function disconnectStore(id: string): Promise<StoreConnection> {
   const { data } = await api.post<StoreConnection>(`/integrations/stores/${id}/disconnect`, {});
   return data;
 }
+
+export async function resubscribeStore(id: string): Promise<{ topics: string[]; simulated: boolean; backfillQueued: boolean }> {
+  const { data } = await api.post<{ topics: string[]; simulated: boolean; backfillQueued: boolean }>(`/integrations/stores/${id}/resubscribe`, {});
+  return data;
+}

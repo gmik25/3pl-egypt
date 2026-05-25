@@ -50,6 +50,14 @@ export class StoresController {
     return this.stores.disconnect(id, actor.id);
   }
 
+  @Post(':id/resubscribe')
+  @ApiBearerAuth()
+  @RequirePermissions('integrations.write')
+  @ApiOperation({ summary: 'Re-register order webhooks + re-queue a historical backfill' })
+  resubscribe(@Param('id') id: string) {
+    return this.stores.resubscribe(id);
+  }
+
   // EG: OAuth callback hit by the platform's browser redirect — Public, then 302 back to the web app.
   @Public()
   @Get('callback/:platform')

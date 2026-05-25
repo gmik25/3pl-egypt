@@ -821,8 +821,10 @@ export interface StoreConnection {
   hasAccessToken: boolean;
   hasWebhookSecret: boolean;
   scopes: string | null;
+  webhookTopics: string[];
   installedAt: string | null;
   lastEventAt: string | null;
+  lastBackfillAt: string | null;
   createdAt: string;
   updatedAt: string;
   client?: { id: string; legalName: string };

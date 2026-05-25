@@ -803,7 +803,12 @@
       "CONNECTED": "Connected",
       "REVOKED": "Disconnected"
     },
-    "completeSandbox": "Complete sandbox connection"
+    "completeSandbox": "Complete sandbox connection",
+    "autoSync": "Auto-sync",
+    "resubscribe": "Resync setup",
+    "topicsCount": "{{count}} webhooks",
+    "backfilledAt": "backfilled {{date}}",
+    "noBackfill": "backfill pending"
   },
   "myStores": {
     "title": "My stores",

@@ -8,6 +8,8 @@ import { AuditService } from '../audit/audit.service';
 import { IntakeService } from '../orders/intake/intake.service';
 import { decryptSecret, encryptSecret, hmacSha256Base64, safeEqual } from '../../common/crypto/secret-box';
 import { buildAuthorizeUrl, exchangeCodeForToken, PLATFORM_INTAKE } from './store-oauth';
+import { registerWebhooks } from './store-ingest';
+import { StoreBackfillProducer } from './store-backfill.producer';
 import type { ConnectStoreDto } from './dto/store-dtos';
 
 @Injectable()
@@ -19,6 +21,7 @@ export class StoresService {
     private readonly audit: AuditService,
     private readonly config: ConfigService,
     private readonly intake: IntakeService,
+    private readonly backfill: StoreBackfillProducer,
   ) {}
 
   // EG: never return ciphertext — only whether a credential is configured.
@@ -165,11 +168,42 @@ export class StoresService {
         },
       });
       await this.audit.record({ userId: null, action: AuditAction.UPDATE, entity: 'storeConnection', entityId: conn.id, after: { status: 'CONNECTED', simulated: token.simulated } });
+
+      // Zero-touch inbound: register order webhooks on the platform, then queue a historical backfill.
+      await this.subscribeWebhooks(conn.id, platform, conn.shopDomain, token.accessToken);
+      void this.backfill.enqueueBackfill(conn.id);
+
       return `${web}/stores/connected?status=ok&platform=${platform}${token.simulated ? '&simulated=1' : ''}`;
     } catch (e) {
       this.logger.warn(`OAuth callback failed for ${conn.shopDomain}: ${e instanceof Error ? e.message : 'unknown'}`);
       return fail('exchange_failed');
     }
+  }
+
+  /** Register order webhooks on the platform and record the subscribed topics (best-effort). */
+  private async subscribeWebhooks(connId: string, platform: StorePlatform, shopDomain: string, accessToken: string) {
+    try {
+      const callbackUrl = `${this.config.get<string>('appPublicUrl', 'http://localhost:3001')}/api/integrations/stores/webhook/${platform}`;
+      const res = await registerWebhooks({ platform, shopDomain, accessToken, callbackUrl });
+      await this.prisma.storeConnection.update({ where: { id: connId }, data: { webhookTopics: res.topics } });
+      return res;
+    } catch (e) {
+      this.logger.warn(`webhook subscribe failed for ${shopDomain}: ${e instanceof Error ? e.message : 'unknown'}`);
+      return null;
+    }
+  }
+
+  /** Ops action: re-register webhooks + re-queue a backfill for an already-connected store. */
+  async resubscribe(id: string) {
+    const conn = await this.prisma.storeConnection.findUnique({ where: { id } });
+    if (!conn) throw new NotFoundException('Store connection not found');
+    if (conn.status !== StoreConnectionStatus.CONNECTED || !conn.accessTokenEncrypted) {
+      throw new BadRequestException('Store is not connected');
+    }
+    const accessToken = decryptSecret(conn.accessTokenEncrypted);
+    const res = await this.subscribeWebhooks(conn.id, conn.platform, conn.shopDomain, accessToken);
+    await this.backfill.enqueueBackfill(conn.id);
+    return { topics: res?.topics ?? [], simulated: res?.simulated ?? true, backfillQueued: true };
   }
 
   async disconnect(id: string, actorId: string | null) {
@@ -200,12 +234,16 @@ export class StoresService {
     if (!conn || conn.platform !== platform) throw new NotFoundException('No store connection for this domain');
     if (conn.status !== StoreConnectionStatus.CONNECTED) throw new UnauthorizedException('Store connection is not active');
 
-    if (conn.webhookSecretEncrypted) {
-      const secret = decryptSecret(conn.webhookSecretEncrypted);
-      const expected = hmacSha256Base64(secret, rawBody ?? Buffer.from(JSON.stringify(payload)));
-      if (!signature || !safeEqual(signature, expected)) {
-        throw new UnauthorizedException('Invalid webhook signature');
-      }
+    // EG: accept either the platform app secret (how Shopify/Salla/Zid sign live deliveries) or the
+    // per-store secret we generated (sandbox / manual setups). Skip only when neither is configured.
+    const body = rawBody ?? Buffer.from(JSON.stringify(payload));
+    const secrets: string[] = [];
+    const appSecret = this.clientSecret(platform);
+    if (appSecret) secrets.push(appSecret);
+    if (conn.webhookSecretEncrypted) secrets.push(decryptSecret(conn.webhookSecretEncrypted));
+    if (secrets.length) {
+      const ok = !!signature && secrets.some((sec) => safeEqual(signature, hmacSha256Base64(sec, body)));
+      if (!ok) throw new UnauthorizedException('Invalid webhook signature');
     }
 
     const result = await this.intake.ingestWebhook(PLATFORM_INTAKE[platform], conn.clientId, payload, conn.id);

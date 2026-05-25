@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { listClients } from '../../api/clients';
-import { connectStore, disconnectStore, listStores } from '../../api/integrations';
+import { connectStore, disconnectStore, listStores, resubscribeStore } from '../../api/integrations';
 import type { ConnectStoreResult, StoreConnectionStatus, StorePlatform } from '../../types';
 import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
 
@@ -25,6 +25,10 @@ export default function StoresPage() {
   const disconnect = useMutation({
     mutationFn: (id: string) => disconnectStore(id),
     onSuccess: () => void qc.invalidateQueries({ queryKey: ['stores'] }),
+  });
+  const resubscribe = useMutation({
+    mutationFn: (id: string) => resubscribeStore(id),
+    onSuccess: () => setTimeout(() => void qc.invalidateQueries({ queryKey: ['stores'] }), 1200),
   });
 
   return (
@@ -55,7 +59,7 @@ export default function StoresPage() {
                   <th className="text-start font-medium px-4 py-3">{t('stores.store')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('stores.platform')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('stores.client')}</th>
-                  <th className="text-start font-medium px-4 py-3">{t('stores.lastEvent')}</th>
+                  <th className="text-start font-medium px-4 py-3">{t('stores.autoSync')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('stores.statusLabel')}</th>
                   <th className="px-4 py-3" />
                 </tr>
@@ -66,9 +70,23 @@ export default function StoresPage() {
                     <td className="px-4 py-3 font-medium" dir="ltr">{s.shopDomain}</td>
                     <td className="px-4 py-3">{t(`stores.platforms.${s.platform}`)}</td>
                     <td className="px-4 py-3 text-slate-600">{s.client?.legalName ?? '—'}</td>
-                    <td className="px-4 py-3 text-slate-500">{s.lastEventAt ? new Date(s.lastEventAt).toLocaleString() : '—'}</td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {s.webhookTopics.length > 0 ? (
+                        <>
+                          <Badge tone="blue">{t('stores.topicsCount', { count: s.webhookTopics.length })}</Badge>
+                          <span className="block text-xs text-slate-400 mt-0.5">
+                            {s.lastBackfillAt ? t('stores.backfilledAt', { date: new Date(s.lastBackfillAt).toLocaleDateString() }) : t('stores.noBackfill')}
+                          </span>
+                        </>
+                      ) : <span className="text-slate-400">—</span>}
+                    </td>
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[s.status]}>{t(`stores.statuses.${s.status}`)}</Badge></td>
-                    <td className="px-4 py-3 text-end">
+                    <td className="px-4 py-3 text-end whitespace-nowrap">
+                      {s.status === 'CONNECTED' && (
+                        <Button variant="secondary" className="me-2" disabled={resubscribe.isPending} onClick={() => resubscribe.mutate(s.id)}>
+                          {t('stores.resubscribe')}
+                        </Button>
+                      )}
                       {s.status !== 'REVOKED' && (
                         <Button variant="danger" disabled={disconnect.isPending} onClick={() => disconnect.mutate(s.id)}>
                           {t('stores.disconnect')}

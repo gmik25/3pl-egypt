@@ -803,7 +803,12 @@
       "CONNECTED": "متصل",
       "REVOKED": "مفصول"
     },
-    "completeSandbox": "إكمال الربط التجريبي"
+    "completeSandbox": "إكمال الربط التجريبي",
+    "autoSync": "المزامنة التلقائية",
+    "resubscribe": "إعادة الإعداد",
+    "topicsCount": "{{count}} خطافات",
+    "backfilledAt": "تم السحب {{date}}",
+    "noBackfill": "السحب قيد الانتظار"
   },
   "myStores": {
     "title": "متاجري",
