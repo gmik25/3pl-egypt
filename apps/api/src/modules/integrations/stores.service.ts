@@ -208,7 +208,7 @@ export class StoresService {
       }
     }
 
-    const result = await this.intake.ingestWebhook(PLATFORM_INTAKE[platform], conn.clientId, payload);
+    const result = await this.intake.ingestWebhook(PLATFORM_INTAKE[platform], conn.clientId, payload, conn.id);
     await this.prisma.storeConnection.update({ where: { id: conn.id }, data: { lastEventAt: new Date() } });
     return result;
   }

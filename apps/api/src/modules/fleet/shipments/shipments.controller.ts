@@ -125,6 +125,14 @@ export class ShipmentsController {
     return this.shipments.capturePodFile(id, 'SIGNATURE', file, dto.recipientName, actor);
   }
 
+  @Post('shipments/:id/resync-store')
+  @ApiBearerAuth()
+  @RequirePermissions('integrations.write')
+  @ApiOperation({ summary: 'Re-queue the outbound fulfillment push to the originating store' })
+  resyncStore(@Param('id') id: string) {
+    return this.shipments.resyncStore(id);
+  }
+
   // ---- Courier webhook (public) ----
 
   @Public()

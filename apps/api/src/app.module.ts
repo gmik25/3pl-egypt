@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { BullModule } from '@nestjs/bullmq';
 
 import { configuration, validateEnv } from './config/configuration';
 import { PrismaModule } from './prisma/prisma.module';
@@ -34,6 +35,19 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
       validate: validateEnv,
     }),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const url = new URL(config.get<string>('redisUrl', 'redis://localhost:6379'));
+        return {
+          connection: {
+            host: url.hostname,
+            port: Number(url.port || 6379),
+            password: url.password || undefined,
+          },
+        };
+      },
+    }),
     PrismaModule,
     AuditModule,
     AuthModule,

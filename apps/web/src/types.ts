@@ -538,6 +538,10 @@ export interface ShipmentListItem {
   governorate: GovernorateCode;
   attemptCount: number;
   scheduledFor: string | null;
+  storeSyncStatus: StoreSyncStatus;
+  storeFulfillmentId: string | null;
+  storeSyncedAt: string | null;
+  storeSyncError: string | null;
   createdAt: string;
   order?: { reference: string; customerName: string; customerPhone: string; codAmountPiastres: number | null; paymentMethod: PaymentMethod };
   driver?: { fullName: string } | null;
@@ -806,6 +810,7 @@ export interface CourierTestResult {
 
 export type StorePlatform = 'SHOPIFY' | 'WOOCOMMERCE' | 'SALLA' | 'ZID';
 export type StoreConnectionStatus = 'PENDING' | 'CONNECTED' | 'REVOKED';
+export type StoreSyncStatus = 'NOT_APPLICABLE' | 'PENDING' | 'SYNCED' | 'FAILED';
 
 export interface StoreConnection {
   id: string;

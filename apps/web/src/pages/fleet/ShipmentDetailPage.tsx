@@ -11,15 +11,23 @@ import {
   markOutForDelivery,
   recordFailure,
   requestPodOtp,
+  resyncShipmentStore,
   verifyPodOtp,
 } from '../../api/fleet';
-import type { DeliveryFailureReason } from '../../types';
+import type { DeliveryFailureReason, StoreSyncStatus } from '../../types';
 import { useAuthStore } from '../../stores/auth.store';
 import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
 import { ShipmentStatusBadge } from '../../components/fleet/ShipmentStatusBadge';
 import { currentLocale } from '../../i18n';
 
 const FAIL_REASONS: DeliveryFailureReason[] = ['CUSTOMER_UNREACHABLE', 'ADDRESS_NOT_FOUND', 'CUSTOMER_REFUSED', 'POSTPONED', 'OTHER'];
+
+const SYNC_TONE: Record<StoreSyncStatus, 'green' | 'amber' | 'red' | 'slate'> = {
+  SYNCED: 'green',
+  PENDING: 'amber',
+  FAILED: 'red',
+  NOT_APPLICABLE: 'slate',
+};
 
 export default function ShipmentDetailPage() {
   const { t } = useTranslation();
@@ -28,6 +36,7 @@ export default function ShipmentDetailPage() {
   const locale = currentLocale();
   const egpLoc = locale === 'ar' ? 'ar-EG' : 'en-EG';
   const canDeliver = useAuthStore((s) => s.hasPermission('delivery.execute'));
+  const canResync = useAuthStore((s) => s.hasPermission('integrations.write'));
   const photoRef = useRef<HTMLInputElement>(null);
   const sigRef = useRef<HTMLInputElement>(null);
 
@@ -47,6 +56,7 @@ export default function ShipmentDetailPage() {
   const verOtp = useMutation({ mutationFn: () => verifyPodOtp(id!, otp, recipient || undefined), onSuccess: () => { setOtp(''); setDevCode(null); setError(null); refresh(); }, onError: onErr });
   const podPhoto = useMutation({ mutationFn: (f: File) => capturePodPhoto(id!, f, recipient || undefined), onSuccess: () => { setError(null); refresh(); }, onError: onErr });
   const podSig = useMutation({ mutationFn: (f: File) => capturePodSignature(id!, f, recipient || undefined), onSuccess: () => { setError(null); refresh(); }, onError: onErr });
+  const resync = useMutation({ mutationFn: () => resyncShipmentStore(id!), onSuccess: () => { setError(null); setTimeout(refresh, 1200); }, onError: onErr });
 
   if (shipment.isLoading || !shipment.data) return <Spinner />;
   const s = shipment.data;
@@ -76,6 +86,26 @@ export default function ShipmentDetailPage() {
           )}
         </dl>
       </Card>
+
+      {/* Store fulfillment sync (only for store-originated orders) */}
+      {s.storeSyncStatus !== 'NOT_APPLICABLE' && (
+        <Card className="p-6">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <h2 className="text-lg font-semibold">{t('storeSync.title')}</h2>
+            {canResync && (
+              <Button variant="secondary" onClick={() => resync.mutate()} disabled={resync.isPending}>
+                {resync.isPending ? t('common.pleaseWait') : t('storeSync.resync')}
+              </Button>
+            )}
+          </div>
+          <div className="mt-3 flex items-center gap-2 text-sm flex-wrap">
+            <Badge tone={SYNC_TONE[s.storeSyncStatus]}>{t(`storeSync.statuses.${s.storeSyncStatus}`)}</Badge>
+            {s.storeSyncedAt && <span className="text-slate-400">{fmtDate(s.storeSyncedAt)}</span>}
+            {s.storeFulfillmentId && <span className="text-slate-500" dir="ltr">#{s.storeFulfillmentId}</span>}
+          </div>
+          {s.storeSyncError && <p className="mt-2 text-xs text-slate-500">{s.storeSyncError}</p>}
+        </Card>
+      )}
 
       {/* Actions */}
       {canDeliver && isOpen && (

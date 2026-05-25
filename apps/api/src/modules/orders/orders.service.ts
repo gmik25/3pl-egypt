@@ -29,6 +29,7 @@ interface PersistInput {
   clientId: string;
   warehouseId?: string;
   externalRef?: string | null;
+  storeConnectionId?: string | null;
   intakeSource: IntakeSource;
   intakePayload?: Prisma.InputJsonValue;
   customerName: string;
@@ -106,11 +107,13 @@ export class OrdersService {
     source: IntakeSource,
     payload: Prisma.InputJsonValue,
     actorId: string | null,
+    storeConnectionId?: string,
   ) {
     return this.persist(
       {
         clientId,
         externalRef: n.externalRef,
+        storeConnectionId: storeConnectionId ?? null,
         intakeSource: source,
         intakePayload: payload,
         customerName: n.customerName,
@@ -167,6 +170,7 @@ export class OrdersService {
         intakeSource: input.intakeSource,
         intakePayload: input.intakePayload,
         externalRef: input.externalRef,
+        storeConnectionId: input.storeConnectionId ?? null,
         state: OrderState.PENDING,
         customerName: input.customerName,
         customerPhone: input.customerPhone,

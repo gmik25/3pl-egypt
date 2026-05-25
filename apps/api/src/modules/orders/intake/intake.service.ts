@@ -17,10 +17,10 @@ export class IntakeService {
   constructor(private readonly orders: OrdersService) {}
 
   /** Webhook from an e-commerce platform. clientId identifies which seller the store belongs to. */
-  async ingestWebhook(source: IntakeSource, clientId: string, payload: Record<string, unknown>) {
+  async ingestWebhook(source: IntakeSource, clientId: string, payload: Record<string, unknown>, storeConnectionId?: string) {
     const normalized = normalizeWebhook(source, payload);
-    // store the raw payload for traceability/debugging
-    return this.orders.createFromIntake(clientId, normalized, source, payload as never, null);
+    // store the raw payload for traceability/debugging + the store link for outbound sync
+    return this.orders.createFromIntake(clientId, normalized, source, payload as never, null, storeConnectionId);
   }
 
   /**

@@ -19,6 +19,7 @@ import { NotificationsService } from '../../notifications/notifications.service'
 import type { AuthenticatedUser } from '../../../common/types/authenticated-request';
 import { createCourierShipment, mapCourierStatus } from './courier-adapters';
 import { decryptSecret, hmacSha256Base64, safeEqual } from '../../../common/crypto/secret-box';
+import { StoreSyncProducer } from '../../integrations/store-sync.producer';
 import type { CreateShipmentDto } from './dto/shipment-dtos';
 
 const MAX_ATTEMPTS = 3;
@@ -34,6 +35,7 @@ export class ShipmentsService {
     private readonly orders: OrdersService,
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
+    private readonly storeSync: StoreSyncProducer,
   ) {}
 
   // EG: Arabic WhatsApp/SMS to the customer on delivery events. Fire-and-forget so a
@@ -124,6 +126,9 @@ export class ShipmentsService {
 
     // Drive the OMS order to DISPATCHED.
     await this.orders.transition(order.id, 'DISPATCHED', `Shipment ${shipment.reference}`, actor);
+
+    // Push fulfillment + tracking back to the originating store (no-op for CSV/manual orders).
+    void this.storeSync.enqueueFulfillment(shipment.id, 'DISPATCHED');
 
     await this.audit.record({ userId: actor.id, action: AuditAction.CREATE, entity: 'shipment', entityId: shipment.id, after: { reference: shipment.reference, carrierType: dto.carrierType } });
     return shipment;
@@ -235,9 +240,19 @@ export class ShipmentsService {
     if (s.order.state === 'DISPATCHED') {
       await this.orders.transition(s.orderId, 'DELIVERED', `POD ${pod.method}`, actor);
     }
+    void this.storeSync.enqueueFulfillment(id, 'DELIVERED');
     this.notify(s.order.customerPhone, 'تم تسليم طلبك بنجاح. شكرًا لك.');
     await this.audit.record({ userId: actor.id, action: AuditAction.STATE_TRANSITION, entity: 'shipment', entityId: id, after: { status: 'DELIVERED', pod: pod.method } });
     return this.getById(id);
+  }
+
+  /** Ops action: re-queue the outbound store fulfillment push (e.g. after a FAILED sync). */
+  async resyncStore(id: string) {
+    const s = await this.prisma.shipment.findUnique({ where: { id }, select: { id: true, status: true } });
+    if (!s) throw new NotFoundException('Shipment not found');
+    const event = s.status === ShipmentStatus.DELIVERED ? 'DELIVERED' : 'DISPATCHED';
+    await this.storeSync.enqueueFulfillment(id, event);
+    return { queued: true, event };
   }
 
   // ---- coverage / webhook ----
@@ -283,6 +298,7 @@ export class ShipmentsService {
         // system actor (courier callback) — null actor on the COD ledger
         await this.orders.transitionSystem(s.orderId, 'DELIVERED', `Courier ${courierCode} webhook`);
       }
+      void this.storeSync.enqueueFulfillment(shipmentId, 'DELIVERED');
     } else {
       await this.prisma.shipment.update({ where: { id: shipmentId }, data: { status: ShipmentStatus[mapped] } });
     }

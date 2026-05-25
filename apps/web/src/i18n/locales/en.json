@@ -845,5 +845,15 @@
     "failTitle": "Connection failed",
     "failBody": "We could not complete the connection: {{reason}}",
     "back": "Back to stores"
+  },
+  "storeSync": {
+    "title": "Store fulfillment sync",
+    "resync": "Resync to store",
+    "statuses": {
+      "NOT_APPLICABLE": "Not applicable",
+      "PENDING": "Syncing…",
+      "SYNCED": "Synced",
+      "FAILED": "Failed"
+    }
   }
 }

@@ -570,6 +570,9 @@ model Order {
   intakePayload   Json?
   /// External reference from the source system (Shopify order id, Salla order id, etc.)
   externalRef     String?
+  /// set when the order arrived via a connected store — drives outbound fulfillment sync
+  storeConnectionId String?
+  storeConnection StoreConnection? @relation(fields: [storeConnectionId], references: [id])
   state           OrderState     @default(PENDING)
   // ---- end customer ----
   customerName    String
@@ -857,6 +860,12 @@ model Shipment {
   driver         User?          @relation(fields: [driverId], references: [id])
   trackingNumber String?
   status         ShipmentStatus @default(PENDING)
+  // ---- outbound store fulfillment sync (us → e-commerce platform) ----
+  storeSyncStatus    StoreSyncStatus @default(NOT_APPLICABLE)
+  /// platform fulfillment id returned on a successful push (idempotency guard for re-dispatch)
+  storeFulfillmentId String?
+  storeSyncedAt      DateTime?
+  storeSyncError     String?
   /// denormalised from the order for zone queries
   governorate    GovernorateCode
   attemptCount   Int            @default(0)
@@ -944,6 +953,14 @@ enum StoreConnectionStatus {
   REVOKED    // disconnected / uninstalled
 }
 
+/// Outbound (us → store) fulfillment push state for a shipment.
+enum StoreSyncStatus {
+  NOT_APPLICABLE // order didn't originate from a connected store (CSV/manual) — nothing to push
+  PENDING        // queued / in-flight
+  SYNCED         // fulfillment pushed to the platform
+  FAILED         // push failed after retries (see storeSyncError)
+}
+
 /// A seller's e-commerce storefront linked via OAuth. Order webhooks resolve the client by shopDomain.
 model StoreConnection {
   id                     String                @id @default(cuid())
@@ -962,6 +979,7 @@ model StoreConnection {
   oauthState             String?
   installedAt            DateTime?
   lastEventAt            DateTime?
+  orders                 Order[]
   createdAt              DateTime              @default(now())
   updatedAt              DateTime              @updatedAt
 

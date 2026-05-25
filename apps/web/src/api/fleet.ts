@@ -49,6 +49,10 @@ export async function createShipment(input: { orderId: string; carrierType: Carr
   const { data } = await api.post<ShipmentDetail>('/fleet/shipments', input);
   return data;
 }
+export async function resyncShipmentStore(id: string): Promise<{ queued: boolean; event: string }> {
+  const { data } = await api.post<{ queued: boolean; event: string }>(`/fleet/shipments/${id}/resync-store`, {});
+  return data;
+}
 export async function markOutForDelivery(id: string): Promise<ShipmentDetail> {
   const { data } = await api.post<ShipmentDetail>(`/fleet/shipments/${id}/out-for-delivery`, {});
   return data;
