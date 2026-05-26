@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GovernorateCode, LocationType, ZoneType } from '@prisma/client';
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsBoolean, IsEnum, IsOptional, IsString, Length, Matches } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsString, Length, Matches, Min } from 'class-validator';
 
 export class CreateWarehouseDto {
   @ApiProperty({ example: 'CAI-2' })
@@ -60,6 +60,12 @@ export class CreateLocationDto {
   @IsString()
   @Matches(/^[A-Za-z0-9\-_.]{1,60}$/)
   barcode?: string;
+
+  @ApiPropertyOptional({ description: 'Max units this bin holds (for utilisation)' })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  capacityUnits?: number;
 }
 
 /**
@@ -96,6 +102,12 @@ export class BulkGenerateLocationsDto {
   @IsOptional()
   @IsString()
   allocatedClientId?: string;
+
+  @ApiPropertyOptional({ description: 'Max units each generated bin holds' })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  capacityUnits?: number;
 }
 
 /** Allocate (or release) a set of locations to a seller. clientId = null releases them. */

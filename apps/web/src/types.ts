@@ -301,12 +301,14 @@ export interface WmsLocation {
   rack: string | null;
   level: string | null;
   bin: string | null;
+  capacityUnits: number | null;
   barcode: string | null;
   isActive: boolean;
   allocatedClientId: string | null;
   allocatedClient?: { id: string; legalName: string } | null;
   units?: number;
   occupied?: boolean;
+  utilizationPct?: number | null;
   zone?: { type: ZoneType; name: string };
 }
 
@@ -315,6 +317,24 @@ export interface AllocationSummaryRow {
   legalName: string;
   locationCount: number;
   occupiedCount: number;
+  reservedCapacity: number;
+  storedUnits: number;
+  utilizationPct: number | null;
+}
+
+export interface StorageBillingPreview {
+  clientId: string;
+  reservedBins: number;
+  ratePerBinPerDayPiastres: number;
+  days: number;
+  periodStart: string;
+  periodEnd: string;
+  netPiastres: number;
+  vatPiastres: number;
+  grossPiastres: number;
+  reservedCapacity: number;
+  storedUnits: number;
+  posted?: boolean;
 }
 
 export interface WarehouseAllocationGroup {

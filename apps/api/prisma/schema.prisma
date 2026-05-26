@@ -327,6 +327,8 @@ model Contract {
   endsOn          DateTime?
   /// Pricing — all amounts in piastres
   storagePerSkuPerDayPiastres Int @default(0)
+  /// EG: dedicated-storage billing — flat rate per reserved bin per day
+  storagePerBinPerDayPiastres Int @default(0)
   pickAndPackPiastres         Int @default(0)
   /// COD commission % in basis points
   codCommissionBps            Int @default(250)
@@ -401,6 +403,8 @@ model Location {
   rack        String?
   level       String?
   bin         String?
+  /// max units this bin can hold (null = uncapped); drives utilisation views
+  capacityUnits Int?
   /// scannable location barcode for handheld terminals
   barcode     String?
   isActive    Boolean      @default(true)
@@ -669,6 +673,7 @@ model CodLedgerEntry {
 enum WalletEntryType {
   COD_CREDIT      // gross COD collected, credited to the client
   COMMISSION_FEE  // 3PL commission incl. VAT, debited
+  STORAGE_FEE     // dedicated-storage charge incl. VAT, debited
   PAYOUT          // funds paid out to the client
   ADJUSTMENT
 }

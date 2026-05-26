@@ -17,6 +17,12 @@ export class CreateContractDto {
   @Min(0)
   storagePerSkuPerDayPiastres!: number;
 
+  @ApiPropertyOptional({ description: 'Dedicated-storage fee per reserved bin per day, in piastres' })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  storagePerBinPerDayPiastres?: number;
+
   @ApiProperty({ description: 'Pick & pack fee per order, in piastres' })
   @IsInt()
   @Min(0)

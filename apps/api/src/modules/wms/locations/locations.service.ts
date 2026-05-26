@@ -105,11 +105,15 @@ export class LocationsService {
       take: 2000,
     });
     // EG: occupancy = any stock in the bin; units = total qty across statuses (for utilisation views).
-    return rows.map(({ stockLevels, ...l }) => ({
-      ...l,
-      units: stockLevels.reduce((s, x) => s + x.quantity, 0),
-      occupied: stockLevels.some((x) => x.quantity > 0),
-    }));
+    return rows.map(({ stockLevels, ...l }) => {
+      const units = stockLevels.reduce((s, x) => s + x.quantity, 0);
+      return {
+        ...l,
+        units,
+        occupied: units > 0,
+        utilizationPct: l.capacityUnits && l.capacityUnits > 0 ? Math.round((units / l.capacityUnits) * 100) : null,
+      };
+    });
   }
 
   /** Bulk-generate a storage grid (aisle × rack × level × bin). Existing codes are skipped. */
@@ -142,6 +146,7 @@ export class LocationsService {
         rack: c.rack,
         level: c.level,
         bin: c.bin,
+        capacityUnits: dto.capacityUnits ?? null,
         allocatedClientId: dto.allocatedClientId ?? null,
       })),
       skipDuplicates: true,
@@ -176,6 +181,7 @@ export class LocationsService {
       by: ['allocatedClientId'],
       where: { warehouseId, allocatedClientId: { not: null } },
       _count: { _all: true },
+      _sum: { capacityUnits: true },
     });
     const clients = await this.prisma.client.findMany({
       where: { id: { in: grouped.map((g) => g.allocatedClientId!).filter(Boolean) } },
@@ -187,7 +193,21 @@ export class LocationsService {
       const occupiedCount = await this.prisma.location.count({
         where: { warehouseId, allocatedClientId: g.allocatedClientId, stockLevels: { some: { quantity: { gt: 0 } } } },
       });
-      out.push({ clientId: g.allocatedClientId, legalName: nameById.get(g.allocatedClientId!) ?? '—', locationCount: g._count._all, occupiedCount });
+      const stored = await this.prisma.stockLevel.aggregate({
+        _sum: { quantity: true },
+        where: { location: { warehouseId, allocatedClientId: g.allocatedClientId } },
+      });
+      const reservedCapacity = g._sum.capacityUnits ?? 0;
+      const storedUnits = stored._sum.quantity ?? 0;
+      out.push({
+        clientId: g.allocatedClientId,
+        legalName: nameById.get(g.allocatedClientId!) ?? '—',
+        locationCount: g._count._all,
+        occupiedCount,
+        reservedCapacity,
+        storedUnits,
+        utilizationPct: reservedCapacity > 0 ? Math.round((storedUnits / reservedCapacity) * 100) : null,
+      });
     }
     return out.sort((a, b) => b.locationCount - a.locationCount);
   }
@@ -237,6 +257,7 @@ export class LocationsService {
         code: dto.code,
         type: dto.type ?? 'BIN',
         barcode: dto.barcode ?? null,
+        capacityUnits: dto.capacityUnits ?? null,
       },
     });
     await this.audit.record({ userId: actor.id, action: AuditAction.CREATE, entity: 'location', entityId: loc.id, after: { code: loc.code } });

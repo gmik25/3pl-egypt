@@ -45,14 +45,30 @@ export class InvoiceService {
     const wallet = await this.prisma.clientWallet.findUnique({ where: { clientId } });
     if (!wallet) throw new BadRequestException('Client has no wallet activity to invoice');
 
-    const fees = await this.prisma.walletEntry.aggregate({
-      _sum: { amountPiastres: true },
-      where: { walletId: wallet.id, type: WalletEntryType.COMMISSION_FEE, createdAt: { gte: periodStart, lte: periodEnd } },
-    });
-    const grossCommission = Math.abs(fees._sum.amountPiastres ?? 0);
-    if (grossCommission === 0) throw new BadRequestException('No billable fees in this period');
+    const period = { gte: periodStart, lte: periodEnd };
+    const sumFee = async (type: WalletEntryType) => {
+      const agg = await this.prisma.walletEntry.aggregate({ _sum: { amountPiastres: true }, where: { walletId: wallet.id, type, createdAt: period } });
+      return Math.abs(agg._sum.amountPiastres ?? 0); // fees are stored as gross (VAT-inclusive) debits
+    };
+    const grossCommission = await sumFee(WalletEntryType.COMMISSION_FEE);
+    const grossStorage = await sumFee(WalletEntryType.STORAGE_FEE);
+    if (grossCommission + grossStorage === 0) throw new BadRequestException('No billable fees in this period');
 
-    const { net, vat, gross } = extractVat(grossCommission, vatBps);
+    const period10 = `${periodStartIso.slice(0, 10)} → ${periodEndIso.slice(0, 10)}`;
+    const lines: { description: string; gross: number }[] = [];
+    if (grossCommission > 0) lines.push({ description: `COD commission & handling — ${period10}`, gross: grossCommission });
+    if (grossStorage > 0) lines.push({ description: `Dedicated storage — ${period10}`, gross: grossStorage });
+
+    let netTotal = 0;
+    let vatTotal = 0;
+    let grossTotal = 0;
+    const lineData = lines.map((l) => {
+      const { net, vat, gross } = extractVat(l.gross, vatBps);
+      netTotal += net;
+      vatTotal += vat;
+      grossTotal += gross;
+      return { description: l.description, quantity: 1, unitNetPiastres: net, netPiastres: net, vatPiastres: vat, grossPiastres: gross };
+    });
 
     const invoice = await this.prisma.invoice.create({
       data: {
@@ -60,25 +76,14 @@ export class InvoiceService {
         clientId,
         periodStart,
         periodEnd,
-        netPiastres: net,
-        vatPiastres: vat,
-        grossPiastres: gross,
-        lines: {
-          create: [
-            {
-              description: `COD commission & handling — ${periodStartIso.slice(0, 10)} → ${periodEndIso.slice(0, 10)}`,
-              quantity: 1,
-              unitNetPiastres: net,
-              netPiastres: net,
-              vatPiastres: vat,
-              grossPiastres: gross,
-            },
-          ],
-        },
+        netPiastres: netTotal,
+        vatPiastres: vatTotal,
+        grossPiastres: grossTotal,
+        lines: { create: lineData },
       },
       include: { lines: true },
     });
-    await this.audit.record({ userId: actorId, action: AuditAction.CREATE, entity: 'invoice', entityId: invoice.id, after: { reference: invoice.reference, gross } });
+    await this.audit.record({ userId: actorId, action: AuditAction.CREATE, entity: 'invoice', entityId: invoice.id, after: { reference: invoice.reference, gross: grossTotal } });
     return invoice;
   }
 

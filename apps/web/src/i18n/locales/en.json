@@ -45,7 +45,8 @@
     "couriers": "Carriers",
     "stores": "Stores",
     "myStores": "My stores",
-    "myStorage": "My storage"
+    "myStorage": "My storage",
+    "storageBilling": "Storage billing"
   },
   "auth": {
     "signIn": "Sign in",
@@ -375,7 +376,10 @@
     "chooseSeller": "Choose seller",
     "allocate": "Allocate",
     "release": "Release",
-    "otherSeller": "another seller"
+    "otherSeller": "another seller",
+    "capacityPerBin": "Capacity per bin",
+    "capacity": "Capacity",
+    "utilization": "{{stored}}/{{capacity}} ({{pct}}%)"
   },
   "inventory": {
     "title": "Inventory",
@@ -894,5 +898,27 @@
     "occupiedOf": "{{occupied}}/{{total}} occupied",
     "occupiedUnits": "{{count}} units",
     "empty": "No storage allocated yet. Your 3PL will assign racks once onboarding completes."
+  },
+  "storageBilling": {
+    "title": "Storage billing",
+    "subtitle": "Charge sellers for dedicated storage — reserved bins × per-bin daily rate.",
+    "seller": "Seller",
+    "periodStart": "From",
+    "periodEnd": "To",
+    "preview": "Preview charge",
+    "error": "Could not preview — check the period.",
+    "estimate": "Estimate",
+    "reservedBins": "Reserved bins",
+    "ratePerBin": "Rate per bin",
+    "day": "day",
+    "days": "Days",
+    "utilization": "Utilisation",
+    "net": "Net",
+    "vat": "VAT (14%)",
+    "gross": "Total",
+    "charge": "Charge to wallet",
+    "charged": "Charged — it will appear on the seller’s next invoice.",
+    "chargeError": "Could not charge — no reserved bins or a zero rate.",
+    "chargeNote": "Posts a wallet debit that rolls into the next invoice."
   }
 }

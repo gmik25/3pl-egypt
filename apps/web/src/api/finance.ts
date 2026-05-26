@@ -10,6 +10,7 @@ import type {
   Remittance,
   RemittanceStatus,
   Statement,
+  StorageBillingPreview,
   Wallet,
 } from '../types';
 
@@ -90,5 +91,16 @@ export async function issueInvoice(id: string): Promise<Invoice> {
 }
 export async function getInvoiceEta(id: string): Promise<unknown> {
   const { data } = await api.get(`/finance/invoices/${id}/eta`);
+  return data;
+}
+
+// ---- Dedicated-storage billing ----
+
+export async function previewStorageBilling(clientId: string, periodStart: string, periodEnd: string): Promise<StorageBillingPreview> {
+  const { data } = await api.get<StorageBillingPreview>(`/finance/storage-billing/${clientId}/preview`, { params: { periodStart, periodEnd } });
+  return data;
+}
+export async function chargeStorageBilling(clientId: string, periodStart: string, periodEnd: string): Promise<StorageBillingPreview> {
+  const { data } = await api.post<StorageBillingPreview>(`/finance/storage-billing/${clientId}/charge`, { periodStart, periodEnd });
   return data;
 }

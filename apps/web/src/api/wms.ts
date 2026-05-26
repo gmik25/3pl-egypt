@@ -82,7 +82,7 @@ export async function listLocations(warehouseId: string, filters: LocationFilter
 }
 export async function generateLocations(
   warehouseId: string,
-  input: { zoneId: string; type?: LocationKind; aisles: string[]; racks: string[]; levels: string[]; bins: string[]; allocatedClientId?: string },
+  input: { zoneId: string; type?: LocationKind; aisles: string[]; racks: string[]; levels: string[]; bins: string[]; capacityUnits?: number; allocatedClientId?: string },
 ): Promise<{ requested: number; created: number; skipped: number }> {
   const { data } = await api.post(`/warehouses/${warehouseId}/locations/bulk`, input);
   return data;

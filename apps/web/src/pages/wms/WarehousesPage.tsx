@@ -157,6 +157,7 @@ function GenerateGridForm({ warehouseId, zones, clientOptions, onDone }: { wareh
   const [racks, setRacks] = useState('01,02,03');
   const [levels, setLevels] = useState('1,2,3');
   const [bins, setBins] = useState('01,02,03,04');
+  const [capacity, setCapacity] = useState('100');
   const [allocatedClientId, setAllocatedClientId] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -166,6 +167,7 @@ function GenerateGridForm({ warehouseId, zones, clientOptions, onDone }: { wareh
     mutationFn: () => generateLocations(warehouseId, {
       zoneId, type,
       aisles: parseTokens(aisles), racks: parseTokens(racks), levels: parseTokens(levels), bins: parseTokens(bins),
+      capacityUnits: capacity ? Number(capacity) : undefined,
       allocatedClientId: allocatedClientId || undefined,
     }),
     onSuccess: onDone,
@@ -198,6 +200,9 @@ function GenerateGridForm({ warehouseId, zones, clientOptions, onDone }: { wareh
             <TextField label={t('warehouses.levels')} value={levels} onChange={(e) => setLevels(e.target.value)} dir="ltr" />
             <TextField label={t('warehouses.bins')} value={bins} onChange={(e) => setBins(e.target.value)} dir="ltr" />
           </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <TextField label={t('warehouses.capacityPerBin')} type="number" inputMode="numeric" value={capacity} onChange={(e) => setCapacity(e.target.value)} dir="ltr" />
+          </div>
           <p className="text-xs text-slate-500">{t('warehouses.gridHint', { count })}</p>
           {gen.isError && <Alert>{t('warehouses.gridError')}</Alert>}
           {gen.isSuccess && <Alert tone="green">{t('warehouses.gridDone', { created: gen.data.created, skipped: gen.data.skipped })}</Alert>}
@@ -223,7 +228,10 @@ function AllocationSummaryCard({ warehouseId }: { warehouseId: string }) {
               <span className="font-medium">{r.legalName}</span>
               <span className="text-slate-500">
                 <Badge tone="blue">{t('warehouses.locationsCount', { count: r.locationCount })}</Badge>
-                <span className="ms-2 text-xs">{t('warehouses.occupiedOf', { occupied: r.occupiedCount, total: r.locationCount })}</span>
+                {r.reservedCapacity > 0 && (
+                  <span className="ms-2 text-xs">{t('warehouses.utilization', { stored: r.storedUnits, capacity: r.reservedCapacity, pct: r.utilizationPct ?? 0 })}</span>
+                )}
+                <span className="ms-2 text-xs text-slate-400">{t('warehouses.occupiedOf', { occupied: r.occupiedCount, total: r.locationCount })}</span>
               </span>
             </div>
           ))}
@@ -294,6 +302,7 @@ function LocationsTable({ warehouseId, zones, clientOptions, onChanged }: { ware
                 <th className="text-start font-medium px-3 py-2">{t('warehouses.code')}</th>
                 <th className="text-start font-medium px-3 py-2">{t('warehouses.zone')}</th>
                 <th className="text-start font-medium px-3 py-2">{t('warehouses.allocatedTo')}</th>
+                <th className="text-start font-medium px-3 py-2">{t('warehouses.capacity')}</th>
                 <th className="text-start font-medium px-3 py-2">{t('warehouses.occupancy')}</th>
               </tr>
             </thead>
@@ -304,10 +313,11 @@ function LocationsTable({ warehouseId, zones, clientOptions, onChanged }: { ware
                   <td className="px-3 py-2 font-medium" dir="ltr">{l.code}</td>
                   <td className="px-3 py-2 text-slate-500">{l.zone ? t(`warehouses.zoneTypes.${l.zone.type}`) : '—'}</td>
                   <td className="px-3 py-2">{l.allocatedClientId ? <Badge tone="blue">{l.allocatedClient?.legalName ?? clientName(l.allocatedClientId)}</Badge> : <span className="text-slate-400">{t('warehouses.unallocated')}</span>}</td>
+                  <td className="px-3 py-2 text-slate-500">{l.capacityUnits != null ? `${l.units ?? 0}/${l.capacityUnits}${l.utilizationPct != null ? ` · ${l.utilizationPct}%` : ''}` : '—'}</td>
                   <td className="px-3 py-2">{l.occupied ? <Badge tone="amber">{t('warehouses.occupiedUnits', { count: l.units ?? 0 })}</Badge> : <span className="text-slate-400">{t('warehouses.empty')}</span>}</td>
                 </tr>
               ))}
-              {rows.length === 0 && <tr><td colSpan={5} className="px-3 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={6} className="px-3 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
             </tbody>
           </table>
         </div>

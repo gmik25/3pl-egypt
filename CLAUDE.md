@@ -154,6 +154,9 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 > **dedicated-storage allocation** — racks/rows reserved per seller (`Location.allocatedClientId`),
 > per-warehouse allocation footprint + occupancy, seller self-serve "My storage" view, and a
 > warn-but-allow flag when a seller's goods are received into another seller's section.
+> Bin capacity (`Location.capacityUnits`) drives utilisation; **dedicated-storage billing** charges
+> reserved bins × `Contract.storagePerBinPerDayPiastres` × days → a VAT-inclusive `STORAGE_FEE`
+> wallet debit that rolls into the next invoice (separate "Dedicated storage" line).
 
 > Schema rows for Client & Contract and OMS are marked done because their Prisma models
 > live in the shared `apps/api/prisma/schema.prisma`; their API + UI are still pending.
