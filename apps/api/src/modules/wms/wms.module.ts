@@ -4,6 +4,7 @@ import { CatalogService } from './catalog/catalog.service';
 import { CatalogController } from './catalog/catalog.controller';
 import { LocationsService } from './locations/locations.service';
 import { LocationsController } from './locations/locations.controller';
+import { PortalWarehouseController } from './locations/portal-warehouse.controller';
 import { InventoryService } from './inventory/inventory.service';
 import { InventoryController } from './inventory/inventory.controller';
 import { InboundService } from './inbound/inbound.service';
@@ -22,6 +23,7 @@ import { CountingController } from './counting/counting.controller';
   controllers: [
     CatalogController,
     LocationsController,
+    PortalWarehouseController,
     InventoryController,
     InboundController,
     CountingController,

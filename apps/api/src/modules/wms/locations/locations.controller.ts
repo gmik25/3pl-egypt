@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { LocationsService } from './locations.service';
 import {
+  AllocateLocationsDto,
+  BulkGenerateLocationsDto,
   CreateLocationDto,
   CreateWarehouseDto,
   CreateZoneDto,
@@ -50,13 +52,56 @@ export class LocationsController {
 
   @Get(':id/locations')
   @RequirePermissions('warehouse.read')
-  listLocations(@Param('id') id: string, @CurrentUser() actor: AuthenticatedUser) {
-    return this.locations.listLocations(id, actor);
+  @ApiQuery({ name: 'zoneId', required: false })
+  @ApiQuery({ name: 'aisle', required: false })
+  @ApiQuery({ name: 'rack', required: false })
+  @ApiQuery({ name: 'allocatedClientId', required: false })
+  @ApiQuery({ name: 'unallocated', required: false, type: Boolean })
+  @ApiQuery({ name: 'q', required: false })
+  listLocations(
+    @Param('id') id: string,
+    @CurrentUser() actor: AuthenticatedUser,
+    @Query('zoneId') zoneId?: string,
+    @Query('aisle') aisle?: string,
+    @Query('rack') rack?: string,
+    @Query('allocatedClientId') allocatedClientId?: string,
+    @Query('unallocated') unallocated?: string,
+    @Query('q') q?: string,
+  ) {
+    return this.locations.listLocations(id, actor, { zoneId, aisle, rack, allocatedClientId, unallocated: unallocated === 'true', q });
   }
 
   @Post(':id/locations')
   @RequirePermissions('warehouse.write')
   createLocation(@Param('id') id: string, @Body() dto: CreateLocationDto, @CurrentUser() actor: AuthenticatedUser) {
     return this.locations.createLocation(id, dto, actor);
+  }
+
+  @Post(':id/locations/bulk')
+  @RequirePermissions('warehouse.write')
+  @ApiOperation({ summary: 'Bulk-generate a storage grid (aisle × rack × level × bin)' })
+  generateLocations(@Param('id') id: string, @Body() dto: BulkGenerateLocationsDto, @CurrentUser() actor: AuthenticatedUser) {
+    return this.locations.generateLocations(id, dto, actor);
+  }
+
+  @Get(':id/allocations')
+  @RequirePermissions('warehouse.read')
+  @ApiOperation({ summary: 'Per-seller allocation footprint for the warehouse' })
+  allocations(@Param('id') id: string, @CurrentUser() actor: AuthenticatedUser) {
+    return this.locations.allocationSummary(id, actor);
+  }
+
+  @Get(':id/suggest-locations')
+  @RequirePermissions('warehouse.read')
+  @ApiOperation({ summary: "A seller's allocated STORAGE locations (putaway suggestions)" })
+  suggest(@Param('id') id: string, @Query('clientId') clientId: string, @CurrentUser() actor: AuthenticatedUser) {
+    return this.locations.suggestLocationsForClient(id, clientId, actor);
+  }
+
+  @Post('allocate-locations')
+  @RequirePermissions('warehouse.write')
+  @ApiOperation({ summary: 'Allocate (or release) locations to a seller' })
+  allocate(@Body() dto: AllocateLocationsDto, @CurrentUser() actor: AuthenticatedUser) {
+    return this.locations.allocateLocations(dto, actor);
   }
 }

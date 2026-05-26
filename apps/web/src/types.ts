@@ -297,9 +297,29 @@ export interface WmsLocation {
   zoneId: string;
   code: string;
   type: LocationKind;
+  aisle: string | null;
+  rack: string | null;
+  level: string | null;
+  bin: string | null;
   barcode: string | null;
   isActive: boolean;
+  allocatedClientId: string | null;
+  allocatedClient?: { id: string; legalName: string } | null;
+  units?: number;
+  occupied?: boolean;
   zone?: { type: ZoneType; name: string };
+}
+
+export interface AllocationSummaryRow {
+  clientId: string;
+  legalName: string;
+  locationCount: number;
+  occupiedCount: number;
+}
+
+export interface WarehouseAllocationGroup {
+  warehouse: { id: string; code: string; name: string; governorate: GovernorateCode };
+  locations: { id: string; code: string; zoneType: ZoneType; units: number }[];
 }
 
 export interface StockLevel {
@@ -353,7 +373,7 @@ export interface PurchaseOrder {
   expectedDate: string | null;
   notes: string | null;
   createdAt: string;
-  client?: { legalName: string };
+  client?: { id?: string; legalName: string };
   warehouse?: { code: string; name: string };
   lines?: PoLine[];
   _count?: { lines: number };

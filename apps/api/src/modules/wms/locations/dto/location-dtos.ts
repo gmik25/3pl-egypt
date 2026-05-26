@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GovernorateCode, LocationType, ZoneType } from '@prisma/client';
-import { IsBoolean, IsEnum, IsOptional, IsString, Length, Matches } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsBoolean, IsEnum, IsOptional, IsString, Length, Matches } from 'class-validator';
 
 export class CreateWarehouseDto {
   @ApiProperty({ example: 'CAI-2' })
@@ -60,4 +60,52 @@ export class CreateLocationDto {
   @IsString()
   @Matches(/^[A-Za-z0-9\-_.]{1,60}$/)
   barcode?: string;
+}
+
+/**
+ * Bulk-generate a storage grid: the cartesian product of aisles × racks × levels × bins.
+ * Each location's code is composed as `aisle-rack-level-bin` (e.g. A-01-3-05).
+ */
+export class BulkGenerateLocationsDto {
+  @ApiProperty()
+  @IsString()
+  zoneId!: string;
+
+  @ApiPropertyOptional({ enum: LocationType, default: 'BIN' })
+  @IsOptional()
+  @IsEnum(LocationType)
+  type?: LocationType;
+
+  @ApiProperty({ type: [String], example: ['A', 'B'] })
+  @IsArray() @ArrayMinSize(1) @ArrayMaxSize(50) @IsString({ each: true }) @Matches(/^[A-Za-z0-9]{1,8}$/, { each: true })
+  aisles!: string[];
+
+  @ApiProperty({ type: [String], example: ['01', '02', '03'] })
+  @IsArray() @ArrayMinSize(1) @ArrayMaxSize(100) @IsString({ each: true }) @Matches(/^[A-Za-z0-9]{1,8}$/, { each: true })
+  racks!: string[];
+
+  @ApiProperty({ type: [String], example: ['1', '2', '3'] })
+  @IsArray() @ArrayMinSize(1) @ArrayMaxSize(50) @IsString({ each: true }) @Matches(/^[A-Za-z0-9]{1,8}$/, { each: true })
+  levels!: string[];
+
+  @ApiProperty({ type: [String], example: ['01', '02'] })
+  @IsArray() @ArrayMinSize(1) @ArrayMaxSize(100) @IsString({ each: true }) @Matches(/^[A-Za-z0-9]{1,8}$/, { each: true })
+  bins!: string[];
+
+  @ApiPropertyOptional({ description: 'Reserve the whole generated section for this seller' })
+  @IsOptional()
+  @IsString()
+  allocatedClientId?: string;
+}
+
+/** Allocate (or release) a set of locations to a seller. clientId = null releases them. */
+export class AllocateLocationsDto {
+  @ApiPropertyOptional({ description: 'Seller to reserve for; null/omitted releases the allocation' })
+  @IsOptional()
+  @IsString()
+  clientId?: string | null;
+
+  @ApiProperty({ type: [String] })
+  @IsArray() @ArrayMinSize(1) @ArrayMaxSize(5000) @IsString({ each: true })
+  locationIds!: string[];
 }

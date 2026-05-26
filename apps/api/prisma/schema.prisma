@@ -297,6 +297,7 @@ model Client {
   creditNotes         CreditNote[]
   importShipments     ImportShipment[]
   storeConnections    StoreConnection[]
+  allocatedLocations  Location[]     @relation("ClientLocations")
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
@@ -395,15 +396,24 @@ model Location {
   warehouse   Warehouse    @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
   code        String
   type        LocationType @default(BIN)
+  // ---- structured grid address (aisle → rack → level → bin) ----
+  aisle       String?
+  rack        String?
+  level       String?
+  bin         String?
   /// scannable location barcode for handheld terminals
   barcode     String?
   isActive    Boolean      @default(true)
+  /// EG: dedicated storage — section reserved for one seller (null = general/unallocated)
+  allocatedClientId String?
+  allocatedClient   Client? @relation("ClientLocations", fields: [allocatedClientId], references: [id], onDelete: SetNull)
   stockLevels StockLevel[]
   createdAt   DateTime     @default(now())
 
   @@unique([warehouseId, code])
   @@index([zoneId])
   @@index([barcode])
+  @@index([allocatedClientId])
 }
 
 model Sku {

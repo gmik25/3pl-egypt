@@ -44,7 +44,8 @@
     "mfa": "المصادقة الثنائية",
     "couriers": "شركات الشحن",
     "stores": "المتاجر",
-    "myStores": "متاجري"
+    "myStores": "متاجري",
+    "myStorage": "مساحتي التخزينية"
   },
   "auth": {
     "signIn": "تسجيل الدخول",
@@ -349,7 +350,32 @@
       "RACK": "رف",
       "SHELF": "رف علوي",
       "FLOOR": "أرضية"
-    }
+    },
+    "generateGrid": "إنشاء شبكة تخزين",
+    "generate": "إنشاء",
+    "allocateTo": "تخصيص لـ",
+    "unallocated": "غير مخصص",
+    "aisles": "الممرات",
+    "racks": "الرفوف",
+    "levels": "المستويات",
+    "bins": "الصناديق",
+    "gridHint": "سيتم إنشاء {{count}} موقعًا",
+    "gridError": "تعذّر إنشاء المواقع",
+    "gridDone": "تم إنشاء {{created}}، وتخطّي {{skipped}} موجودًا",
+    "allocationsBySeller": "التخصيصات حسب البائع",
+    "locationsCount": "{{count}} موقعًا",
+    "occupiedOf": "{{occupied}}/{{total}} مشغول",
+    "noAllocations": "لا توجد أقسام مخصّصة بعد",
+    "search": "بحث",
+    "allocatedTo": "مخصص لـ",
+    "occupancy": "الإشغال",
+    "occupiedUnits": "{{count}} وحدة",
+    "empty": "فارغ",
+    "selectedCount": "{{count}} محدد",
+    "chooseSeller": "اختر البائع",
+    "allocate": "تخصيص",
+    "release": "إلغاء التخصيص",
+    "otherSeller": "بائع آخر"
   },
   "inventory": {
     "title": "المخزون",
@@ -860,5 +886,13 @@
       "SYNCED": "تمت المزامنة",
       "FAILED": "فشلت"
     }
+  },
+  "myStorage": {
+    "title": "مساحتي التخزينية",
+    "subtitle": "أقسام المستودع المخصّصة لك من مزوّد الخدمة.",
+    "locationsCount": "{{count}} موقعًا",
+    "occupiedOf": "{{occupied}}/{{total}} مشغول",
+    "occupiedUnits": "{{count}} وحدة",
+    "empty": "لا توجد مساحة مخصّصة بعد. سيخصّص لك مزوّد الخدمة الرفوف بعد اكتمال الإعداد."
   }
 }

@@ -127,11 +127,13 @@ function PoDetail({ poId }: { poId: string }) {
   const [qty, setQty] = useState('');
   const [inspection, setInspection] = useState<InspectionResult>('PASS');
   const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
 
   const receive = useMutation({
     mutationFn: (poLineId: string) => receivePoLine({ poLineId, locationId, quantity: Number(qty), inspection }),
-    onSuccess: () => {
+    onSuccess: (data) => {
       setReceivingLine(null); setQty(''); setError(null);
+      setWarning(data.allocationWarning ?? null);
       void qc.invalidateQueries({ queryKey: ['purchase-order', poId] });
       void qc.invalidateQueries({ queryKey: ['purchase-orders'] });
     },
@@ -147,6 +149,7 @@ function PoDetail({ poId }: { poId: string }) {
         <Badge tone={PO_TONE[po.data.status]}>{t(`receiving.statuses.${po.data.status}`)}</Badge>
       </div>
       <p className="text-sm text-slate-500">{po.data.client?.legalName} · {po.data.warehouse?.name}</p>
+      {warning && <Alert tone="amber">{warning}</Alert>}
 
       <table className="w-full text-sm">
         <thead>
@@ -171,7 +174,15 @@ function PoDetail({ poId }: { poId: string }) {
                       <div className="space-y-2 text-start bg-slate-50 p-2 rounded">
                         <Select label={t('inventory.location')} value={locationId} onChange={(e) => setLocationId(e.target.value)}>
                           <option value="">—</option>
-                          {locations.data?.map((loc) => <option key={loc.id} value={loc.id}>{loc.code}</option>)}
+                          {locations.data?.map((loc) => {
+                            const mine = loc.allocatedClientId === po.data?.client?.id;
+                            const other = loc.allocatedClientId && !mine;
+                            return (
+                              <option key={loc.id} value={loc.id}>
+                                {mine ? '★ ' : ''}{loc.code}{other ? ` · ${loc.allocatedClient?.legalName ?? t('warehouses.otherSeller')}` : ''}
+                              </option>
+                            );
+                          })}
                         </Select>
                         <TextField label={`${t('receiving.qty')} (≤ ${remaining})`} inputMode="numeric" value={qty} onChange={(e) => setQty(e.target.value)} />
                         <Select label={t('receiving.inspection')} value={inspection} onChange={(e) => setInspection(e.target.value as InspectionResult)}>

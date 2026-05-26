@@ -14,6 +14,8 @@ import type {
   Warehouse,
   WarehouseDetail,
   WmsLocation,
+  AllocationSummaryRow,
+  WarehouseAllocationGroup,
   ZoneType,
   LocationKind,
   StockStatus,
@@ -66,8 +68,35 @@ export async function createWarehouse(input: { code: string; name: string; gover
   const { data } = await api.post<Warehouse>('/warehouses', input);
   return data;
 }
-export async function listLocations(warehouseId: string): Promise<WmsLocation[]> {
-  const { data } = await api.get<WmsLocation[]>(`/warehouses/${warehouseId}/locations`);
+export interface LocationFilters {
+  zoneId?: string;
+  aisle?: string;
+  rack?: string;
+  allocatedClientId?: string;
+  unallocated?: boolean;
+  q?: string;
+}
+export async function listLocations(warehouseId: string, filters: LocationFilters = {}): Promise<WmsLocation[]> {
+  const { data } = await api.get<WmsLocation[]>(`/warehouses/${warehouseId}/locations`, { params: filters });
+  return data;
+}
+export async function generateLocations(
+  warehouseId: string,
+  input: { zoneId: string; type?: LocationKind; aisles: string[]; racks: string[]; levels: string[]; bins: string[]; allocatedClientId?: string },
+): Promise<{ requested: number; created: number; skipped: number }> {
+  const { data } = await api.post(`/warehouses/${warehouseId}/locations/bulk`, input);
+  return data;
+}
+export async function allocateLocations(input: { clientId: string | null; locationIds: string[] }): Promise<{ updated: number; clientId: string | null }> {
+  const { data } = await api.post('/warehouses/allocate-locations', input);
+  return data;
+}
+export async function getAllocationSummary(warehouseId: string): Promise<AllocationSummaryRow[]> {
+  const { data } = await api.get<AllocationSummaryRow[]>(`/warehouses/${warehouseId}/allocations`);
+  return data;
+}
+export async function getMyAllocations(): Promise<WarehouseAllocationGroup[]> {
+  const { data } = await api.get<WarehouseAllocationGroup[]>('/portal/warehouse/allocations');
   return data;
 }
 export async function createZone(warehouseId: string, input: { type: ZoneType; code: string; name: string }) {
@@ -151,8 +180,8 @@ export async function receivePoLine(input: {
   lotNumber?: string;
   expiryDate?: string;
   note?: string;
-}): Promise<PurchaseOrder> {
-  const { data } = await api.post<PurchaseOrder>('/inbound/purchase-orders/receive', input);
+}): Promise<PurchaseOrder & { allocationWarning: string | null }> {
+  const { data } = await api.post<PurchaseOrder & { allocationWarning: string | null }>('/inbound/purchase-orders/receive', input);
   return data;
 }
 

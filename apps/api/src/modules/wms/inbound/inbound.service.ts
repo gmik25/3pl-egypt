@@ -79,6 +79,16 @@ export class InboundService {
         throw new BadRequestException(`Cannot receive ${dto.quantity}; only ${remaining} remaining on this line`);
       }
 
+      // EG: warn-but-allow — putting a seller's goods into a section reserved for another seller is
+      // flagged (overflow happens) but not blocked. Dedicated-storage operators can act on the flag.
+      let allocationWarning: string | null = null;
+      if (stocked) {
+        const loc = await tx.location.findUnique({ where: { id: dto.locationId }, select: { code: true, allocatedClientId: true } });
+        if (loc?.allocatedClientId && loc.allocatedClientId !== line.purchaseOrder.clientId) {
+          allocationWarning = `Location ${loc.code} is reserved for another seller`;
+        }
+      }
+
       if (stocked) {
         const status = dto.inspection === InspectionResult.DAMAGED ? StockStatus.QUARANTINE : StockStatus.AVAILABLE;
         await this.inventory.applyReceipt(
@@ -120,10 +130,11 @@ export class InboundService {
         after: { received: dto.quantity, inspection: dto.inspection, poStatus: status },
       });
 
-      return tx.purchaseOrder.findUniqueOrThrow({
+      const po = await tx.purchaseOrder.findUniqueOrThrow({
         where: { id: line.purchaseOrderId },
         include: { lines: true },
       });
+      return { ...po, allocationWarning };
     });
   }
 }

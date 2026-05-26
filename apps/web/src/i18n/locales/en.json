@@ -44,7 +44,8 @@
     "mfa": "Two-factor auth",
     "couriers": "Carriers",
     "stores": "Stores",
-    "myStores": "My stores"
+    "myStores": "My stores",
+    "myStorage": "My storage"
   },
   "auth": {
     "signIn": "Sign in",
@@ -349,7 +350,32 @@
       "RACK": "Rack",
       "SHELF": "Shelf",
       "FLOOR": "Floor"
-    }
+    },
+    "generateGrid": "Generate grid",
+    "generate": "Generate",
+    "allocateTo": "Allocate to",
+    "unallocated": "Unallocated",
+    "aisles": "Aisles",
+    "racks": "Racks",
+    "levels": "Levels",
+    "bins": "Bins",
+    "gridHint": "{{count}} locations will be generated",
+    "gridError": "Could not generate locations",
+    "gridDone": "Created {{created}}, skipped {{skipped}} existing",
+    "allocationsBySeller": "Allocations by seller",
+    "locationsCount": "{{count}} locations",
+    "occupiedOf": "{{occupied}}/{{total}} occupied",
+    "noAllocations": "No sections allocated yet",
+    "search": "Search",
+    "allocatedTo": "Allocated to",
+    "occupancy": "Occupancy",
+    "occupiedUnits": "{{count}} units",
+    "empty": "Empty",
+    "selectedCount": "{{count}} selected",
+    "chooseSeller": "Choose seller",
+    "allocate": "Allocate",
+    "release": "Release",
+    "otherSeller": "another seller"
   },
   "inventory": {
     "title": "Inventory",
@@ -860,5 +886,13 @@
       "SYNCED": "Synced",
       "FAILED": "Failed"
     }
+  },
+  "myStorage": {
+    "title": "My storage",
+    "subtitle": "Warehouse sections allocated to you by your 3PL.",
+    "locationsCount": "{{count}} locations",
+    "occupiedOf": "{{occupied}}/{{total}} occupied",
+    "occupiedUnits": "{{count}} units",
+    "empty": "No storage allocated yet. Your 3PL will assign racks once onboarding completes."
   }
 }

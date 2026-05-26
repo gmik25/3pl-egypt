@@ -39,6 +39,7 @@ import CouriersPage from './pages/integrations/CouriersPage';
 import StoresPage from './pages/integrations/StoresPage';
 import StoreConnectedPage from './pages/integrations/StoreConnectedPage';
 import ClientStoresPage from './pages/ClientStoresPage';
+import ClientStoragePage from './pages/ClientStoragePage';
 
 export default function App() {
   return (
@@ -84,6 +85,7 @@ export default function App() {
                   <Route path="/integrations/stores" element={<StoresPage />} />
                   <Route path="/stores/connected" element={<StoreConnectedPage />} />
                   <Route path="/portal/stores" element={<ClientStoresPage />} />
+                  <Route path="/portal/storage" element={<ClientStoragePage />} />
                   <Route path="/portal" element={<ClientPortalPage />} />
                   <Route path="/mfa" element={<MfaPage />} />
                   <Route path="/audit" element={<AuditPage />} />

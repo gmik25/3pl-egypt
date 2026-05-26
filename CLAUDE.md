@@ -150,6 +150,11 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 > Shopify wired live, others stubbed; sandbox-simulated. Inbound HMAC accepts the platform app
 > secret (live) or the per-store secret (sandbox/manual).
 
+> WMS warehouse setup: structured locations (aisle→rack→level→bin) with bulk grid generation;
+> **dedicated-storage allocation** — racks/rows reserved per seller (`Location.allocatedClientId`),
+> per-warehouse allocation footprint + occupancy, seller self-serve "My storage" view, and a
+> warn-but-allow flag when a seller's goods are received into another seller's section.
+
 > Schema rows for Client & Contract and OMS are marked done because their Prisma models
 > live in the shared `apps/api/prisma/schema.prisma`; their API + UI are still pending.
 
