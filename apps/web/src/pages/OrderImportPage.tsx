@@ -30,7 +30,7 @@ export default function OrderImportPage() {
   return (
     <div className="max-w-2xl space-y-5">
       <div>
-        <Link to="/orders" className="text-sm text-brand-600 hover:underline">← {t('orders.title')}</Link>
+        <Link to="/orders" className="text-sm text-accent hover:underline">← {t('orders.title')}</Link>
         <h1 className="text-2xl font-bold mt-1">{t('orders.importTitle')}</h1>
       </div>
 
@@ -43,7 +43,7 @@ export default function OrderImportPage() {
         </Select>
 
         <div>
-          <span className="block text-sm font-medium text-slate-700 mb-1">{t('orders.csvFile')}</span>
+          <span className="block text-sm font-medium text-ink mb-1">{t('orders.csvFile')}</span>
           <input
             ref={fileRef}
             type="file"
@@ -58,9 +58,9 @@ export default function OrderImportPage() {
           {!clientId && <p className="text-xs text-amber-600 mt-1">{t('orders.selectClientFirst')}</p>}
         </div>
 
-        <div className="text-xs text-slate-500">
+        <div className="text-xs text-muted">
           <p className="mb-1">{t('orders.csvHeadersLabel')}:</p>
-          <code className="block bg-slate-100 p-2 rounded break-all" dir="ltr">{CSV_HEADERS}</code>
+          <code className="block bg-surface-muted p-2 rounded break-all" dir="ltr">{CSV_HEADERS}</code>
         </div>
 
         {importer.isPending && <Spinner />}
@@ -76,14 +76,14 @@ export default function OrderImportPage() {
           {result.failed.length > 0 && (
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-2 py-1">{t('orders.row')}</th>
                   <th className="text-start font-medium px-2 py-1">{t('orders.reason')}</th>
                 </tr>
               </thead>
               <tbody>
                 {result.failed.map((f) => (
-                  <tr key={f.row} className="border-b border-slate-100">
+                  <tr key={f.row} className="border-b border-line-soft">
                     <td className="px-2 py-1">{f.row}</td>
                     <td className="px-2 py-1 text-red-600">{f.reason}</td>
                   </tr>

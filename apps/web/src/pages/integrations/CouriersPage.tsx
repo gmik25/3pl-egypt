@@ -29,7 +29,7 @@ export default function CouriersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{t('couriers.title')}</h1>
-          <p className="text-sm text-slate-500">{t('couriers.subtitle')}</p>
+          <p className="text-sm text-muted">{t('couriers.subtitle')}</p>
         </div>
         <Button onClick={() => setShowNew((o) => !o)}>{showNew ? t('common.cancel') : t('couriers.onboard')}</Button>
       </div>
@@ -51,7 +51,7 @@ export default function CouriersPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('couriers.code')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('couriers.name')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('couriers.credentials')}</th>
@@ -62,7 +62,7 @@ export default function CouriersPage() {
               </thead>
               <tbody>
                 {couriers.data?.map((c) => (
-                  <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50">
+                  <tr key={c.id} className="border-b border-line-soft hover:bg-surface-muted">
                     <td className="px-4 py-3 font-medium" dir="ltr">{c.code}</td>
                     <td className="px-4 py-3">{c.name}</td>
                     <td className="px-4 py-3">
@@ -71,9 +71,9 @@ export default function CouriersPage() {
                         <Badge tone={c.hasWebhookSecret ? 'green' : 'slate'}>{t('couriers.webhook')}</Badge>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-4 py-3 text-body">
                       {t('couriers.govCount', { count: c._count?.coverage ?? 0 })}
-                      <span className="block text-xs text-slate-400">{t('couriers.shipmentCount', { count: c._count?.shipments ?? 0 })}</span>
+                      <span className="block text-xs text-faint">{t('couriers.shipmentCount', { count: c._count?.shipments ?? 0 })}</span>
                     </td>
                     <td className="px-4 py-3">
                       {c.isActive ? <Badge tone="green">{t('couriers.active')}</Badge> : <Badge tone="red">{t('couriers.inactive')}</Badge>}
@@ -86,7 +86,7 @@ export default function CouriersPage() {
                   </tr>
                 ))}
                 {couriers.data?.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>
+                  <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>
                 )}
               </tbody>
             </table>
@@ -139,7 +139,7 @@ function OnboardForm({ onDone }: { onDone: (id: string) => void }) {
         <TextField label={t('couriers.apiKey')} type="password" autoComplete="new-password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} dir="ltr" />
         <TextField label={t('couriers.webhookSecret')} type="password" autoComplete="new-password" value={webhookSecret} onChange={(e) => setWebhookSecret(e.target.value)} dir="ltr" />
       </div>
-      <p className="text-xs text-slate-500">{t('couriers.secretsNote')}</p>
+      <p className="text-xs text-muted">{t('couriers.secretsNote')}</p>
       {create.isError && <Alert>{t('couriers.createError')}</Alert>}
       <Button disabled={!codeValid || !name.trim() || create.isPending} onClick={() => create.mutate()}>
         {create.isPending ? t('common.pleaseWait') : t('couriers.onboard')}
@@ -214,7 +214,7 @@ function CourierEditor({ id, onChanged }: { id: string; onChanged: () => void })
 
       {/* Credentials */}
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-slate-700">{t('couriers.connection')}</h3>
+        <h3 className="text-sm font-semibold text-ink">{t('couriers.connection')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField label={t('couriers.name')} value={name} onChange={(e) => setName(e.target.value)} />
           <TextField label={t('couriers.apiBaseUrl')} value={apiBaseUrl} onChange={(e) => setApiBaseUrl(e.target.value)} dir="ltr" />
@@ -239,7 +239,7 @@ function CourierEditor({ id, onChanged }: { id: string; onChanged: () => void })
             dir="ltr"
           />
         </div>
-        <p className="text-xs text-slate-500">{t('couriers.rotateNote')}</p>
+        <p className="text-xs text-muted">{t('couriers.rotateNote')}</p>
         <div className="flex gap-2">
           <Button disabled={save.isPending} onClick={() => save.mutate()}>{save.isPending ? t('common.pleaseWait') : t('common.save')}</Button>
           <Button variant="secondary" disabled={test.isPending} onClick={() => test.mutate()}>{t('couriers.testConnection')}</Button>
@@ -290,16 +290,16 @@ function CoverageEditor({ id, onSaved }: { id: string; onSaved: () => void }) {
   const activeCount = Object.values(rows).filter((r) => r.on).length;
 
   return (
-    <div className="space-y-3 border-t border-slate-100 pt-5">
+    <div className="space-y-3 border-t border-line-soft pt-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-700">{t('couriers.coverageMap')}</h3>
-        <span className="text-xs text-slate-500">{t('couriers.govCount', { count: activeCount })}</span>
+        <h3 className="text-sm font-semibold text-ink">{t('couriers.coverageMap')}</h3>
+        <span className="text-xs text-muted">{t('couriers.govCount', { count: activeCount })}</span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-72 overflow-y-auto border border-slate-200 rounded p-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-72 overflow-y-auto border border-line rounded p-2">
         {GOVERNORATES.map((g) => {
           const r = rows[g.code] ?? { on: false, eta: 2 };
           return (
-            <div key={g.code} className={`flex items-center gap-2 rounded px-2 py-1.5 border ${r.on ? 'border-brand-200 bg-brand-50' : 'border-slate-200'}`}>
+            <div key={g.code} className={`flex items-center gap-2 rounded px-2 py-1.5 border ${r.on ? 'border-accent/40 bg-accent/10' : 'border-line'}`}>
               <label className="flex items-center gap-1.5 text-xs flex-1 cursor-pointer">
                 <input type="checkbox" checked={r.on} onChange={(e) => set(g.code, { on: e.target.checked })} />
                 {locale === 'ar' ? g.nameAr : g.nameEn}
@@ -311,7 +311,7 @@ function CoverageEditor({ id, onSaved }: { id: string; onSaved: () => void }) {
                 value={r.eta}
                 disabled={!r.on}
                 onChange={(e) => set(g.code, { eta: Number(e.target.value) })}
-                className="w-12 rounded border border-slate-300 px-1 py-0.5 text-xs disabled:bg-slate-100"
+                className="w-12 rounded border border-line px-1 py-0.5 text-xs disabled:bg-surface-muted"
                 title={t('couriers.etaDays')}
               />
             </div>

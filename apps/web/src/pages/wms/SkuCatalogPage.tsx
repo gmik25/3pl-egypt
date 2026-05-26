@@ -60,7 +60,7 @@ export default function SkuCatalogPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">SKU</th>
                   <th className="text-start font-medium px-4 py-3">{t('catalog.name')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('catalog.barcode')}</th>
@@ -71,16 +71,16 @@ export default function SkuCatalogPage() {
               </thead>
               <tbody>
                 {skus.data?.items.map((s) => (
-                  <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50">
+                  <tr key={s.id} className="border-b border-line-soft hover:bg-surface-muted">
                     <td className="px-4 py-3 font-medium" dir="ltr">{s.code}</td>
-                    <td className="px-4 py-3">{locale === 'ar' ? s.nameAr : (s.nameEn ?? s.nameAr)}<span className="block text-xs text-slate-400">{s.client?.legalName}</span></td>
-                    <td className="px-4 py-3 text-slate-600" dir="ltr">{s.barcode ?? '—'}</td>
-                    <td className="px-4 py-3 text-slate-600">{s.unitOfMeasure}</td>
-                    <td className="px-4 py-3">{s.expiryTracked ? <Badge tone="amber">{t('catalog.tracked')}</Badge> : <span className="text-slate-400">—</span>}</td>
-                    <td className="px-4 py-3 text-slate-600">{s.reorderPointQty || '—'}</td>
+                    <td className="px-4 py-3">{locale === 'ar' ? s.nameAr : (s.nameEn ?? s.nameAr)}<span className="block text-xs text-faint">{s.client?.legalName}</span></td>
+                    <td className="px-4 py-3 text-body" dir="ltr">{s.barcode ?? '—'}</td>
+                    <td className="px-4 py-3 text-body">{s.unitOfMeasure}</td>
+                    <td className="px-4 py-3">{s.expiryTracked ? <Badge tone="amber">{t('catalog.tracked')}</Badge> : <span className="text-faint">—</span>}</td>
+                    <td className="px-4 py-3 text-body">{s.reorderPointQty || '—'}</td>
                   </tr>
                 ))}
-                {skus.data?.items.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                {skus.data?.items.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
               </tbody>
             </table>
           </div>

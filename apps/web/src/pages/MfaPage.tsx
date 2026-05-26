@@ -35,12 +35,12 @@ export default function MfaPage() {
     <div className="max-w-xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{t('mfa.title')}</h1>
-        <p className="text-slate-500 mt-1">{t('mfa.subtitle')}</p>
+        <p className="text-muted mt-1">{t('mfa.subtitle')}</p>
       </div>
 
       <Card className="p-6 space-y-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-500">{t('mfa.status')}:</span>
+          <span className="text-sm text-muted">{t('mfa.status')}:</span>
           {alreadyEnabled ? (
             <Badge tone="green">{t('mfa.enabled')}</Badge>
           ) : (
@@ -58,13 +58,13 @@ export default function MfaPage() {
 
         {enrollment && (
           <div className="space-y-4">
-            <p className="text-sm text-slate-600">{t('mfa.scanInstruction')}</p>
-            <div className="flex justify-center bg-white p-4 rounded-md border border-slate-200">
+            <p className="text-sm text-body">{t('mfa.scanInstruction')}</p>
+            <div className="flex justify-center bg-surface p-4 rounded-md border border-line">
               <QRCodeSVG value={enrollment.otpauthUri} size={180} />
             </div>
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-muted">
               {t('mfa.manualEntry')}:{' '}
-              <code className="bg-slate-100 px-1 py-0.5 rounded break-all">{enrollment.secret}</code>
+              <code className="bg-surface-muted px-1 py-0.5 rounded break-all">{enrollment.secret}</code>
             </div>
             <TextField
               label={t('mfa.enterCode')}

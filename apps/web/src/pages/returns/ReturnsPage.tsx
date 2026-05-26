@@ -50,20 +50,20 @@ export default function ReturnsPage() {
             <ul className="space-y-1">
               {returns.data?.map((r) => (
                 <li key={r.id}>
-                  <button onClick={() => setSelected(r.id)} className={`w-full text-start px-3 py-2 rounded-md text-sm transition ${selected === r.id ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-100'}`}>
+                  <button onClick={() => setSelected(r.id)} className={`w-full text-start px-3 py-2 rounded-md text-sm transition ${selected === r.id ? 'bg-accent/10 text-accent' : 'hover:bg-surface-muted'}`}>
                     <span className="font-medium" dir="ltr">{r.rmaNumber}</span>
-                    <span className="block text-xs text-slate-400">{r.order?.reference} · {r.client?.legalName}</span>
+                    <span className="block text-xs text-faint">{r.order?.reference} · {r.client?.legalName}</span>
                     <Badge tone={STATUS_TONE[r.status]}>{t(`returns.statuses.${r.status}`)}</Badge>
                   </button>
                 </li>
               ))}
-              {returns.data?.length === 0 && <li className="text-sm text-slate-400 px-3 py-2">{t('common.noResults')}</li>}
+              {returns.data?.length === 0 && <li className="text-sm text-faint px-3 py-2">{t('common.noResults')}</li>}
             </ul>
           )}
         </Card>
 
         <div className="lg:col-span-2">
-          {selected ? <ReturnDetailPanel id={selected} /> : <Card className="p-8 text-center text-slate-400 text-sm">{t('returns.selectPrompt')}</Card>}
+          {selected ? <ReturnDetailPanel id={selected} /> : <Card className="p-8 text-center text-faint text-sm">{t('returns.selectPrompt')}</Card>}
         </div>
       </div>
     </div>
@@ -111,8 +111,8 @@ function ReturnDetailPanel({ id }: { id: string }) {
           <h2 className="text-lg font-semibold" dir="ltr">{r.rmaNumber}</h2>
           <Badge tone={STATUS_TONE[r.status]}>{t(`returns.statuses.${r.status}`)}</Badge>
         </div>
-        <p className="text-sm text-slate-500 mt-1">{r.order?.reference} · {r.order?.customerName} · {t(`returns.reasons.${r.reason}`)}</p>
-        {r.customerNote && <p className="text-sm text-slate-600 mt-2">"{r.customerNote}"</p>}
+        <p className="text-sm text-muted mt-1">{r.order?.reference} · {r.order?.customerName} · {t(`returns.reasons.${r.reason}`)}</p>
+        {r.customerNote && <p className="text-sm text-body mt-2">"{r.customerNote}"</p>}
         {error && <div className="mt-3"><Alert>{error}</Alert></div>}
 
         <div className="flex gap-2 mt-4 flex-wrap">
@@ -127,7 +127,7 @@ function ReturnDetailPanel({ id }: { id: string }) {
         <h3 className="text-md font-semibold mb-3">{t('returns.items')}</h3>
         <div className="space-y-3">
           {r.items.map((it) => (
-            <div key={it.id} className="border border-slate-200 rounded-md p-3">
+            <div key={it.id} className="border border-line rounded-md p-3">
               <div className="flex items-center justify-between text-sm">
                 <span><span className="font-medium" dir="ltr">{it.sku?.code}</span> · {it.sku?.nameAr} ×{it.quantity}</span>
                 {it.disposition ? <Badge tone={it.disposition === 'RESELLABLE' ? 'green' : 'red'}>{t(`returns.dispositions.${it.disposition}`)}</Badge> : <Badge tone="amber">{t('returns.pendingInspection')}</Badge>}
@@ -148,7 +148,7 @@ function ReturnDetailPanel({ id }: { id: string }) {
               {/* Disposal for damaged items */}
               {it.disposition === 'DAMAGED' && (
                 it.disposalApproved
-                  ? <p className="text-xs text-slate-400 mt-2">{t('returns.disposed')}</p>
+                  ? <p className="text-xs text-faint mt-2">{t('returns.disposed')}</p>
                   : <Button variant="ghost" className="mt-2" onClick={() => dispose.mutate(it.id)} disabled={dispose.isPending}>{t('returns.approveDisposal')}</Button>
               )}
             </div>
@@ -158,11 +158,11 @@ function ReturnDetailPanel({ id }: { id: string }) {
 
       {r.creditNote && (
         <Card className="p-6">
-          <h3 className="text-md font-semibold mb-2">{t('returns.creditNote')} <span dir="ltr" className="text-slate-400">{r.creditNote.reference}</span></h3>
+          <h3 className="text-md font-semibold mb-2">{t('returns.creditNote')} <span dir="ltr" className="text-faint">{r.creditNote.reference}</span></h3>
           <div className="text-sm space-y-1">
-            <div className="flex justify-between"><span className="text-slate-500">{t('quote.net')}</span><span>{formatEgp(r.creditNote.netPiastres, { locale: egpLoc })}</span></div>
-            <div className="flex justify-between"><span className="text-slate-500">{t('quote.vat', { pct: 14 })}</span><span>{formatEgp(r.creditNote.vatPiastres, { locale: egpLoc })}</span></div>
-            <div className="flex justify-between font-semibold border-t border-slate-200 pt-1"><span>{t('quote.gross')}</span><span>{formatEgp(r.creditNote.grossPiastres, { locale: egpLoc })}</span></div>
+            <div className="flex justify-between"><span className="text-muted">{t('quote.net')}</span><span>{formatEgp(r.creditNote.netPiastres, { locale: egpLoc })}</span></div>
+            <div className="flex justify-between"><span className="text-muted">{t('quote.vat', { pct: 14 })}</span><span>{formatEgp(r.creditNote.vatPiastres, { locale: egpLoc })}</span></div>
+            <div className="flex justify-between font-semibold border-t border-line pt-1"><span>{t('quote.gross')}</span><span>{formatEgp(r.creditNote.grossPiastres, { locale: egpLoc })}</span></div>
           </div>
         </Card>
       )}

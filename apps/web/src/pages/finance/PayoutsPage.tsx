@@ -62,7 +62,7 @@ export default function PayoutsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('payouts.reference')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('orders.client')}</th>
                   <th className="text-end font-medium px-4 py-3">{t('payouts.amount')}</th>
@@ -73,9 +73,9 @@ export default function PayoutsPage() {
               </thead>
               <tbody>
                 {payouts.data?.map((p) => (
-                  <tr key={p.id} className="border-b border-slate-100">
+                  <tr key={p.id} className="border-b border-line-soft">
                     <td className="px-4 py-3 font-medium" dir="ltr">{p.reference}</td>
-                    <td className="px-4 py-3 text-slate-600">{p.client?.legalName}</td>
+                    <td className="px-4 py-3 text-body">{p.client?.legalName}</td>
                     <td className="px-4 py-3 text-end">{formatEgp(p.amountPiastres, { locale: egpLoc })}</td>
                     <td className="px-4 py-3">{t(`payouts.rails.${p.rail}`)}</td>
                     <td className="px-4 py-3"><Badge tone={TONE[p.status]}>{t(`payouts.statuses.${p.status}`)}</Badge></td>
@@ -89,7 +89,7 @@ export default function PayoutsPage() {
                     </td>
                   </tr>
                 ))}
-                {payouts.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                {payouts.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
               </tbody>
             </table>
           </div>

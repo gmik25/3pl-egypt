@@ -20,7 +20,7 @@ export default function ClientStoragePage() {
     <div className="max-w-3xl space-y-5">
       <div>
         <h1 className="text-2xl font-bold">{t('myStorage.title')}</h1>
-        <p className="text-sm text-slate-500">{t('myStorage.subtitle')}</p>
+        <p className="text-sm text-muted">{t('myStorage.subtitle')}</p>
       </div>
 
       {allocations.isLoading ? (
@@ -32,19 +32,19 @@ export default function ClientStoragePage() {
             <Card key={g.warehouse.id} className="p-6">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-semibold">
-                  {g.warehouse.name} <span className="text-slate-400" dir="ltr">({g.warehouse.code})</span>
-                  <span className="block text-xs text-slate-400">{govName(g.warehouse.governorate)}</span>
+                  {g.warehouse.name} <span className="text-faint" dir="ltr">({g.warehouse.code})</span>
+                  <span className="block text-xs text-faint">{govName(g.warehouse.governorate)}</span>
                 </h2>
                 <div className="text-end text-sm">
                   <Badge tone="blue">{t('myStorage.locationsCount', { count: g.locations.length })}</Badge>
-                  <span className="block text-xs text-slate-400 mt-1">{t('myStorage.occupiedOf', { occupied, total: g.locations.length })}</span>
+                  <span className="block text-xs text-faint mt-1">{t('myStorage.occupiedOf', { occupied, total: g.locations.length })}</span>
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {g.locations.map((l) => (
                   <span
                     key={l.id}
-                    className={`text-xs border rounded px-2 py-1 ${l.units > 0 ? 'border-amber-200 bg-amber-50 text-amber-800' : 'border-slate-200 text-slate-600'}`}
+                    className={`text-xs border rounded px-2 py-1 ${l.units > 0 ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300' : 'border-line text-body'}`}
                     dir="ltr"
                     title={l.units > 0 ? t('myStorage.occupiedUnits', { count: l.units }) : t('warehouses.empty')}
                   >
@@ -56,7 +56,7 @@ export default function ClientStoragePage() {
           );
         })
       ) : (
-        <Card className="p-8 text-center text-slate-400 text-sm">{t('myStorage.empty')}</Card>
+        <Card className="p-8 text-center text-faint text-sm">{t('myStorage.empty')}</Card>
       )}
     </div>
   );

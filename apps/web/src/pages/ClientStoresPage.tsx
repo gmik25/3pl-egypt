@@ -30,7 +30,7 @@ export default function ClientStoresPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{t('myStores.title')}</h1>
-          <p className="text-sm text-slate-500">{t('myStores.subtitle')}</p>
+          <p className="text-sm text-muted">{t('myStores.subtitle')}</p>
         </div>
         <Button onClick={() => setShowNew((o) => !o)}>{showNew ? t('common.cancel') : t('myStores.connect')}</Button>
       </div>
@@ -44,7 +44,7 @@ export default function ClientStoresPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('myStores.store')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('myStores.platform')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('myStores.lastEvent')}</th>
@@ -54,10 +54,10 @@ export default function ClientStoresPage() {
               </thead>
               <tbody>
                 {stores.data?.map((s) => (
-                  <tr key={s.id} className="border-b border-slate-100">
+                  <tr key={s.id} className="border-b border-line-soft">
                     <td className="px-4 py-3 font-medium" dir="ltr">{s.shopDomain}</td>
                     <td className="px-4 py-3">{t(`myStores.platforms.${s.platform}`)}</td>
-                    <td className="px-4 py-3 text-slate-500">{s.lastEventAt ? new Date(s.lastEventAt).toLocaleString() : '—'}</td>
+                    <td className="px-4 py-3 text-muted">{s.lastEventAt ? new Date(s.lastEventAt).toLocaleString() : '—'}</td>
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[s.status]}>{t(`myStores.statuses.${s.status}`)}</Badge></td>
                     <td className="px-4 py-3 text-end">
                       {s.status !== 'REVOKED' && (
@@ -67,7 +67,7 @@ export default function ClientStoresPage() {
                   </tr>
                 ))}
                 {stores.data?.length === 0 && (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-400">{t('myStores.empty')}</td></tr>
+                  <tr><td colSpan={5} className="px-4 py-8 text-center text-faint">{t('myStores.empty')}</td></tr>
                 )}
               </tbody>
             </table>
@@ -97,15 +97,15 @@ function ConnectForm({ onConnected, onClose }: { onConnected: () => void; onClos
       <Card className="p-6 space-y-4">
         <h2 className="text-lg font-semibold">{t('myStores.authorizeTitle')}</h2>
         {result.simulated && <Alert tone="amber">{t('myStores.simulatedConnect')}</Alert>}
-        <p className="text-sm text-slate-600">{t('myStores.authorizeHelp')}</p>
+        <p className="text-sm text-body">{t('myStores.authorizeHelp')}</p>
         {/* In sandbox the real platform has no app to redirect back, so offer the completion shortcut. */}
         <a href={result.sandboxCallbackUrl ?? result.authorizeUrl} target={result.sandboxCallbackUrl ? '_self' : '_blank'} rel="noreferrer">
           <Button>{result.sandboxCallbackUrl ? t('myStores.completeSandbox') : t('myStores.openAuthorize')}</Button>
         </a>
         {result.webhookSecret && (
           <div className="space-y-1">
-            <span className="block text-sm font-medium text-slate-700">{t('myStores.webhookSecret')}</span>
-            <code className="block bg-slate-100 rounded px-3 py-2 text-xs break-all" dir="ltr">{result.webhookSecret}</code>
+            <span className="block text-sm font-medium text-ink">{t('myStores.webhookSecret')}</span>
+            <code className="block bg-surface-muted rounded px-3 py-2 text-xs break-all" dir="ltr">{result.webhookSecret}</code>
             <p className="text-xs text-amber-600">{t('myStores.secretOnce')}</p>
           </div>
         )}
@@ -122,7 +122,7 @@ function ConnectForm({ onConnected, onClose }: { onConnected: () => void; onClos
         </Select>
         <TextField label={t('myStores.shopDomain')} value={shopDomain} onChange={(e) => setShopDomain(e.target.value)} placeholder="my-store.myshopify.com" dir="ltr" />
       </div>
-      <p className="text-xs text-slate-500">{t('myStores.domainHint')}</p>
+      <p className="text-xs text-muted">{t('myStores.domainHint')}</p>
       {connect.isError && <Alert>{t('myStores.connectError')}</Alert>}
       <Button disabled={shopDomain.trim().length < 3 || connect.isPending} onClick={() => connect.mutate()}>
         {connect.isPending ? t('common.pleaseWait') : t('myStores.beginOAuth')}

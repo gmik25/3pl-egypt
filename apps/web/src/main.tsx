@@ -5,6 +5,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './i18n';
 import './styles.css';
 import App from './App';
+import { applyTheme, initialTheme } from './stores/theme.store';
+
+// Apply the saved/system theme before first paint to avoid a flash.
+applyTheme(initialTheme());
 
 const queryClient = new QueryClient({
   defaultOptions: {

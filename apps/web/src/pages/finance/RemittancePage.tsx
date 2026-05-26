@@ -61,14 +61,14 @@ export default function RemittancePage() {
           <h2 className="text-lg font-semibold mb-3">{t('remittance.submitTitle')}</h2>
           {eligible.isLoading ? <Spinner /> : eligible.data && eligible.data.length > 0 ? (
             <>
-              <div className="max-h-64 overflow-y-auto border border-slate-200 rounded">
+              <div className="max-h-64 overflow-y-auto border border-line rounded">
                 <table className="w-full text-sm">
                   <tbody>
                     {eligible.data.map((o) => (
-                      <tr key={o.id} className="border-b border-slate-100">
+                      <tr key={o.id} className="border-b border-line-soft">
                         <td className="px-3 py-2"><input type="checkbox" checked={!!selected[o.id]} onChange={(e) => setSelected((m) => ({ ...m, [o.id]: e.target.checked }))} /></td>
                         <td className="px-3 py-2 font-medium" dir="ltr">{o.reference}</td>
-                        <td className="px-3 py-2 text-slate-600">{o.client.legalName}</td>
+                        <td className="px-3 py-2 text-body">{o.client.legalName}</td>
                         <td className="px-3 py-2 text-end">{formatEgp(o.codAmountPiastres ?? 0, { locale: egpLoc })}</td>
                       </tr>
                     ))}
@@ -76,12 +76,12 @@ export default function RemittancePage() {
                 </table>
               </div>
               <div className="flex items-center justify-between mt-3">
-                <span className="text-sm text-slate-600">{t('remittance.declared')}: <strong>{formatEgp(declared, { locale: egpLoc })}</strong> ({selectedIds.length})</span>
+                <span className="text-sm text-body">{t('remittance.declared')}: <strong>{formatEgp(declared, { locale: egpLoc })}</strong> ({selectedIds.length})</span>
                 <Button disabled={selectedIds.length === 0 || submit.isPending} onClick={() => submit.mutate()}>{t('remittance.submit')}</Button>
               </div>
               {error && <Alert>{error}</Alert>}
             </>
-          ) : <p className="text-sm text-slate-400">{t('remittance.noEligible')}</p>}
+          ) : <p className="text-sm text-faint">{t('remittance.noEligible')}</p>}
         </Card>
       )}
 
@@ -91,7 +91,7 @@ export default function RemittancePage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('remittance.reference')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('remittance.driver')}</th>
                   <th className="text-end font-medium px-4 py-3">{t('remittance.declared')}</th>
@@ -101,8 +101,8 @@ export default function RemittancePage() {
               </thead>
               <tbody>
                 {remittances.data?.map((r) => (
-                  <tr key={r.id} className="border-b border-slate-100">
-                    <td className="px-4 py-3 font-medium" dir="ltr">{r.reference}<span className="block text-xs text-slate-400">{r._count?.items ?? 0} {t('remittance.orders')}</span></td>
+                  <tr key={r.id} className="border-b border-line-soft">
+                    <td className="px-4 py-3 font-medium" dir="ltr">{r.reference}<span className="block text-xs text-faint">{r._count?.items ?? 0} {t('remittance.orders')}</span></td>
                     <td className="px-4 py-3">{r.driver?.fullName}</td>
                     <td className="px-4 py-3 text-end">{formatEgp(r.declaredAmountPiastres, { locale: egpLoc })}</td>
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[r.status]}>{t(`remittance.statuses.${r.status}`)}</Badge></td>
@@ -116,7 +116,7 @@ export default function RemittancePage() {
                     </td>
                   </tr>
                 ))}
-                {remittances.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                {remittances.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
               </tbody>
             </table>
           </div>
@@ -127,19 +127,19 @@ export default function RemittancePage() {
         <h2 className="text-lg font-semibold mb-3">{t('remittance.codByDriver')}</h2>
         {byDriver.isLoading ? <Spinner /> : byDriver.data && byDriver.data.length > 0 ? (
           <table className="w-full text-sm">
-            <thead><tr className="text-slate-500 border-b border-slate-200"><th className="text-start font-medium px-2 py-2">{t('remittance.driver')}</th><th className="text-start font-medium px-2 py-2">{t('remittance.day')}</th><th className="text-end font-medium px-2 py-2">{t('remittance.orders')}</th><th className="text-end font-medium px-2 py-2">COD</th></tr></thead>
+            <thead><tr className="text-muted border-b border-line"><th className="text-start font-medium px-2 py-2">{t('remittance.driver')}</th><th className="text-start font-medium px-2 py-2">{t('remittance.day')}</th><th className="text-end font-medium px-2 py-2">{t('remittance.orders')}</th><th className="text-end font-medium px-2 py-2">COD</th></tr></thead>
             <tbody>
               {byDriver.data.map((r, i) => (
-                <tr key={i} className="border-b border-slate-100">
+                <tr key={i} className="border-b border-line-soft">
                   <td className="px-2 py-2">{r.driverName}</td>
-                  <td className="px-2 py-2 text-slate-600">{r.day}</td>
+                  <td className="px-2 py-2 text-body">{r.day}</td>
                   <td className="px-2 py-2 text-end">{r.count}</td>
                   <td className="px-2 py-2 text-end">{formatEgp(r.totalPiastres, { locale: egpLoc })}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        ) : <p className="text-sm text-slate-400">{t('common.noResults')}</p>}
+        ) : <p className="text-sm text-faint">{t('common.noResults')}</p>}
       </Card>
     </div>
   );

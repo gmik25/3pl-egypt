@@ -43,20 +43,20 @@ export default function ReceivingPage() {
             <ul className="space-y-1">
               {pos.data?.map((p) => (
                 <li key={p.id}>
-                  <button onClick={() => setSelected(p.id)} className={`w-full text-start px-3 py-2 rounded-md text-sm transition ${selected === p.id ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-100'}`}>
+                  <button onClick={() => setSelected(p.id)} className={`w-full text-start px-3 py-2 rounded-md text-sm transition ${selected === p.id ? 'bg-accent/10 text-accent' : 'hover:bg-surface-muted'}`}>
                     <span className="font-medium" dir="ltr">{p.reference}</span>
-                    <span className="block text-xs text-slate-400">{p.client?.legalName}</span>
+                    <span className="block text-xs text-faint">{p.client?.legalName}</span>
                     <Badge tone={PO_TONE[p.status]}>{t(`receiving.statuses.${p.status}`)}</Badge>
                   </button>
                 </li>
               ))}
-              {pos.data?.length === 0 && <li className="text-sm text-slate-400 px-3 py-2">{t('common.noResults')}</li>}
+              {pos.data?.length === 0 && <li className="text-sm text-faint px-3 py-2">{t('common.noResults')}</li>}
             </ul>
           )}
         </Card>
 
         <div className="lg:col-span-2">
-          {selected ? <PoDetail poId={selected} /> : <Card className="p-8 text-center text-slate-400 text-sm">{t('receiving.selectPrompt')}</Card>}
+          {selected ? <PoDetail poId={selected} /> : <Card className="p-8 text-center text-faint text-sm">{t('receiving.selectPrompt')}</Card>}
         </div>
       </div>
     </div>
@@ -148,12 +148,12 @@ function PoDetail({ poId }: { poId: string }) {
         <h2 className="text-lg font-semibold" dir="ltr">{po.data.reference}</h2>
         <Badge tone={PO_TONE[po.data.status]}>{t(`receiving.statuses.${po.data.status}`)}</Badge>
       </div>
-      <p className="text-sm text-slate-500">{po.data.client?.legalName} · {po.data.warehouse?.name}</p>
+      <p className="text-sm text-muted">{po.data.client?.legalName} · {po.data.warehouse?.name}</p>
       {warning && <Alert tone="amber">{warning}</Alert>}
 
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-slate-500 border-b border-slate-200">
+          <tr className="text-muted border-b border-line">
             <th className="text-start font-medium px-2 py-2">SKU</th>
             <th className="text-end font-medium px-2 py-2">{t('receiving.ordered')}</th>
             <th className="text-end font-medium px-2 py-2">{t('receiving.received')}</th>
@@ -164,14 +164,14 @@ function PoDetail({ poId }: { poId: string }) {
           {po.data.lines?.map((l) => {
             const remaining = l.quantityOrdered - l.quantityReceived;
             return (
-              <tr key={l.id} className="border-b border-slate-100 align-top">
-                <td className="px-2 py-2" dir="ltr">{l.sku?.code}<span className="block text-xs text-slate-400" dir="auto">{l.sku?.nameAr}</span></td>
+              <tr key={l.id} className="border-b border-line-soft align-top">
+                <td className="px-2 py-2" dir="ltr">{l.sku?.code}<span className="block text-xs text-faint" dir="auto">{l.sku?.nameAr}</span></td>
                 <td className="px-2 py-2 text-end">{l.quantityOrdered}</td>
                 <td className="px-2 py-2 text-end">{l.quantityReceived}</td>
                 <td className="px-2 py-2 text-end">
                   {remaining > 0 ? (
                     receivingLine === l.id ? (
-                      <div className="space-y-2 text-start bg-slate-50 p-2 rounded">
+                      <div className="space-y-2 text-start bg-canvas p-2 rounded">
                         <Select label={t('inventory.location')} value={locationId} onChange={(e) => setLocationId(e.target.value)}>
                           <option value="">—</option>
                           {locations.data?.map((loc) => {

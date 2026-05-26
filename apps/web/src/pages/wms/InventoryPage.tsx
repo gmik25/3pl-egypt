@@ -79,7 +79,7 @@ export default function InventoryPage() {
             {skuResults.data && skuSearch.length >= 2 && (
               <div className="mt-2 flex flex-wrap gap-2">
                 {skuResults.data.items.map((s) => (
-                  <button key={s.id} onClick={() => { setSku(s); setSkuSearch(''); }} className="text-xs border border-slate-300 rounded px-2 py-1 hover:bg-slate-50">
+                  <button key={s.id} onClick={() => { setSku(s); setSkuSearch(''); }} className="text-xs border border-line rounded px-2 py-1 hover:bg-surface-muted">
                     <span dir="ltr">{s.code}</span> — {locale === 'ar' ? s.nameAr : (s.nameEn ?? s.nameAr)}
                   </button>
                 ))}
@@ -93,7 +93,7 @@ export default function InventoryPage() {
               {stock.isLoading ? <Spinner /> : stock.data && stock.data.length > 0 ? (
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-slate-500 border-b border-slate-200">
+                    <tr className="text-muted border-b border-line">
                       <th className="text-start font-medium px-2 py-2">{t('inventory.location')}</th>
                       <th className="text-start font-medium px-2 py-2">{t('inventory.status')}</th>
                       <th className="text-start font-medium px-2 py-2">{t('inventory.lot')}</th>
@@ -103,10 +103,10 @@ export default function InventoryPage() {
                   </thead>
                   <tbody>
                     {stock.data.map((l) => (
-                      <tr key={l.id} className="border-b border-slate-100">
+                      <tr key={l.id} className="border-b border-line-soft">
                         <td className="px-2 py-2" dir="ltr">{l.location?.code}</td>
                         <td className="px-2 py-2"><Badge tone={STATUS_TONE[l.status]}>{t(`inventory.statuses.${l.status}`)}</Badge></td>
-                        <td className="px-2 py-2 text-slate-500 text-xs">
+                        <td className="px-2 py-2 text-muted text-xs">
                           {l.lot ? <>{l.lot.lotNumber}{l.lot.expiryDate && <> · {new Date(l.lot.expiryDate).toLocaleDateString()}</>}</> : '—'}
                         </td>
                         <td className="px-2 py-2 text-end font-medium">{l.quantity}</td>
@@ -122,10 +122,10 @@ export default function InventoryPage() {
                     ))}
                   </tbody>
                 </table>
-              ) : <p className="text-sm text-slate-400">{t('inventory.noStock')}</p>}
+              ) : <p className="text-sm text-faint">{t('inventory.noStock')}</p>}
 
               {/* Adjust */}
-              <div className="border-t border-slate-100 mt-4 pt-4">
+              <div className="border-t border-line-soft mt-4 pt-4">
                 <h3 className="text-sm font-medium mb-2">{t('inventory.adjust')}</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 items-end">
                   <Select label={t('orders.warehouse')} value={warehouseId} onChange={(e) => { setWarehouseId(e.target.value); setLocationId(''); }}>
@@ -161,7 +161,7 @@ export default function InventoryPage() {
                 </li>
               ))}
             </ul>
-          ) : <p className="text-sm text-slate-400">{t('inventory.noLowStock')}</p>}
+          ) : <p className="text-sm text-faint">{t('inventory.noLowStock')}</p>}
         </Card>
       </div>
     </div>

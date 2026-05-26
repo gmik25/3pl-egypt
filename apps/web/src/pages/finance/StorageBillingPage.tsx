@@ -43,7 +43,7 @@ export default function StorageBillingPage() {
     <div className="max-w-2xl space-y-5">
       <div>
         <h1 className="text-2xl font-bold">{t('storageBilling.title')}</h1>
-        <p className="text-sm text-slate-500">{t('storageBilling.subtitle')}</p>
+        <p className="text-sm text-muted">{t('storageBilling.subtitle')}</p>
       </div>
 
       <Card className="p-6 space-y-4">
@@ -65,14 +65,14 @@ export default function StorageBillingPage() {
         <Card className="p-6 space-y-4">
           <h2 className="text-lg font-semibold">{t('storageBilling.estimate')}</h2>
           <dl className="grid grid-cols-2 gap-2 text-sm">
-            <div><dt className="text-slate-500">{t('storageBilling.reservedBins')}</dt><dd>{preview.reservedBins}</dd></div>
-            <div><dt className="text-slate-500">{t('storageBilling.ratePerBin')}</dt><dd>{egp(preview.ratePerBinPerDayPiastres)}/{t('storageBilling.day')}</dd></div>
-            <div><dt className="text-slate-500">{t('storageBilling.days')}</dt><dd>{preview.days}</dd></div>
-            <div><dt className="text-slate-500">{t('storageBilling.utilization')}</dt><dd>{preview.reservedCapacity > 0 ? `${preview.storedUnits}/${preview.reservedCapacity}` : '—'}</dd></div>
+            <div><dt className="text-muted">{t('storageBilling.reservedBins')}</dt><dd>{preview.reservedBins}</dd></div>
+            <div><dt className="text-muted">{t('storageBilling.ratePerBin')}</dt><dd>{egp(preview.ratePerBinPerDayPiastres)}/{t('storageBilling.day')}</dd></div>
+            <div><dt className="text-muted">{t('storageBilling.days')}</dt><dd>{preview.days}</dd></div>
+            <div><dt className="text-muted">{t('storageBilling.utilization')}</dt><dd>{preview.reservedCapacity > 0 ? `${preview.storedUnits}/${preview.reservedCapacity}` : '—'}</dd></div>
           </dl>
-          <div className="border-t border-slate-100 pt-3 space-y-1 text-sm">
-            <div className="flex justify-between"><span className="text-slate-500">{t('storageBilling.net')}</span><span>{egp(preview.netPiastres)}</span></div>
-            <div className="flex justify-between"><span className="text-slate-500">{t('storageBilling.vat')}</span><span>{egp(preview.vatPiastres)}</span></div>
+          <div className="border-t border-line-soft pt-3 space-y-1 text-sm">
+            <div className="flex justify-between"><span className="text-muted">{t('storageBilling.net')}</span><span>{egp(preview.netPiastres)}</span></div>
+            <div className="flex justify-between"><span className="text-muted">{t('storageBilling.vat')}</span><span>{egp(preview.vatPiastres)}</span></div>
             <div className="flex justify-between font-semibold"><span>{t('storageBilling.gross')}</span><span>{egp(preview.grossPiastres)}</span></div>
           </div>
           {charged ? (
@@ -83,7 +83,7 @@ export default function StorageBillingPage() {
               <Button disabled={preview.grossPiastres <= 0 || doCharge.isPending} onClick={() => doCharge.mutate()}>
                 {doCharge.isPending ? t('common.pleaseWait') : t('storageBilling.charge')}
               </Button>
-              <p className="text-xs text-slate-400">{t('storageBilling.chargeNote')}</p>
+              <p className="text-xs text-faint">{t('storageBilling.chargeNote')}</p>
             </>
           )}
         </Card>

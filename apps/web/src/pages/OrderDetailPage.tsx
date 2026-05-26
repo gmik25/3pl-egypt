@@ -57,7 +57,7 @@ export default function OrderDetailPage() {
     <div className="max-w-4xl space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <Link to="/orders" className="text-sm text-brand-600 hover:underline">← {t('orders.title')}</Link>
+          <Link to="/orders" className="text-sm text-accent hover:underline">← {t('orders.title')}</Link>
           <h1 className="text-2xl font-bold mt-1" dir="ltr">{o.reference}</h1>
         </div>
         <div className="flex items-center gap-2">
@@ -103,7 +103,7 @@ export default function OrderDetailPage() {
         <h2 className="text-lg font-semibold mb-3">{t('orders.items')}</h2>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-slate-500 border-b border-slate-200">
+            <tr className="text-muted border-b border-line">
               <th className="text-start font-medium px-2 py-2">SKU</th>
               <th className="text-start font-medium px-2 py-2">{t('orders.itemName')}</th>
               <th className="text-start font-medium px-2 py-2">{t('orders.qty')}</th>
@@ -113,7 +113,7 @@ export default function OrderDetailPage() {
           </thead>
           <tbody>
             {o.items.map((i) => (
-              <tr key={i.id} className="border-b border-slate-100">
+              <tr key={i.id} className="border-b border-line-soft">
                 <td className="px-2 py-2" dir="ltr">{i.sku.code}</td>
                 <td className="px-2 py-2">{locale === 'ar' ? i.sku.nameAr : (i.sku.nameEn ?? i.sku.nameAr)}</td>
                 <td className="px-2 py-2">{i.quantity}</td>
@@ -135,9 +135,9 @@ export default function OrderDetailPage() {
       <Card className="p-6 space-y-3">
         <h2 className="text-lg font-semibold">{t('orders.advance')}</h2>
         {nextStates.length === 0 ? (
-          <p className="text-sm text-slate-400">{t('orders.terminal')}</p>
+          <p className="text-sm text-faint">{t('orders.terminal')}</p>
         ) : !canTransition ? (
-          <p className="text-sm text-slate-400">{t('orders.noTransitionPermission')}</p>
+          <p className="text-sm text-faint">{t('orders.noTransitionPermission')}</p>
         ) : (
           <>
             <TextField label={t('orders.reasonOptional')} value={reason} onChange={(e) => setReason(e.target.value)} />
@@ -160,9 +160,9 @@ export default function OrderDetailPage() {
           <ol className="space-y-2 text-sm">
             {o.transitions.map((tr) => (
               <li key={tr.id} className="flex items-center gap-2">
-                <span className="text-slate-400 text-xs whitespace-nowrap">{fmtDate(tr.createdAt)}</span>
+                <span className="text-faint text-xs whitespace-nowrap">{fmtDate(tr.createdAt)}</span>
                 <OrderStateBadge state={tr.toState} />
-                {tr.reason && <span className="text-slate-500 text-xs">— {tr.reason}</span>}
+                {tr.reason && <span className="text-muted text-xs">— {tr.reason}</span>}
               </li>
             ))}
           </ol>
@@ -171,7 +171,7 @@ export default function OrderDetailPage() {
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-3">{t('cod.ledger')}</h2>
           {o.codLedger.length === 0 ? (
-            <p className="text-sm text-slate-400">{t('cod.noEntries')}</p>
+            <p className="text-sm text-faint">{t('cod.noEntries')}</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {o.codLedger.map((e) => (
@@ -180,7 +180,7 @@ export default function OrderDetailPage() {
                     <Badge tone={e.type === 'COLLECTED' ? 'green' : e.type === 'REMITTED' ? 'blue' : 'amber'}>
                       {t(`cod.types.${e.type}`)}
                     </Badge>
-                    <span className="text-slate-400 text-xs">{fmtDate(e.createdAt)}</span>
+                    <span className="text-faint text-xs">{fmtDate(e.createdAt)}</span>
                   </span>
                   <span>{formatEgp(e.amountPiastres, { locale: egpLoc })}</span>
                 </li>
@@ -196,7 +196,7 @@ export default function OrderDetailPage() {
 function Row({ label, value, ltr }: { label: string; value: string; ltr?: boolean }) {
   return (
     <div className="flex justify-between gap-4">
-      <dt className="text-slate-500">{label}</dt>
+      <dt className="text-muted">{label}</dt>
       <dd className="text-end" dir={ltr ? 'ltr' : undefined}>{value}</dd>
     </div>
   );

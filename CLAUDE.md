@@ -121,6 +121,7 @@ This is a large-scale, modular system. Build one module at a time. Always start 
 5. **Flag Egypt-specific edge cases** as inline `// EG:` comments in code (e.g. missing postcodes, Arabic address parsing, EGP decimal handling).
 6. **Always validate EGP amounts** as integers in piastres (1 EGP = 100 piastres) to avoid float errors.
 7. **COD is the dominant payment method** in Egypt — treat it as a first-class flow, not an edge case.
+8. **Style with semantic tokens, not raw colors.** The web app has a token-based design system with light/dark mode (`apps/web/src/styles.css` + `tailwind.config.js`): use `bg-canvas/surface/surface-muted`, `border-line(-soft)`, `text-ink/body/muted/faint`, `text-accent`/`bg-accent`. Never reintroduce hardcoded `slate-*`/`white` classes; status colors use translucent fills (`bg-*-500/15`) so they read in both themes. Compose from `components/ui.tsx` and dark mode + RTL come for free.
 
 ---
 

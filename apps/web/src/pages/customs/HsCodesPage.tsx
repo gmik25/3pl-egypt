@@ -44,7 +44,7 @@ export default function HsCodesPage() {
         {hsCodes.isLoading ? <Spinner /> : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-slate-500 border-b border-slate-200">
+              <tr className="text-muted border-b border-line">
                 <th className="text-start font-medium px-4 py-3">{t('customs.hsCode')}</th>
                 <th className="text-start font-medium px-4 py-3">{t('customs.hsDescription')}</th>
                 <th className="text-end font-medium px-4 py-3">{t('customs.duty')}</th>
@@ -52,13 +52,13 @@ export default function HsCodesPage() {
             </thead>
             <tbody>
               {hsCodes.data?.map((h) => (
-                <tr key={h.id} className="border-b border-slate-100">
+                <tr key={h.id} className="border-b border-line-soft">
                   <td className="px-4 py-3 font-medium" dir="ltr">{h.code}</td>
-                  <td className="px-4 py-3 text-slate-600">{h.description}</td>
+                  <td className="px-4 py-3 text-body">{h.description}</td>
                   <td className="px-4 py-3 text-end">{(h.dutyRateBps / 100).toFixed(2)}%</td>
                 </tr>
               ))}
-              {hsCodes.data?.length === 0 && <tr><td colSpan={3} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+              {hsCodes.data?.length === 0 && <tr><td colSpan={3} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
             </tbody>
           </table>
         )}

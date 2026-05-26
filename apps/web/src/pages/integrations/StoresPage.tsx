@@ -36,7 +36,7 @@ export default function StoresPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{t('stores.title')}</h1>
-          <p className="text-sm text-slate-500">{t('stores.subtitle')}</p>
+          <p className="text-sm text-muted">{t('stores.subtitle')}</p>
         </div>
         <Button onClick={() => setShowNew((o) => !o)}>{showNew ? t('common.cancel') : t('stores.connect')}</Button>
       </div>
@@ -55,7 +55,7 @@ export default function StoresPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('stores.store')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('stores.platform')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('stores.client')}</th>
@@ -66,19 +66,19 @@ export default function StoresPage() {
               </thead>
               <tbody>
                 {stores.data?.map((s) => (
-                  <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50">
+                  <tr key={s.id} className="border-b border-line-soft hover:bg-surface-muted">
                     <td className="px-4 py-3 font-medium" dir="ltr">{s.shopDomain}</td>
                     <td className="px-4 py-3">{t(`stores.platforms.${s.platform}`)}</td>
-                    <td className="px-4 py-3 text-slate-600">{s.client?.legalName ?? '—'}</td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-4 py-3 text-body">{s.client?.legalName ?? '—'}</td>
+                    <td className="px-4 py-3 text-body">
                       {s.webhookTopics.length > 0 ? (
                         <>
                           <Badge tone="blue">{t('stores.topicsCount', { count: s.webhookTopics.length })}</Badge>
-                          <span className="block text-xs text-slate-400 mt-0.5">
+                          <span className="block text-xs text-faint mt-0.5">
                             {s.lastBackfillAt ? t('stores.backfilledAt', { date: new Date(s.lastBackfillAt).toLocaleDateString() }) : t('stores.noBackfill')}
                           </span>
                         </>
-                      ) : <span className="text-slate-400">—</span>}
+                      ) : <span className="text-faint">—</span>}
                     </td>
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[s.status]}>{t(`stores.statuses.${s.status}`)}</Badge></td>
                     <td className="px-4 py-3 text-end whitespace-nowrap">
@@ -96,7 +96,7 @@ export default function StoresPage() {
                   </tr>
                 ))}
                 {stores.data?.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>
+                  <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>
                 )}
               </tbody>
             </table>
@@ -129,15 +129,15 @@ function ConnectForm({ onConnected, onClose }: { onConnected: () => void; onClos
       <Card className="p-6 space-y-4">
         <h2 className="text-lg font-semibold">{t('stores.authorizeTitle')}</h2>
         {result.simulated && <Alert tone="amber">{t('stores.simulatedConnect')}</Alert>}
-        <p className="text-sm text-slate-600">{t('stores.authorizeHelp')}</p>
+        <p className="text-sm text-body">{t('stores.authorizeHelp')}</p>
         {/* In sandbox the real platform has no app to redirect back, so offer the completion shortcut. */}
         <a href={result.sandboxCallbackUrl ?? result.authorizeUrl} target={result.sandboxCallbackUrl ? '_self' : '_blank'} rel="noreferrer">
           <Button>{result.sandboxCallbackUrl ? t('stores.completeSandbox') : t('stores.openAuthorize')}</Button>
         </a>
         {result.webhookSecret && (
           <div className="space-y-1">
-            <span className="block text-sm font-medium text-slate-700">{t('stores.webhookSecret')}</span>
-            <code className="block bg-slate-100 rounded px-3 py-2 text-xs break-all" dir="ltr">{result.webhookSecret}</code>
+            <span className="block text-sm font-medium text-ink">{t('stores.webhookSecret')}</span>
+            <code className="block bg-surface-muted rounded px-3 py-2 text-xs break-all" dir="ltr">{result.webhookSecret}</code>
             <p className="text-xs text-amber-600">{t('stores.secretOnce')}</p>
           </div>
         )}
@@ -158,7 +158,7 @@ function ConnectForm({ onConnected, onClose }: { onConnected: () => void; onClos
         </Select>
         <TextField label={t('stores.shopDomain')} value={shopDomain} onChange={(e) => setShopDomain(e.target.value)} placeholder="acme.myshopify.com" dir="ltr" />
       </div>
-      <p className="text-xs text-slate-500">{t('stores.domainHint')}</p>
+      <p className="text-xs text-muted">{t('stores.domainHint')}</p>
       {connect.isError && <Alert>{t('stores.connectError')}</Alert>}
       <Button disabled={!clientId || shopDomain.trim().length < 3 || connect.isPending} onClick={() => connect.mutate()}>
         {connect.isPending ? t('common.pleaseWait') : t('stores.beginOAuth')}

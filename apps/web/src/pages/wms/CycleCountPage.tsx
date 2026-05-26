@@ -57,7 +57,7 @@ export default function CycleCountPage() {
         {skuSearch.length >= 2 && !skuId && (
           <div className="mt-2 flex flex-wrap gap-2">
             {skuResults.data?.items.map((s) => (
-              <button key={s.id} onClick={() => { setSkuId(s.id); setSkuSearch(s.code); }} className="text-xs border border-slate-300 rounded px-2 py-1 hover:bg-slate-50" dir="ltr">{s.code}</button>
+              <button key={s.id} onClick={() => { setSkuId(s.id); setSkuSearch(s.code); }} className="text-xs border border-line rounded px-2 py-1 hover:bg-surface-muted" dir="ltr">{s.code}</button>
             ))}
           </div>
         )}
@@ -69,7 +69,7 @@ export default function CycleCountPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">SKU</th>
                   <th className="text-end font-medium px-4 py-3">{t('counting.expected')}</th>
                   <th className="text-end font-medium px-4 py-3">{t('counting.counted')}</th>
@@ -80,13 +80,13 @@ export default function CycleCountPage() {
               </thead>
               <tbody>
                 {list.data?.map((c) => (
-                  <tr key={c.id} className="border-b border-slate-100">
+                  <tr key={c.id} className="border-b border-line-soft">
                     <td className="px-4 py-3" dir="ltr">{c.sku?.code}</td>
                     <td className="px-4 py-3 text-end">{c.expectedQty}</td>
                     <td className="px-4 py-3 text-end">
                       {c.status === 'OPEN' ? (
                         <input
-                          className="w-20 rounded border border-slate-300 px-2 py-1 text-end"
+                          className="w-20 rounded border border-line px-2 py-1 text-end"
                           inputMode="numeric"
                           value={counts[c.id] ?? ''}
                           onChange={(e) => setCounts((m) => ({ ...m, [c.id]: e.target.value }))}
@@ -108,7 +108,7 @@ export default function CycleCountPage() {
                     </td>
                   </tr>
                 ))}
-                {list.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                {list.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
               </tbody>
             </table>
           </div>

@@ -51,7 +51,7 @@ export default function NotificationsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <Card className="p-6 space-y-3">
           <h2 className="text-lg font-semibold">{t('notifications.alerts')}</h2>
-          <p className="text-sm text-slate-500">{t('notifications.alertsHint')}</p>
+          <p className="text-sm text-muted">{t('notifications.alertsHint')}</p>
           <Button onClick={() => runAlerts.mutate()} disabled={runAlerts.isPending}>{t('notifications.runAlerts')}</Button>
         </Card>
 
@@ -93,7 +93,7 @@ export default function NotificationsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('audit.when')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('notifications.channel')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('notifications.category')}</th>
@@ -104,16 +104,16 @@ export default function NotificationsPage() {
               </thead>
               <tbody>
                 {feed.data?.map((n) => (
-                  <tr key={n.id} className="border-b border-slate-100">
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{fmtDate(n.createdAt)}</td>
+                  <tr key={n.id} className="border-b border-line-soft">
+                    <td className="px-4 py-3 text-muted whitespace-nowrap">{fmtDate(n.createdAt)}</td>
                     <td className="px-4 py-3"><Badge tone={CHANNEL_TONE[n.channel]}>{t(`notifications.channels.${n.channel}`)}</Badge></td>
-                    <td className="px-4 py-3 text-slate-600">{t(`notifications.categories.${n.category}`)}</td>
-                    <td className="px-4 py-3 text-slate-600" dir="ltr">{n.recipient}</td>
-                    <td className="px-4 py-3 text-slate-600 max-w-xs truncate">{n.subject ? `${n.subject} — ` : ''}{n.body}</td>
+                    <td className="px-4 py-3 text-body">{t(`notifications.categories.${n.category}`)}</td>
+                    <td className="px-4 py-3 text-body" dir="ltr">{n.recipient}</td>
+                    <td className="px-4 py-3 text-body max-w-xs truncate">{n.subject ? `${n.subject} — ` : ''}{n.body}</td>
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[n.status]}>{t(`notifications.statuses.${n.status}`)}</Badge></td>
                   </tr>
                 ))}
-                {feed.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                {feed.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
               </tbody>
             </table>
           </div>

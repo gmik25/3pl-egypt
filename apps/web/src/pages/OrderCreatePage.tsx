@@ -129,7 +129,7 @@ export default function OrderCreatePage() {
             </Button>
           </div>
           {items.map((it, idx) => (
-            <div key={idx} className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-end border-b border-slate-100 pb-3">
+            <div key={idx} className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-end border-b border-line-soft pb-3">
               <TextField label="SKU" value={it.skuCode} onChange={(e) => setItem(idx, { skuCode: e.target.value })} />
               <TextField label={t('orders.itemName')} value={it.nameAr} onChange={(e) => setItem(idx, { nameAr: e.target.value })} />
               <TextField label={t('orders.qty')} inputMode="numeric" value={it.quantity} onChange={(e) => setItem(idx, { quantity: e.target.value })} />

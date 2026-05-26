@@ -53,12 +53,12 @@ export default function ReturnPortalPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-surface-muted flex items-center justify-center p-4 font-sans">
       <div className="w-full max-w-lg">
         <div className="flex justify-end mb-3"><LanguageSwitcher /></div>
         <Card className="p-6">
-          <h1 className="text-xl font-bold text-brand-700 mb-1">{t('portalReturn.title')}</h1>
-          <p className="text-sm text-slate-500 mb-5">{t('portalReturn.subtitle')}</p>
+          <h1 className="text-xl font-bold text-accent mb-1">{t('portalReturn.title')}</h1>
+          <p className="text-sm text-muted mb-5">{t('portalReturn.subtitle')}</p>
 
           {rma ? (
             <Alert tone="green">{t('portalReturn.success', { rma })}</Alert>
@@ -71,11 +71,11 @@ export default function ReturnPortalPage() {
             </form>
           ) : (
             <form onSubmit={submit} className="space-y-4">
-              <p className="text-sm text-slate-600">{t('portalReturn.hello', { name: lookup.customerName })}</p>
+              <p className="text-sm text-body">{t('portalReturn.hello', { name: lookup.customerName })}</p>
               <div className="space-y-2">
                 {lookup.items.map((it) => (
-                  <div key={it.skuId} className="flex items-center justify-between border border-slate-200 rounded px-3 py-2 text-sm">
-                    <span>{it.nameAr} <span className="text-slate-400" dir="ltr">({it.code})</span></span>
+                  <div key={it.skuId} className="flex items-center justify-between border border-line rounded px-3 py-2 text-sm">
+                    <span>{it.nameAr} <span className="text-faint" dir="ltr">({it.code})</span></span>
                     <Select aria-label={it.code} value={String(qty[it.skuId] ?? 0)} onChange={(e) => setQty((m) => ({ ...m, [it.skuId]: Number(e.target.value) }))} className="w-20">
                       {Array.from({ length: it.quantity + 1 }, (_, n) => <option key={n} value={n}>{n}</option>)}
                     </Select>

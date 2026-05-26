@@ -11,7 +11,7 @@ import { currentLocale } from '../i18n';
 function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
     <Card className="p-4">
-      <p className="text-xs text-slate-500">{label}</p>
+      <p className="text-xs text-muted">{label}</p>
       <p className={`text-2xl font-bold mt-1 ${tone ?? ''}`}>{value}</p>
     </Card>
   );
@@ -36,14 +36,14 @@ export default function ClientPortalPage() {
     <div className="max-w-4xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{d.client.legalName}</h1>
-        <p className="text-slate-500 mt-1">{t('portal.subtitle')}</p>
+        <p className="text-muted mt-1">{t('portal.subtitle')}</p>
       </div>
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Stat label={t('portalDash.totalOrders')} value={String(d.totalOrders)} />
         <Stat label={t('portalDash.codCollected')} value={formatEgp(d.cod.collectedPiastres, { locale: egpLoc })} tone="text-green-600" />
-        <Stat label={t('portalDash.walletBalance')} value={formatEgp(d.cod.walletBalancePiastres, { locale: egpLoc })} tone="text-brand-600" />
+        <Stat label={t('portalDash.walletBalance')} value={formatEgp(d.cod.walletBalancePiastres, { locale: egpLoc })} tone="text-accent" />
         <Stat label={t('portalDash.openReturns')} value={String(d.returns.open)} />
       </div>
 
@@ -54,8 +54,8 @@ export default function ClientPortalPage() {
           {ORDER_STATES.map((s: OrderState) => (
             <div key={s} className="flex items-center gap-2">
               <span className="w-28 shrink-0"><OrderStateBadge state={s} /></span>
-              <div className="flex-1 bg-slate-100 rounded h-4 overflow-hidden">
-                <div className="h-4 bg-brand-500" style={{ width: `${Math.round(((d.ordersByState[s] ?? 0) / maxState) * 100)}%` }} />
+              <div className="flex-1 bg-surface-muted rounded h-4 overflow-hidden">
+                <div className="h-4 bg-accent/100" style={{ width: `${Math.round(((d.ordersByState[s] ?? 0) / maxState) * 100)}%` }} />
               </div>
               <span className="w-12 text-end tabular-nums">{d.ordersByState[s] ?? 0}</span>
             </div>
@@ -71,12 +71,12 @@ export default function ClientPortalPage() {
             <ul className="space-y-2 text-sm">
               {d.lowStock.map((r) => (
                 <li key={r.code} className="flex items-center justify-between">
-                  <span dir="ltr">{r.code} <span className="text-slate-400">{r.nameAr}</span></span>
+                  <span dir="ltr">{r.code} <span className="text-faint">{r.nameAr}</span></span>
                   <Badge tone="red">{r.available} / {r.reorderPointQty}</Badge>
                 </li>
               ))}
             </ul>
-          ) : <p className="text-sm text-slate-400">{t('inventory.noLowStock')}</p>}
+          ) : <p className="text-sm text-faint">{t('inventory.noLowStock')}</p>}
         </Card>
 
         {/* Recent invoices */}
@@ -86,7 +86,7 @@ export default function ClientPortalPage() {
             <ul className="space-y-2 text-sm">
               {d.recentInvoices.map((inv) => (
                 <li key={inv.reference} className="flex items-center justify-between">
-                  <span dir="ltr">{inv.reference} <span className="text-slate-400">{fmtDate(inv.periodEnd)}</span></span>
+                  <span dir="ltr">{inv.reference} <span className="text-faint">{fmtDate(inv.periodEnd)}</span></span>
                   <span className="flex items-center gap-2">
                     <span>{formatEgp(inv.grossPiastres, { locale: egpLoc })}</span>
                     <Badge tone={inv.status === 'ISSUED' ? 'green' : 'slate'}>{t(`invoices.statuses.${inv.status}`)}</Badge>
@@ -94,7 +94,7 @@ export default function ClientPortalPage() {
                 </li>
               ))}
             </ul>
-          ) : <p className="text-sm text-slate-400">{t('common.noResults')}</p>}
+          ) : <p className="text-sm text-faint">{t('common.noResults')}</p>}
         </Card>
       </div>
 
@@ -104,12 +104,12 @@ export default function ClientPortalPage() {
         {contracts.isLoading ? <Spinner /> : contracts.data && contracts.data.length > 0 ? (
           <div className="space-y-2">
             {contracts.data.map((c) => (
-              <div key={c.id} className="border border-slate-200 rounded-md p-3 text-sm">
+              <div key={c.id} className="border border-line rounded-md p-3 text-sm">
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{new Date(c.startsOn).toLocaleDateString()}</span>
                   {c.isActive ? <Badge tone="green">{t('contracts.activeBadge')}</Badge> : <Badge tone="slate">{t('contracts.inactiveBadge')}</Badge>}
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 text-slate-600">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 text-body">
                   <span>{t('contracts.storageEgp')}: {formatEgp(c.storagePerSkuPerDayPiastres, { locale: egpLoc })}</span>
                   <span>{t('contracts.pickPackEgp')}: {formatEgp(c.pickAndPackPiastres, { locale: egpLoc })}</span>
                   <span>{t('contracts.codCommissionPct')}: {(c.codCommissionBps / 100).toFixed(2)}%</span>
@@ -118,7 +118,7 @@ export default function ClientPortalPage() {
               </div>
             ))}
           </div>
-        ) : <p className="text-sm text-slate-400">{t('contracts.none')}</p>}
+        ) : <p className="text-sm text-faint">{t('contracts.none')}</p>}
       </Card>
     </div>
   );

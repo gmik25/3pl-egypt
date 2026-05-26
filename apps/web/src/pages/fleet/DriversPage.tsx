@@ -40,7 +40,7 @@ export default function DriversPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('drivers.name')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('drivers.vehicle')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('drivers.zones')}</th>
@@ -49,12 +49,12 @@ export default function DriversPage() {
               </thead>
               <tbody>
                 {drivers.data?.map((d) => (
-                  <tr key={d.id} className="border-b border-slate-100">
-                    <td className="px-4 py-3 font-medium">{d.user?.fullName}<span className="block text-xs text-slate-400" dir="ltr">{d.user?.phone}</span></td>
-                    <td className="px-4 py-3 text-slate-600">{d.vehicleType ?? '—'}{d.plateNumber && <span className="text-slate-400" dir="ltr"> · {d.plateNumber}</span>}</td>
+                  <tr key={d.id} className="border-b border-line-soft">
+                    <td className="px-4 py-3 font-medium">{d.user?.fullName}<span className="block text-xs text-faint" dir="ltr">{d.user?.phone}</span></td>
+                    <td className="px-4 py-3 text-body">{d.vehicleType ?? '—'}{d.plateNumber && <span className="text-faint" dir="ltr"> · {d.plateNumber}</span>}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
-                        {d.zones.length ? d.zones.map((z) => <Badge key={z} tone="slate">{govName(z)}</Badge>) : <span className="text-slate-400">—</span>}
+                        {d.zones.length ? d.zones.map((z) => <Badge key={z} tone="slate">{govName(z)}</Badge>) : <span className="text-faint">—</span>}
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -64,7 +64,7 @@ export default function DriversPage() {
                     </td>
                   </tr>
                 ))}
-                {drivers.data?.length === 0 && <tr><td colSpan={4} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                {drivers.data?.length === 0 && <tr><td colSpan={4} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
               </tbody>
             </table>
           </div>
@@ -100,10 +100,10 @@ function RegisterDriverForm({ onDone }: { onDone: () => void }) {
         <TextField label={t('drivers.plate')} value={plateNumber} onChange={(e) => setPlateNumber(e.target.value)} />
       </div>
       <div>
-        <span className="block text-sm font-medium text-slate-700 mb-1">{t('drivers.zones')}</span>
-        <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto border border-slate-200 rounded p-2">
+        <span className="block text-sm font-medium text-ink mb-1">{t('drivers.zones')}</span>
+        <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto border border-line rounded p-2">
           {GOVERNORATES.map((g) => (
-            <label key={g.code} className="flex items-center gap-1 text-xs border border-slate-200 rounded px-2 py-1 cursor-pointer">
+            <label key={g.code} className="flex items-center gap-1 text-xs border border-line rounded px-2 py-1 cursor-pointer">
               <input type="checkbox" checked={zones.includes(g.code)} onChange={(e) => setZones((prev) => e.target.checked ? [...prev, g.code] : prev.filter((x) => x !== g.code))} />
               {locale === 'ar' ? g.nameAr : g.nameEn}
             </label>

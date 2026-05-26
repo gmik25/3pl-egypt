@@ -78,7 +78,7 @@ export default function UsersPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-start text-slate-500 border-b border-slate-200">
+                <tr className="text-start text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('users.name')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('users.email')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('users.roles')}</th>
@@ -87,13 +87,13 @@ export default function UsersPage() {
               </thead>
               <tbody>
                 {data?.items.map((u) => (
-                  <tr key={u.id} className="border-b border-slate-100 hover:bg-slate-50">
+                  <tr key={u.id} className="border-b border-line-soft hover:bg-surface-muted">
                     <td className="px-4 py-3">
-                      <Link to={`/users/${u.id}`} className="text-brand-600 hover:underline font-medium">
+                      <Link to={`/users/${u.id}`} className="text-accent hover:underline font-medium">
                         {u.fullName}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{u.email}</td>
+                    <td className="px-4 py-3 text-body">{u.email}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1 flex-wrap">
                         {u.roles.map((r) => (
@@ -114,7 +114,7 @@ export default function UsersPage() {
                 ))}
                 {data?.items.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-slate-400">
+                    <td colSpan={4} className="px-4 py-8 text-center text-faint">
                       {t('common.noResults')}
                     </td>
                   </tr>
@@ -127,7 +127,7 @@ export default function UsersPage() {
 
       {data && data.total > PAGE_SIZE && (
         <div className="flex items-center justify-between text-sm">
-          <span className="text-slate-500">
+          <span className="text-muted">
             {new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG').format(data.total)}{' '}
             {t('users.totalUsers')}
           </span>

@@ -115,7 +115,7 @@ export default function ClientFormPage() {
           </div>
 
           <h2 className="text-lg font-semibold pt-2">{t('clients.address')}</h2>
-          <p className="text-xs text-slate-400 -mt-2">{t('clients.addressHint')}</p>
+          <p className="text-xs text-faint -mt-2">{t('clients.addressHint')}</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <TextField label={t('clients.apartment')} value={form.addressApartment ?? ''} onChange={(e) => set('addressApartment', e.target.value)} />
             <TextField label={t('clients.floor')} value={form.addressFloor ?? ''} onChange={(e) => set('addressFloor', e.target.value)} />

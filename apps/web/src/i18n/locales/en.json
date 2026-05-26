@@ -46,7 +46,21 @@
     "stores": "Stores",
     "myStores": "My stores",
     "myStorage": "My storage",
-    "storageBilling": "Storage billing"
+    "storageBilling": "Storage billing",
+    "groups": {
+      "overview": "Overview",
+      "orders": "Orders",
+      "warehouse": "Warehouse",
+      "delivery": "Delivery",
+      "reverseCustoms": "Returns & Customs",
+      "finance": "Finance",
+      "integrations": "Integrations",
+      "insights": "Insights",
+      "admin": "Administration",
+      "myAccount": "My account",
+      "account": "Account"
+    },
+    "menu": "Menu"
   },
   "auth": {
     "signIn": "Sign in",
@@ -920,5 +934,9 @@
     "charged": "Charged — it will appear on the seller’s next invoice.",
     "chargeError": "Could not charge — no reserved bins or a zero rate.",
     "chargeNote": "Posts a wallet debit that rolls into the next invoice."
+  },
+  "theme": {
+    "toDark": "Dark mode",
+    "toLight": "Light mode"
   }
 }

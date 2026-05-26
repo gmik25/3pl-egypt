@@ -54,7 +54,7 @@ export function ContractsSection({ clientId }: { clientId: string }) {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-slate-400">{t('contracts.none')}</p>
+        <p className="text-sm text-faint">{t('contracts.none')}</p>
       )}
     </Card>
   );
@@ -86,7 +86,7 @@ function NewContractForm({ clientId, onDone }: { clientId: string; onDone: () =>
   };
 
   return (
-    <form onSubmit={submit} className="border border-slate-200 rounded-md p-4 space-y-3 bg-slate-50">
+    <form onSubmit={submit} className="border border-line rounded-md p-4 space-y-3 bg-canvas">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <TextField label={t('contracts.startsOn')} type="date" value={startsOn} onChange={(e) => setStartsOn(e.target.value)} />
         <TextField label={t('contracts.storageEgp')} inputMode="decimal" value={storage} onChange={(e) => setStorage(e.target.value)} />
@@ -106,11 +106,11 @@ function ContractCard({ contract, clientId }: { contract: Contract; clientId: st
   const [tab, setTab] = useState<'sla' | 'quote' | null>(null);
 
   return (
-    <div className="border border-slate-200 rounded-md p-4 space-y-3">
+    <div className="border border-line rounded-md p-4 space-y-3">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="text-sm">
           <span className="font-medium">{new Date(contract.startsOn).toLocaleDateString()}</span>
-          {contract.endsOn && <span className="text-slate-400"> → {new Date(contract.endsOn).toLocaleDateString()}</span>}
+          {contract.endsOn && <span className="text-faint"> → {new Date(contract.endsOn).toLocaleDateString()}</span>}
           {contract.isActive ? (
             <Badge tone="green">{t('contracts.activeBadge')}</Badge>
           ) : (
@@ -131,7 +131,7 @@ function ContractCard({ contract, clientId }: { contract: Contract; clientId: st
         <PriceItem label={t('contracts.storageEgp')} piastres={contract.storagePerSkuPerDayPiastres} />
         <PriceItem label={t('contracts.pickPackEgp')} piastres={contract.pickAndPackPiastres} />
         <div>
-          <dt className="text-slate-500">{t('contracts.codCommissionPct')}</dt>
+          <dt className="text-muted">{t('contracts.codCommissionPct')}</dt>
           <dd className="font-medium">{(contract.codCommissionBps / 100).toFixed(2)}%</dd>
         </div>
         <PriceItem label={t('contracts.returnFeeEgp')} piastres={contract.returnFeePiastres} />
@@ -146,7 +146,7 @@ function ContractCard({ contract, clientId }: { contract: Contract; clientId: st
 function PriceItem({ label, piastres }: { label: string; piastres: number }) {
   return (
     <div>
-      <dt className="text-slate-500">{label}</dt>
+      <dt className="text-muted">{label}</dt>
       <dd className="font-medium">{formatEgp(piastres, { locale: egpLocale() })}</dd>
     </div>
   );
@@ -166,7 +166,7 @@ function SlaEditor({ contract, clientId }: { contract: Contract; clientId: strin
   });
 
   return (
-    <div className="bg-slate-50 rounded-md p-3 space-y-3">
+    <div className="bg-canvas rounded-md p-3 space-y-3">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <TextField label={t('sla.handlingMinutes')} inputMode="numeric" value={handling} onChange={(e) => setHandling(e.target.value)} />
         <TextField label={t('sla.cairoDays')} inputMode="numeric" value={cairo} onChange={(e) => setCairo(e.target.value)} />
@@ -213,7 +213,7 @@ function QuoteCalculator({ contractId }: { contractId: string }) {
   });
 
   return (
-    <div className="bg-slate-50 rounded-md p-3 space-y-3">
+    <div className="bg-canvas rounded-md p-3 space-y-3">
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <TextField label={t('quote.skuCount')} inputMode="numeric" value={skuCount} onChange={(e) => setSkuCount(e.target.value)} />
         <TextField label={t('quote.storageDays')} inputMode="numeric" value={storageDays} onChange={(e) => setStorageDays(e.target.value)} />
@@ -226,19 +226,19 @@ function QuoteCalculator({ contractId }: { contractId: string }) {
       </Button>
 
       {quote && (
-        <div className="text-sm border-t border-slate-200 pt-3 space-y-1">
+        <div className="text-sm border-t border-line pt-3 space-y-1">
           {quote.lines.map((l) => (
             <div key={l.key} className="flex justify-between">
-              <span className="text-slate-500">{t(`quote.lines.${l.key}`)}</span>
+              <span className="text-muted">{t(`quote.lines.${l.key}`)}</span>
               <span>{formatEgp(l.amountPiastres, { locale: egpLocale() })}</span>
             </div>
           ))}
-          <div className="flex justify-between border-t border-slate-200 pt-1 mt-1">
-            <span className="text-slate-500">{t('quote.net')}</span>
+          <div className="flex justify-between border-t border-line pt-1 mt-1">
+            <span className="text-muted">{t('quote.net')}</span>
             <span>{formatEgp(quote.netPiastres, { locale: egpLocale() })}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-500">{t('quote.vat', { pct: (quote.vatRateBps / 100).toFixed(0) })}</span>
+            <span className="text-muted">{t('quote.vat', { pct: (quote.vatRateBps / 100).toFixed(0) })}</span>
             <span>{formatEgp(quote.vatPiastres, { locale: egpLocale() })}</span>
           </div>
           <div className="flex justify-between font-semibold text-base">

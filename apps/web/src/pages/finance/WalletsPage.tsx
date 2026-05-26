@@ -41,7 +41,7 @@ export default function WalletsPage() {
       {clientId && (
         <>
           <Card className="p-6">
-            <p className="text-sm text-slate-500">{t('wallets.balance')}</p>
+            <p className="text-sm text-muted">{t('wallets.balance')}</p>
             <p className="text-3xl font-bold mt-1">{wallet.isLoading ? '…' : formatEgp(wallet.data?.balancePiastres ?? 0, { locale: egpLoc })}</p>
           </Card>
 
@@ -51,7 +51,7 @@ export default function WalletsPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-slate-500 border-b border-slate-200">
+                    <tr className="text-muted border-b border-line">
                       <th className="text-start font-medium px-4 py-3">{t('audit.when')}</th>
                       <th className="text-start font-medium px-4 py-3">{t('wallets.entryType')}</th>
                       <th className="text-end font-medium px-4 py-3">{t('wallets.amount')}</th>
@@ -60,9 +60,9 @@ export default function WalletsPage() {
                   </thead>
                   <tbody>
                     {statement.data.entries.map((e) => (
-                      <tr key={e.id} className="border-b border-slate-100">
-                        <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{fmtDate(e.createdAt)}</td>
-                        <td className="px-4 py-3"><Badge tone={ENTRY_TONE[e.type]}>{t(`wallets.types.${e.type}`)}</Badge>{e.note && <span className="block text-xs text-slate-400">{e.note}</span>}</td>
+                      <tr key={e.id} className="border-b border-line-soft">
+                        <td className="px-4 py-3 text-body whitespace-nowrap">{fmtDate(e.createdAt)}</td>
+                        <td className="px-4 py-3"><Badge tone={ENTRY_TONE[e.type]}>{t(`wallets.types.${e.type}`)}</Badge>{e.note && <span className="block text-xs text-faint">{e.note}</span>}</td>
                         <td className={`px-4 py-3 text-end ${e.amountPiastres < 0 ? 'text-red-600' : 'text-green-600'}`}>{formatEgp(e.amountPiastres, { locale: egpLoc })}</td>
                         <td className="px-4 py-3 text-end font-medium">{formatEgp(e.runningBalancePiastres, { locale: egpLoc })}</td>
                       </tr>
@@ -70,7 +70,7 @@ export default function WalletsPage() {
                   </tbody>
                 </table>
               </div>
-            ) : <p className="p-6 text-sm text-slate-400">{t('wallets.noActivity')}</p>}
+            ) : <p className="p-6 text-sm text-faint">{t('wallets.noActivity')}</p>}
           </Card>
         </>
       )}

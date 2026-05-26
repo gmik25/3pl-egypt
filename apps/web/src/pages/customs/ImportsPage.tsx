@@ -47,20 +47,20 @@ export default function ImportsPage() {
             <ul className="space-y-1">
               {imports.data?.map((i) => (
                 <li key={i.id}>
-                  <button onClick={() => setSelected(i.id)} className={`w-full text-start px-3 py-2 rounded-md text-sm transition ${selected === i.id ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-100'}`}>
+                  <button onClick={() => setSelected(i.id)} className={`w-full text-start px-3 py-2 rounded-md text-sm transition ${selected === i.id ? 'bg-accent/10 text-accent' : 'hover:bg-surface-muted'}`}>
                     <span className="font-medium" dir="ltr">{i.reference}</span>
-                    <span className="block text-xs text-slate-400">{i.client?.legalName}</span>
+                    <span className="block text-xs text-faint">{i.client?.legalName}</span>
                     <span className="flex items-center gap-1 mt-1"><Badge tone={TONE[i.status]}>{t(`customs.statuses.${i.status}`)}</Badge>{i.bonded && <Badge tone="amber">{t('customs.bonded')}</Badge>}</span>
                   </button>
                 </li>
               ))}
-              {imports.data?.length === 0 && <li className="text-sm text-slate-400 px-3 py-2">{t('common.noResults')}</li>}
+              {imports.data?.length === 0 && <li className="text-sm text-faint px-3 py-2">{t('common.noResults')}</li>}
             </ul>
           )}
         </Card>
 
         <div className="lg:col-span-2">
-          {selected ? <ImportDetail importId={selected} /> : <Card className="p-8 text-center text-slate-400 text-sm">{t('customs.selectPrompt')}</Card>}
+          {selected ? <ImportDetail importId={selected} /> : <Card className="p-8 text-center text-faint text-sm">{t('customs.selectPrompt')}</Card>}
         </div>
       </div>
     </div>
@@ -164,7 +164,7 @@ function ImportDetail({ importId }: { importId: string }) {
   const s = imp.data;
 
   const Row = ({ label, value }: { label: string; value: string }) => (
-    <div className="flex justify-between text-sm"><dt className="text-slate-500">{label}</dt><dd>{value}</dd></div>
+    <div className="flex justify-between text-sm"><dt className="text-muted">{label}</dt><dd>{value}</dd></div>
   );
 
   return (
@@ -181,13 +181,13 @@ function ImportDetail({ importId }: { importId: string }) {
           {s.ecaDeclarationNumber && <Row label={t('customs.eca')} value={s.ecaDeclarationNumber} />}
         </dl>
 
-        <table className="w-full text-sm border-t border-slate-100 pt-2">
-          <thead><tr className="text-slate-500"><th className="text-start font-medium py-1">SKU</th><th className="text-start font-medium py-1">HS</th><th className="text-end font-medium py-1">{t('orders.qty')}</th><th className="text-end font-medium py-1">{t('customs.unitCost')}</th></tr></thead>
+        <table className="w-full text-sm border-t border-line-soft pt-2">
+          <thead><tr className="text-muted"><th className="text-start font-medium py-1">SKU</th><th className="text-start font-medium py-1">HS</th><th className="text-end font-medium py-1">{t('orders.qty')}</th><th className="text-end font-medium py-1">{t('customs.unitCost')}</th></tr></thead>
           <tbody>
             {s.lines.map((l) => (
-              <tr key={l.id} className="border-b border-slate-50">
+              <tr key={l.id} className="border-b border-line-soft">
                 <td className="py-1" dir="ltr">{l.sku?.code}</td>
-                <td className="py-1" dir="ltr">{l.hsCode} <span className="text-slate-400">({(l.dutyRateBps / 100).toFixed(1)}%)</span></td>
+                <td className="py-1" dir="ltr">{l.hsCode} <span className="text-faint">({(l.dutyRateBps / 100).toFixed(1)}%)</span></td>
                 <td className="py-1 text-end">{l.quantity}</td>
                 <td className="py-1 text-end">{formatEgp(l.unitCostPiastres, { locale: egpLoc })}</td>
               </tr>
@@ -204,10 +204,10 @@ function ImportDetail({ importId }: { importId: string }) {
             <Row label={t('customs.goods')} value={formatEgp(landed.data.goodsTotalPiastres, { locale: egpLoc })} />
             <Row label={t('customs.freight')} value={formatEgp(landed.data.freightPiastres, { locale: egpLoc })} />
             <Row label={t('customs.insurance')} value={formatEgp(landed.data.insurancePiastres, { locale: egpLoc })} />
-            <div className="flex justify-between text-sm border-t border-slate-100 pt-1"><dt className="text-slate-500">{t('customs.cif')}</dt><dd>{formatEgp(landed.data.cifPiastres, { locale: egpLoc })}</dd></div>
+            <div className="flex justify-between text-sm border-t border-line-soft pt-1"><dt className="text-muted">{t('customs.cif')}</dt><dd>{formatEgp(landed.data.cifPiastres, { locale: egpLoc })}</dd></div>
             <Row label={t('customs.duties')} value={formatEgp(landed.data.totalDutyPiastres, { locale: egpLoc })} />
             <Row label={t('quote.vat', { pct: landed.data.vatRateBps / 100 })} value={formatEgp(landed.data.vatPiastres, { locale: egpLoc })} />
-            <div className="flex justify-between font-semibold text-base border-t border-slate-200 pt-1"><dt>{t('customs.landedTotal')}</dt><dd>{formatEgp(landed.data.landedTotalPiastres, { locale: egpLoc })}</dd></div>
+            <div className="flex justify-between font-semibold text-base border-t border-line pt-1"><dt>{t('customs.landedTotal')}</dt><dd>{formatEgp(landed.data.landedTotalPiastres, { locale: egpLoc })}</dd></div>
             {landed.data.dutyDeferred && <p className="text-xs text-amber-600 pt-1">{t('customs.dutyDeferred')}</p>}
           </dl>
         )}

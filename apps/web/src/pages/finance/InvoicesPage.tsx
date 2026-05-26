@@ -56,7 +56,7 @@ export default function InvoicesPage() {
           <Button type="submit" disabled={!clientId || generate.isPending}>{t('invoices.generate')}</Button>
         </form>
         {error && <div className="mt-3"><Alert>{error}</Alert></div>}
-        <p className="text-xs text-slate-400 mt-3">{t('invoices.etaNote')}</p>
+        <p className="text-xs text-faint mt-3">{t('invoices.etaNote')}</p>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -64,16 +64,16 @@ export default function InvoicesPage() {
           {invoices.isLoading ? <Spinner /> : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-slate-500 border-b border-slate-200"><th className="text-start font-medium px-4 py-3">{t('invoices.reference')}</th><th className="text-end font-medium px-4 py-3">{t('quote.gross')}</th><th className="text-start font-medium px-4 py-3">{t('orders.state')}</th></tr></thead>
+                <thead><tr className="text-muted border-b border-line"><th className="text-start font-medium px-4 py-3">{t('invoices.reference')}</th><th className="text-end font-medium px-4 py-3">{t('quote.gross')}</th><th className="text-start font-medium px-4 py-3">{t('orders.state')}</th></tr></thead>
                 <tbody>
                   {invoices.data?.map((inv) => (
-                    <tr key={inv.id} className={`border-b border-slate-100 cursor-pointer hover:bg-slate-50 ${openId === inv.id ? 'bg-brand-50' : ''}`} onClick={() => { setOpenId(inv.id); setEta(null); }}>
-                      <td className="px-4 py-3 font-medium" dir="ltr">{inv.reference}<span className="block text-xs text-slate-400">{inv.client?.legalName}</span></td>
+                    <tr key={inv.id} className={`border-b border-line-soft cursor-pointer hover:bg-surface-muted ${openId === inv.id ? 'bg-accent/10' : ''}`} onClick={() => { setOpenId(inv.id); setEta(null); }}>
+                      <td className="px-4 py-3 font-medium" dir="ltr">{inv.reference}<span className="block text-xs text-faint">{inv.client?.legalName}</span></td>
                       <td className="px-4 py-3 text-end">{formatEgp(inv.grossPiastres, { locale: egpLoc })}</td>
                       <td className="px-4 py-3"><Badge tone={TONE[inv.status]}>{t(`invoices.statuses.${inv.status}`)}</Badge></td>
                     </tr>
                   ))}
-                  {invoices.data?.length === 0 && <tr><td colSpan={3} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                  {invoices.data?.length === 0 && <tr><td colSpan={3} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
                 </tbody>
               </table>
             </div>
@@ -89,7 +89,7 @@ export default function InvoicesPage() {
             <table className="w-full text-sm">
               <tbody>
                 {detail.data.lines?.map((l) => (
-                  <tr key={l.id} className="border-b border-slate-100">
+                  <tr key={l.id} className="border-b border-line-soft">
                     <td className="px-2 py-2">{l.description}</td>
                     <td className="px-2 py-2 text-end">{formatEgp(l.netPiastres, { locale: egpLoc })}</td>
                   </tr>
@@ -97,11 +97,11 @@ export default function InvoicesPage() {
               </tbody>
             </table>
             <div className="text-sm space-y-1">
-              <div className="flex justify-between"><span className="text-slate-500">{t('quote.net')}</span><span>{formatEgp(detail.data.netPiastres, { locale: egpLoc })}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">{t('quote.vat', { pct: 14 })}</span><span>{formatEgp(detail.data.vatPiastres, { locale: egpLoc })}</span></div>
-              <div className="flex justify-between font-semibold text-base border-t border-slate-200 pt-1"><span>{t('quote.gross')}</span><span>{formatEgp(detail.data.grossPiastres, { locale: egpLoc })}</span></div>
+              <div className="flex justify-between"><span className="text-muted">{t('quote.net')}</span><span>{formatEgp(detail.data.netPiastres, { locale: egpLoc })}</span></div>
+              <div className="flex justify-between"><span className="text-muted">{t('quote.vat', { pct: 14 })}</span><span>{formatEgp(detail.data.vatPiastres, { locale: egpLoc })}</span></div>
+              <div className="flex justify-between font-semibold text-base border-t border-line pt-1"><span>{t('quote.gross')}</span><span>{formatEgp(detail.data.grossPiastres, { locale: egpLoc })}</span></div>
             </div>
-            {detail.data.etaUuid && <p className="text-xs text-slate-400">ETA UUID: <code dir="ltr">{detail.data.etaUuid}</code></p>}
+            {detail.data.etaUuid && <p className="text-xs text-faint">ETA UUID: <code dir="ltr">{detail.data.etaUuid}</code></p>}
             <div className="flex gap-2">
               {detail.data.status === 'DRAFT' && <Button disabled={issue.isPending} onClick={() => issue.mutate(detail.data!.id)}>{t('invoices.issue')}</Button>}
               <Button variant="secondary" onClick={() => viewEta(detail.data!.id)}>{t('invoices.viewEta')}</Button>

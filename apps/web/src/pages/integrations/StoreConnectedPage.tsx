@@ -27,7 +27,7 @@ export default function StoreConnectedPage() {
           <>
             <div className="text-4xl">✅</div>
             <h1 className="text-xl font-bold">{t('storeConnected.okTitle')}</h1>
-            <p className="text-slate-600">{t('storeConnected.okBody', { platform: platform ?? '' })}</p>
+            <p className="text-body">{t('storeConnected.okBody', { platform: platform ?? '' })}</p>
             {simulated && <Alert tone="amber">{t('storeConnected.simulated')}</Alert>}
           </>
         ) : (

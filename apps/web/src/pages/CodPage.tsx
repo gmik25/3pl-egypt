@@ -29,8 +29,8 @@ export default function CodPage() {
 
   const Stat = ({ label, piastres, tone }: { label: string; piastres: number; tone?: 'green' | 'blue' | 'amber' }) => (
     <Card className="p-5">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className={`text-2xl font-bold mt-1 ${tone === 'green' ? 'text-green-600' : tone === 'amber' ? 'text-amber-600' : 'text-slate-900'}`}>
+      <p className="text-sm text-muted">{label}</p>
+      <p className={`text-2xl font-bold mt-1 ${tone === 'green' ? 'text-green-600' : tone === 'amber' ? 'text-amber-600' : 'text-ink'}`}>
         {summary.data ? formatEgp(piastres, { locale: egpLoc }) : '—'}
       </p>
     </Card>
@@ -50,7 +50,7 @@ export default function CodPage() {
         </div>
       </div>
 
-      <p className="text-sm text-slate-500">{t('cod.readonlyNote')}</p>
+      <p className="text-sm text-muted">{t('cod.readonlyNote')}</p>
 
       {summary.isLoading ? (
         <Spinner />
@@ -73,7 +73,7 @@ export default function CodPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('orders.reference')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('orders.customer')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('orders.codAmount')}</th>
@@ -84,17 +84,17 @@ export default function CodPage() {
                 {codOrders.data?.items
                   .filter((o) => o.paymentMethod === 'COD')
                   .map((o) => (
-                    <tr key={o.id} className="border-b border-slate-100 hover:bg-slate-50">
+                    <tr key={o.id} className="border-b border-line-soft hover:bg-surface-muted">
                       <td className="px-4 py-3">
-                        <Link to={`/orders/${o.id}`} className="text-brand-600 hover:underline" dir="ltr">{o.reference}</Link>
+                        <Link to={`/orders/${o.id}`} className="text-accent hover:underline" dir="ltr">{o.reference}</Link>
                       </td>
-                      <td className="px-4 py-3 text-slate-600">{o.customerName}</td>
+                      <td className="px-4 py-3 text-body">{o.customerName}</td>
                       <td className="px-4 py-3">{o.codAmountPiastres != null ? formatEgp(o.codAmountPiastres, { locale: egpLoc }) : '—'}</td>
                       <td className="px-4 py-3"><OrderStateBadge state={o.state} /></td>
                     </tr>
                   ))}
                 {codOrders.data && codOrders.data.items.filter((o) => o.paymentMethod === 'COD').length === 0 && (
-                  <tr><td colSpan={4} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>
+                  <tr><td colSpan={4} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>
                 )}
               </tbody>
             </table>

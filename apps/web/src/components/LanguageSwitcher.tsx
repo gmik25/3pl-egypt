@@ -1,3 +1,4 @@
+import { Languages } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { currentLocale, setLocale } from '../i18n';
 
@@ -9,8 +10,9 @@ export function LanguageSwitcher() {
   return (
     <button
       onClick={() => setLocale(locale === 'ar' ? 'en' : 'ar')}
-      className="px-3 py-1.5 rounded-md text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+      className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-sm font-medium text-muted hover:text-ink hover:bg-surface-muted transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
     >
+      <Languages className="h-[18px] w-[18px]" />
       {locale === 'ar' ? 'English' : 'العربية'}
     </button>
   );

@@ -41,7 +41,7 @@ export default function ShipmentsPage() {
           <div className="space-y-2">
             {packed.data.items.map((o) => <DispatchRow key={o.id} order={o} govName={govName} />)}
           </div>
-        ) : <p className="text-sm text-slate-400">{t('fleet.nothingToDispatch')}</p>}
+        ) : <p className="text-sm text-faint">{t('fleet.nothingToDispatch')}</p>}
       </Card>
 
       {/* Shipments */}
@@ -59,7 +59,7 @@ export default function ShipmentsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('fleet.reference')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('fleet.carrier')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('orders.customer')}</th>
@@ -69,18 +69,18 @@ export default function ShipmentsPage() {
               </thead>
               <tbody>
                 {shipments.data?.map((s) => (
-                  <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50">
+                  <tr key={s.id} className="border-b border-line-soft hover:bg-surface-muted">
                     <td className="px-4 py-3">
-                      <Link to={`/shipments/${s.id}`} className="text-brand-600 hover:underline font-medium" dir="ltr">{s.reference}</Link>
-                      {s.trackingNumber && <span className="block text-xs text-slate-400" dir="ltr">{s.trackingNumber}</span>}
+                      <Link to={`/shipments/${s.id}`} className="text-accent hover:underline font-medium" dir="ltr">{s.reference}</Link>
+                      {s.trackingNumber && <span className="block text-xs text-faint" dir="ltr">{s.trackingNumber}</span>}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{s.carrierType === 'COURIER' ? (s.courierAccount?.name ?? '—') : (s.driver?.fullName ?? t('fleet.inHouse'))}</td>
-                    <td className="px-4 py-3">{s.order?.customerName}<span className="block text-xs text-slate-400">{govName(s.governorate)}</span></td>
-                    <td className="px-4 py-3 text-slate-600">{s.attemptCount}</td>
+                    <td className="px-4 py-3 text-body">{s.carrierType === 'COURIER' ? (s.courierAccount?.name ?? '—') : (s.driver?.fullName ?? t('fleet.inHouse'))}</td>
+                    <td className="px-4 py-3">{s.order?.customerName}<span className="block text-xs text-faint">{govName(s.governorate)}</span></td>
+                    <td className="px-4 py-3 text-body">{s.attemptCount}</td>
                     <td className="px-4 py-3"><ShipmentStatusBadge status={s.status} /></td>
                   </tr>
                 ))}
-                {shipments.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                {shipments.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
               </tbody>
             </table>
           </div>
@@ -107,30 +107,30 @@ function DispatchRow({ order, govName }: { order: OrderListItem; govName: (c: Go
   });
 
   return (
-    <div className="border border-slate-200 rounded-md p-3">
+    <div className="border border-line rounded-md p-3">
       <div className="flex items-center justify-between">
         <div className="text-sm">
           <span className="font-medium" dir="ltr">{order.reference}</span>
-          <span className="text-slate-400 ms-2">{order.customerName} · {govName(order.governorate)}</span>
+          <span className="text-faint ms-2">{order.customerName} · {govName(order.governorate)}</span>
         </div>
         <Button variant="secondary" onClick={() => setOpen((o) => !o)}>{open ? t('common.cancel') : t('fleet.dispatch')}</Button>
       </div>
       {open && (
-        <div className="mt-3 border-t border-slate-100 pt-3">
+        <div className="mt-3 border-t border-line-soft pt-3">
           {suggestion.isLoading ? <Spinner /> : (
             <div className="space-y-3">
               <div>
-                <p className="text-xs text-slate-500 mb-1">{t('fleet.couriersLabel')}</p>
+                <p className="text-xs text-muted mb-1">{t('fleet.couriersLabel')}</p>
                 <div className="flex flex-wrap gap-2">
                   {suggestion.data?.couriers.map((c) => (
                     <Button key={c.courierId} variant="secondary" disabled={dispatch.isPending} onClick={() => dispatch.mutate({ carrierType: 'COURIER', courierId: c.courierId })}>
-                      {c.name} <span className="text-slate-400 ms-1">{c.etaDays}{t('fleet.daysShort')}</span>
+                      {c.name} <span className="text-faint ms-1">{c.etaDays}{t('fleet.daysShort')}</span>
                     </Button>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-1">{t('fleet.inHouseLabel')}</p>
+                <p className="text-xs text-muted mb-1">{t('fleet.inHouseLabel')}</p>
                 <div className="flex flex-wrap gap-2">
                   {suggestion.data?.inHouseDrivers.length ? suggestion.data.inHouseDrivers.map((d) => (
                     <Button key={d.driverId} disabled={dispatch.isPending} onClick={() => dispatch.mutate({ carrierType: 'IN_HOUSE', driverId: d.driverId })}>{d.name}</Button>

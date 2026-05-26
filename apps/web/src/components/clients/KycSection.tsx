@@ -61,7 +61,7 @@ export function KycSection({ clientId }: { clientId: string }) {
           }}
           className="text-sm"
         />
-        {upload.isPending && <span className="text-sm text-slate-500">{t('common.pleaseWait')}</span>}
+        {upload.isPending && <span className="text-sm text-muted">{t('common.pleaseWait')}</span>}
       </div>
       {upload.isError && <Alert>{t('kyc.uploadError')}</Alert>}
 
@@ -71,7 +71,7 @@ export function KycSection({ clientId }: { clientId: string }) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-slate-500 border-b border-slate-200">
+              <tr className="text-muted border-b border-line">
                 <th className="text-start font-medium px-3 py-2">{t('kyc.docType')}</th>
                 <th className="text-start font-medium px-3 py-2">{t('kyc.uploaded')}</th>
                 <th className="text-start font-medium px-3 py-2">{t('kyc.reviewStatus')}</th>
@@ -80,9 +80,9 @@ export function KycSection({ clientId }: { clientId: string }) {
             </thead>
             <tbody>
               {docs.data.map((d) => (
-                <tr key={d.id} className="border-b border-slate-100">
+                <tr key={d.id} className="border-b border-line-soft">
                   <td className="px-3 py-2">{t(`kyc.types.${d.type}`)}</td>
-                  <td className="px-3 py-2 text-slate-600">{fmtDate(d.uploadedAt)}</td>
+                  <td className="px-3 py-2 text-body">{fmtDate(d.uploadedAt)}</td>
                   <td className="px-3 py-2">
                     {d.approved === null ? (
                       <Badge tone="amber">{t('kyc.pending')}</Badge>
@@ -110,7 +110,7 @@ export function KycSection({ clientId }: { clientId: string }) {
           </table>
         </div>
       ) : (
-        <p className="text-sm text-slate-400">{t('kyc.none')}</p>
+        <p className="text-sm text-faint">{t('kyc.none')}</p>
       )}
     </Card>
   );

@@ -100,7 +100,7 @@ export default function AuditPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('audit.when')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('audit.actor')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('audit.action')}</th>
@@ -109,21 +109,21 @@ export default function AuditPage() {
               </thead>
               <tbody>
                 {data?.items.map((e) => (
-                  <tr key={e.id} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{fmtDate(e.createdAt)}</td>
+                  <tr key={e.id} className="border-b border-line-soft hover:bg-surface-muted">
+                    <td className="px-4 py-3 text-body whitespace-nowrap">{fmtDate(e.createdAt)}</td>
                     <td className="px-4 py-3">{e.user?.fullName ?? e.user?.email ?? '—'}</td>
                     <td className="px-4 py-3">
                       <Badge tone={ACTION_TONE[e.action]}>{t(`audit.actions.${e.action}`)}</Badge>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-4 py-3 text-body">
                       {e.entity}
-                      {e.entityId && <span className="text-slate-400"> · {e.entityId.slice(0, 8)}</span>}
+                      {e.entityId && <span className="text-faint"> · {e.entityId.slice(0, 8)}</span>}
                     </td>
                   </tr>
                 ))}
                 {data?.items.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-slate-400">
+                    <td colSpan={4} className="px-4 py-8 text-center text-faint">
                       {t('common.noResults')}
                     </td>
                   </tr>

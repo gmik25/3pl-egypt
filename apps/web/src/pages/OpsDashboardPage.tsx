@@ -11,7 +11,7 @@ import { currentLocale } from '../i18n';
 function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
     <Card className="p-4">
-      <p className="text-xs text-slate-500">{label}</p>
+      <p className="text-xs text-muted">{label}</p>
       <p className={`text-2xl font-bold mt-1 ${tone ?? ''}`}>{value}</p>
     </Card>
   );
@@ -20,10 +20,10 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: str
 function QueueCard({ label, count, to }: { label: string; count: number; to: string }) {
   return (
     <Link to={to}>
-      <Card className={`p-4 hover:bg-slate-50 transition ${count > 0 ? 'border-amber-300' : ''}`}>
+      <Card className={`p-4 hover:bg-surface-muted transition ${count > 0 ? 'border-amber-300' : ''}`}>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-600">{label}</span>
-          <span className={`text-xl font-bold ${count > 0 ? 'text-amber-600' : 'text-slate-300'}`}>{count}</span>
+          <span className="text-sm text-body">{label}</span>
+          <span className={`text-xl font-bold ${count > 0 ? 'text-amber-600' : 'text-faint'}`}>{count}</span>
         </div>
       </Card>
     </Link>
@@ -45,7 +45,7 @@ export default function OpsDashboardPage() {
     <div className="max-w-6xl space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{t('ops.title')}</h1>
-        <span className="text-xs text-slate-400">{t('ops.autoRefresh')}</span>
+        <span className="text-xs text-faint">{t('ops.autoRefresh')}</span>
       </div>
 
       {/* Headline totals */}
@@ -80,8 +80,8 @@ export default function OpsDashboardPage() {
             {ORDER_STATES.map((s: OrderState) => (
               <div key={s} className="flex items-center gap-2">
                 <span className="w-28 shrink-0"><OrderStateBadge state={s} /></span>
-                <div className="flex-1 bg-slate-100 rounded h-4 overflow-hidden">
-                  <div className="h-4 bg-brand-500" style={{ width: `${Math.round(((d.ordersByState[s] ?? 0) / maxState) * 100)}%` }} />
+                <div className="flex-1 bg-surface-muted rounded h-4 overflow-hidden">
+                  <div className="h-4 bg-accent/100" style={{ width: `${Math.round(((d.ordersByState[s] ?? 0) / maxState) * 100)}%` }} />
                 </div>
                 <span className="w-12 text-end tabular-nums">{d.ordersByState[s] ?? 0}</span>
               </div>
@@ -95,7 +95,7 @@ export default function OpsDashboardPage() {
             <Stat label={t('ops.codCollected')} value={formatEgp(d.cod.collectedPiastres, { locale: egpLoc })} tone="text-green-600" />
             <Stat label={t('ops.walletLiability')} value={formatEgp(d.cod.walletLiabilityPiastres, { locale: egpLoc })} tone="text-amber-600" />
           </div>
-          <h2 className="text-sm font-semibold text-slate-500">{t('ops.actionQueues')}</h2>
+          <h2 className="text-sm font-semibold text-muted">{t('ops.actionQueues')}</h2>
           <div className="grid grid-cols-2 gap-3">
             <QueueCard label={t('ops.returnsPending')} count={d.queues.returnsPending} to="/returns" />
             <QueueCard label={t('ops.remittancesPending')} count={d.queues.remittancesPending} to="/remittances" />
@@ -111,7 +111,7 @@ export default function OpsDashboardPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-slate-500 border-b border-slate-200">
+              <tr className="text-muted border-b border-line">
                 <th className="text-start font-medium px-4 py-3">{t('warehouses.code')}</th>
                 <th className="text-start font-medium px-4 py-3">{t('warehouses.name')}</th>
                 <th className="text-end font-medium px-4 py-3">{t('nav.orders')}</th>
@@ -120,9 +120,9 @@ export default function OpsDashboardPage() {
             </thead>
             <tbody>
               {d.warehouses.map((w) => (
-                <tr key={w.code} className="border-b border-slate-100">
+                <tr key={w.code} className="border-b border-line-soft">
                   <td className="px-4 py-3 font-medium" dir="ltr">{w.code}{w.isBonded && <Badge tone="amber">{t('customs.bonded')}</Badge>}</td>
-                  <td className="px-4 py-3 text-slate-600">{w.name}</td>
+                  <td className="px-4 py-3 text-body">{w.name}</td>
                   <td className="px-4 py-3 text-end">{w.orders}</td>
                   <td className="px-4 py-3 text-end">{w.availableUnits}</td>
                 </tr>
@@ -138,7 +138,7 @@ export default function OpsDashboardPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-slate-500 border-b border-slate-200">
+              <tr className="text-muted border-b border-line">
                 <th className="text-start font-medium px-4 py-3">{t('fleet.carrier')}</th>
                 <th className="text-end font-medium px-4 py-3">{t('reports.shipments')}</th>
                 <th className="text-end font-medium px-4 py-3">{t('fleet.delivered')}</th>
@@ -147,14 +147,14 @@ export default function OpsDashboardPage() {
             </thead>
             <tbody>
               {d.couriers.map((c) => (
-                <tr key={c.courier} className="border-b border-slate-100">
+                <tr key={c.courier} className="border-b border-line-soft">
                   <td className="px-4 py-3">{t(`fleet.couriers.${c.courier}`, c.courier)}</td>
                   <td className="px-4 py-3 text-end">{c.shipments}</td>
                   <td className="px-4 py-3 text-end">{c.delivered}</td>
                   <td className="px-4 py-3 text-end">{c.deliveryRatePct}%</td>
                 </tr>
               ))}
-              {d.couriers.length === 0 && <tr><td colSpan={4} className="px-4 py-6 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+              {d.couriers.length === 0 && <tr><td colSpan={4} className="px-4 py-6 text-center text-faint">{t('common.noResults')}</td></tr>}
             </tbody>
           </table>
         </div>

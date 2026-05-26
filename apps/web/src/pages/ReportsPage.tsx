@@ -17,19 +17,19 @@ import { currentLocale } from '../i18n';
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <Card className="p-5">
-      <p className="text-sm text-slate-500">{label}</p>
+      <p className="text-sm text-muted">{label}</p>
       <p className="text-2xl font-bold mt-1">{value}</p>
-      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-faint mt-1">{sub}</p>}
     </Card>
   );
 }
 
-function Bar({ label, value, max, tone = 'bg-brand-500' }: { label: string; value: number; max: number; tone?: string }) {
+function Bar({ label, value, max, tone = 'bg-accent/100' }: { label: string; value: number; max: number; tone?: string }) {
   const w = max > 0 ? Math.round((value / max) * 100) : 0;
   return (
     <div className="flex items-center gap-2 text-sm">
-      <span className="w-32 shrink-0 truncate text-slate-600">{label}</span>
-      <div className="flex-1 bg-slate-100 rounded h-4 overflow-hidden">
+      <span className="w-32 shrink-0 truncate text-body">{label}</span>
+      <div className="flex-1 bg-surface-muted rounded h-4 overflow-hidden">
         <div className={`h-4 ${tone}`} style={{ width: `${w}%` }} />
       </div>
       <span className="w-12 text-end tabular-nums">{value}</span>
@@ -85,8 +85,8 @@ export default function ReportsPage() {
             {ORDER_STATES.map((s: OrderState) => (
               <div key={s} className="flex items-center gap-2">
                 <span className="w-28 shrink-0"><OrderStateBadge state={s} /></span>
-                <div className="flex-1 bg-slate-100 rounded h-4 overflow-hidden">
-                  <div className="h-4 bg-brand-500" style={{ width: `${kpis.data!.totalOrders ? Math.round(((kpis.data!.stateCounts[s] ?? 0) / kpis.data!.totalOrders) * 100) : 0}%` }} />
+                <div className="flex-1 bg-surface-muted rounded h-4 overflow-hidden">
+                  <div className="h-4 bg-accent/100" style={{ width: `${kpis.data!.totalOrders ? Math.round(((kpis.data!.stateCounts[s] ?? 0) / kpis.data!.totalOrders) * 100) : 0}%` }} />
                 </div>
                 <span className="w-12 text-end tabular-nums">{kpis.data!.stateCounts[s] ?? 0}</span>
               </div>
@@ -108,7 +108,7 @@ export default function ReportsPage() {
                 <Bar key={r.client} label={r.client} value={Math.round(r.revenuePiastres / 100)} max={Math.round(maxRevenue / 100)} />
               ))}
             </div>
-          ) : <p className="text-sm text-slate-400">{t('common.noResults')}</p>}
+          ) : <p className="text-sm text-faint">{t('common.noResults')}</p>}
         </Card>
 
         {/* Inventory by warehouse */}
@@ -119,9 +119,9 @@ export default function ReportsPage() {
           </div>
           {inventory.isLoading ? <Spinner /> : inventory.data && inventory.data.length > 0 ? (
             <div className="space-y-2">
-              {inventory.data.map((r) => <Bar key={r.warehouse} label={r.warehouse} value={r.availableUnits} max={maxStock} tone="bg-green-500" />)}
+              {inventory.data.map((r) => <Bar key={r.warehouse} label={r.warehouse} value={r.availableUnits} max={maxStock} tone="bg-green-500/100" />)}
             </div>
-          ) : <p className="text-sm text-slate-400">{t('common.noResults')}</p>}
+          ) : <p className="text-sm text-faint">{t('common.noResults')}</p>}
         </Card>
       </div>
 
@@ -135,7 +135,7 @@ export default function ReportsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('fleet.carrier')}</th>
                   <th className="text-end font-medium px-4 py-3">{t('reports.shipments')}</th>
                   <th className="text-end font-medium px-4 py-3">{t('fleet.delivered')}</th>
@@ -145,7 +145,7 @@ export default function ReportsPage() {
               </thead>
               <tbody>
                 {couriers.data?.map((c) => (
-                  <tr key={c.courier} className="border-b border-slate-100">
+                  <tr key={c.courier} className="border-b border-line-soft">
                     <td className="px-4 py-3">{t(`fleet.couriers.${c.courier}`, c.courier)}</td>
                     <td className="px-4 py-3 text-end">{c.shipments}</td>
                     <td className="px-4 py-3 text-end">{c.delivered}</td>
@@ -153,7 +153,7 @@ export default function ReportsPage() {
                     <td className="px-4 py-3 text-end">{c.avgAttempts}</td>
                   </tr>
                 ))}
-                {couriers.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+                {couriers.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
               </tbody>
             </table>
           </div>

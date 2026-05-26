@@ -58,10 +58,10 @@ export default function WarehousesPage() {
                 <li key={w.id}>
                   <button
                     onClick={() => setSelected(w.id)}
-                    className={`w-full text-start px-3 py-2 rounded-md text-sm transition ${selected === w.id ? 'bg-brand-50 text-brand-700 font-medium' : 'hover:bg-slate-100'}`}
+                    className={`w-full text-start px-3 py-2 rounded-md text-sm transition ${selected === w.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-surface-muted'}`}
                   >
                     <span className="font-medium" dir="ltr">{w.code}</span> — {w.name}
-                    <span className="block text-xs text-slate-400">
+                    <span className="block text-xs text-faint">
                       {GOVERNORATES.find((g) => g.code === w.governorate)?.[locale === 'ar' ? 'nameAr' : 'nameEn']} · {w._count?.locations ?? 0} {t('warehouses.locations')}
                     </span>
                   </button>
@@ -72,7 +72,7 @@ export default function WarehousesPage() {
         </Card>
 
         <div className="lg:col-span-2">
-          {selected ? <WarehouseDetail warehouseId={selected} /> : <Card className="p-8 text-center text-slate-400 text-sm">{t('warehouses.selectPrompt')}</Card>}
+          {selected ? <WarehouseDetail warehouseId={selected} /> : <Card className="p-8 text-center text-faint text-sm">{t('warehouses.selectPrompt')}</Card>}
         </div>
       </div>
     </div>
@@ -123,13 +123,13 @@ function WarehouseDetail({ warehouseId }: { warehouseId: string }) {
   return (
     <div className="space-y-5">
       <Card className="p-6">
-        <h2 className="text-lg font-semibold mb-3">{wh.data.name} <span className="text-slate-400" dir="ltr">({wh.data.code})</span></h2>
+        <h2 className="text-lg font-semibold mb-3">{wh.data.name} <span className="text-faint" dir="ltr">({wh.data.code})</span></h2>
         <div className="flex flex-wrap gap-2 mb-4">
           {wh.data.zones.map((z) => (
             <Badge key={z.id} tone="blue">{t(`warehouses.zoneTypes.${z.type}`)} · {z.code} ({z._count?.locations ?? 0})</Badge>
           ))}
         </div>
-        <form onSubmit={(e) => { e.preventDefault(); addZone.mutate(); }} className="grid grid-cols-2 sm:grid-cols-4 gap-3 items-end border-t border-slate-100 pt-3">
+        <form onSubmit={(e) => { e.preventDefault(); addZone.mutate(); }} className="grid grid-cols-2 sm:grid-cols-4 gap-3 items-end border-t border-line-soft pt-3">
           <Select label={t('warehouses.zoneType')} value={zoneType} onChange={(e) => setZoneType(e.target.value as ZoneType)}>
             {ZONE_TYPES.map((z) => <option key={z} value={z}>{t(`warehouses.zoneTypes.${z}`)}</option>)}
           </Select>
@@ -180,7 +180,7 @@ function GenerateGridForm({ warehouseId, zones, clientOptions, onDone }: { wareh
         <Button variant="secondary" onClick={() => setOpen((o) => !o)}>{open ? t('common.cancel') : t('warehouses.generateGrid')}</Button>
       </div>
       {open && (
-        <div className="mt-4 space-y-4 border-t border-slate-100 pt-4">
+        <div className="mt-4 space-y-4 border-t border-line-soft pt-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <Select label={t('warehouses.zone')} value={zoneId} onChange={(e) => setZoneId(e.target.value)}>
               <option value="">—</option>
@@ -203,7 +203,7 @@ function GenerateGridForm({ warehouseId, zones, clientOptions, onDone }: { wareh
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <TextField label={t('warehouses.capacityPerBin')} type="number" inputMode="numeric" value={capacity} onChange={(e) => setCapacity(e.target.value)} dir="ltr" />
           </div>
-          <p className="text-xs text-slate-500">{t('warehouses.gridHint', { count })}</p>
+          <p className="text-xs text-muted">{t('warehouses.gridHint', { count })}</p>
           {gen.isError && <Alert>{t('warehouses.gridError')}</Alert>}
           {gen.isSuccess && <Alert tone="green">{t('warehouses.gridDone', { created: gen.data.created, skipped: gen.data.skipped })}</Alert>}
           <Button disabled={!zoneId || count === 0 || count > 5000 || gen.isPending} onClick={() => gen.mutate()}>
@@ -224,19 +224,19 @@ function AllocationSummaryCard({ warehouseId }: { warehouseId: string }) {
       {summary.isLoading ? <Spinner /> : summary.data && summary.data.length > 0 ? (
         <div className="space-y-1.5">
           {summary.data.map((r) => (
-            <div key={r.clientId} className="flex items-center justify-between text-sm border-b border-slate-100 pb-1.5">
+            <div key={r.clientId} className="flex items-center justify-between text-sm border-b border-line-soft pb-1.5">
               <span className="font-medium">{r.legalName}</span>
-              <span className="text-slate-500">
+              <span className="text-muted">
                 <Badge tone="blue">{t('warehouses.locationsCount', { count: r.locationCount })}</Badge>
                 {r.reservedCapacity > 0 && (
                   <span className="ms-2 text-xs">{t('warehouses.utilization', { stored: r.storedUnits, capacity: r.reservedCapacity, pct: r.utilizationPct ?? 0 })}</span>
                 )}
-                <span className="ms-2 text-xs text-slate-400">{t('warehouses.occupiedOf', { occupied: r.occupiedCount, total: r.locationCount })}</span>
+                <span className="ms-2 text-xs text-faint">{t('warehouses.occupiedOf', { occupied: r.occupiedCount, total: r.locationCount })}</span>
               </span>
             </div>
           ))}
         </div>
-      ) : <p className="text-sm text-slate-400">{t('warehouses.noAllocations')}</p>}
+      ) : <p className="text-sm text-faint">{t('warehouses.noAllocations')}</p>}
     </Card>
   );
 }
@@ -282,8 +282,8 @@ function LocationsTable({ warehouseId, zones, clientOptions, onChanged }: { ware
 
       {/* Bulk allocate bar */}
       {selected.size > 0 && (
-        <div className="flex items-center gap-2 mb-3 p-2 bg-brand-50 rounded-md">
-          <span className="text-sm text-brand-700">{t('warehouses.selectedCount', { count: selected.size })}</span>
+        <div className="flex items-center gap-2 mb-3 p-2 bg-accent/10 rounded-md">
+          <span className="text-sm text-accent">{t('warehouses.selectedCount', { count: selected.size })}</span>
           <Select value={assignClientId} onChange={(e) => setAssignClientId(e.target.value)} className="!w-48">
             <option value="">{t('warehouses.chooseSeller')}</option>
             {clientOptions.map((c) => <option key={c.id} value={c.id}>{c.legalName}</option>)}
@@ -297,7 +297,7 @@ function LocationsTable({ warehouseId, zones, clientOptions, onChanged }: { ware
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-slate-500 border-b border-slate-200">
+              <tr className="text-muted border-b border-line">
                 <th className="px-2 py-2"><input type="checkbox" checked={allSelected} onChange={(e) => setSelected(e.target.checked ? new Set(rows.map((l) => l.id)) : new Set())} /></th>
                 <th className="text-start font-medium px-3 py-2">{t('warehouses.code')}</th>
                 <th className="text-start font-medium px-3 py-2">{t('warehouses.zone')}</th>
@@ -308,16 +308,16 @@ function LocationsTable({ warehouseId, zones, clientOptions, onChanged }: { ware
             </thead>
             <tbody>
               {rows.map((l: WmsLocation) => (
-                <tr key={l.id} className="border-b border-slate-100 hover:bg-slate-50">
+                <tr key={l.id} className="border-b border-line-soft hover:bg-surface-muted">
                   <td className="px-2 py-2"><input type="checkbox" checked={selected.has(l.id)} onChange={() => toggle(l.id)} /></td>
                   <td className="px-3 py-2 font-medium" dir="ltr">{l.code}</td>
-                  <td className="px-3 py-2 text-slate-500">{l.zone ? t(`warehouses.zoneTypes.${l.zone.type}`) : '—'}</td>
-                  <td className="px-3 py-2">{l.allocatedClientId ? <Badge tone="blue">{l.allocatedClient?.legalName ?? clientName(l.allocatedClientId)}</Badge> : <span className="text-slate-400">{t('warehouses.unallocated')}</span>}</td>
-                  <td className="px-3 py-2 text-slate-500">{l.capacityUnits != null ? `${l.units ?? 0}/${l.capacityUnits}${l.utilizationPct != null ? ` · ${l.utilizationPct}%` : ''}` : '—'}</td>
-                  <td className="px-3 py-2">{l.occupied ? <Badge tone="amber">{t('warehouses.occupiedUnits', { count: l.units ?? 0 })}</Badge> : <span className="text-slate-400">{t('warehouses.empty')}</span>}</td>
+                  <td className="px-3 py-2 text-muted">{l.zone ? t(`warehouses.zoneTypes.${l.zone.type}`) : '—'}</td>
+                  <td className="px-3 py-2">{l.allocatedClientId ? <Badge tone="blue">{l.allocatedClient?.legalName ?? clientName(l.allocatedClientId)}</Badge> : <span className="text-faint">{t('warehouses.unallocated')}</span>}</td>
+                  <td className="px-3 py-2 text-muted">{l.capacityUnits != null ? `${l.units ?? 0}/${l.capacityUnits}${l.utilizationPct != null ? ` · ${l.utilizationPct}%` : ''}` : '—'}</td>
+                  <td className="px-3 py-2">{l.occupied ? <Badge tone="amber">{t('warehouses.occupiedUnits', { count: l.units ?? 0 })}</Badge> : <span className="text-faint">{t('warehouses.empty')}</span>}</td>
                 </tr>
               ))}
-              {rows.length === 0 && <tr><td colSpan={6} className="px-3 py-8 text-center text-slate-400">{t('common.noResults')}</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={6} className="px-3 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
             </tbody>
           </table>
         </div>

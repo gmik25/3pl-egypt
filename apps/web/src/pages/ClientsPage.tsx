@@ -78,7 +78,7 @@ export default function ClientsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-slate-500 border-b border-slate-200">
+                <tr className="text-muted border-b border-line">
                   <th className="text-start font-medium px-4 py-3">{t('clients.legalName')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('clients.governorate')}</th>
                   <th className="text-start font-medium px-4 py-3">{t('clients.contact')}</th>
@@ -90,19 +90,19 @@ export default function ClientsPage() {
                 {data?.items.map((c) => {
                   const gov = GOVERNORATES.find((g) => g.code === c.governorate);
                   return (
-                    <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50">
+                    <tr key={c.id} className="border-b border-line-soft hover:bg-surface-muted">
                       <td className="px-4 py-3">
-                        <Link to={`/clients/${c.id}`} className="text-brand-600 hover:underline font-medium">
+                        <Link to={`/clients/${c.id}`} className="text-accent hover:underline font-medium">
                           {c.legalName}
                         </Link>
-                        {c.tradingName && <span className="text-slate-400 block text-xs">{c.tradingName}</span>}
+                        {c.tradingName && <span className="text-faint block text-xs">{c.tradingName}</span>}
                       </td>
-                      <td className="px-4 py-3 text-slate-600">{locale === 'ar' ? gov?.nameAr : gov?.nameEn}</td>
-                      <td className="px-4 py-3 text-slate-600">
+                      <td className="px-4 py-3 text-body">{locale === 'ar' ? gov?.nameAr : gov?.nameEn}</td>
+                      <td className="px-4 py-3 text-body">
                         {c.contactName}
-                        <span className="block text-xs text-slate-400">{c.contactPhone}</span>
+                        <span className="block text-xs text-faint">{c.contactPhone}</span>
                       </td>
-                      <td className="px-4 py-3 text-slate-600">{c._count?.contracts ?? 0}</td>
+                      <td className="px-4 py-3 text-body">{c._count?.contracts ?? 0}</td>
                       <td className="px-4 py-3">
                         {c.isActive ? (
                           <Badge tone="green">{t('clients.active')}</Badge>
@@ -115,7 +115,7 @@ export default function ClientsPage() {
                 })}
                 {data?.items.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
+                    <td colSpan={5} className="px-4 py-8 text-center text-faint">
                       {t('common.noResults')}
                     </td>
                   </tr>

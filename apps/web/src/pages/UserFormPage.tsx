@@ -138,10 +138,10 @@ export default function UserFormPage() {
             <TextField label={t('users.phone')} value={phone} onChange={(e) => setPhone(e.target.value)} />
             <TextField label={t('auth.password')} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
             <div>
-              <span className="block text-sm font-medium text-slate-700 mb-1">{t('users.roles')}</span>
+              <span className="block text-sm font-medium text-ink mb-1">{t('users.roles')}</span>
               <div className="flex flex-wrap gap-2">
                 {USER_ROLES.map((r) => (
-                  <label key={r} className="flex items-center gap-1.5 text-sm border border-slate-300 rounded px-2 py-1 cursor-pointer">
+                  <label key={r} className="flex items-center gap-1.5 text-sm border border-line rounded px-2 py-1 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={roles.includes(r)}
@@ -174,8 +174,8 @@ export default function UserFormPage() {
                   disabled={toggleRole.isPending}
                   className={`px-3 py-1.5 rounded-md text-sm border transition ${
                     active
-                      ? 'bg-brand-50 border-brand-300 text-brand-700'
-                      : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'
+                      ? 'bg-accent/10 border-brand-300 text-accent'
+                      : 'bg-surface border-line text-body hover:bg-surface-muted'
                   }`}
                 >
                   {t(`roles.${r}`)}
@@ -185,9 +185,9 @@ export default function UserFormPage() {
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-slate-700 mb-2">{t('users.governorateScope')}</h3>
+            <h3 className="text-sm font-medium text-ink mb-2">{t('users.governorateScope')}</h3>
             {scoped.length === 0 ? (
-              <p className="text-sm text-slate-400">{t('users.noScope')}</p>
+              <p className="text-sm text-faint">{t('users.noScope')}</p>
             ) : (
               <div className="flex flex-wrap gap-1.5">
                 {scoped.map((g) => {

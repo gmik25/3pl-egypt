@@ -68,7 +68,7 @@ export default function ShipmentDetailPage() {
     <div className="max-w-3xl space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <Link to="/shipments" className="text-sm text-brand-600 hover:underline">← {t('fleet.title')}</Link>
+          <Link to="/shipments" className="text-sm text-accent hover:underline">← {t('fleet.title')}</Link>
           <h1 className="text-2xl font-bold mt-1" dir="ltr">{s.reference}</h1>
         </div>
         <ShipmentStatusBadge status={s.status} />
@@ -76,13 +76,13 @@ export default function ShipmentDetailPage() {
 
       <Card className="p-6">
         <dl className="grid grid-cols-2 gap-2 text-sm">
-          <div><dt className="text-slate-500">{t('fleet.carrier')}</dt><dd>{s.carrierType === 'COURIER' ? (s.courierAccount?.name ?? '—') : (s.driver?.fullName ?? t('fleet.inHouse'))}</dd></div>
-          {s.trackingNumber && <div><dt className="text-slate-500">{t('fleet.tracking')}</dt><dd dir="ltr">{s.trackingNumber}</dd></div>}
-          <div><dt className="text-slate-500">{t('orders.customer')}</dt><dd>{s.order?.customerName}</dd></div>
-          <div><dt className="text-slate-500">{t('orders.phone')}</dt><dd dir="ltr">{s.order?.customerPhone}</dd></div>
-          <div><dt className="text-slate-500">{t('clients.governorate')}</dt><dd>{locale === 'ar' ? gov?.nameAr : gov?.nameEn}</dd></div>
+          <div><dt className="text-muted">{t('fleet.carrier')}</dt><dd>{s.carrierType === 'COURIER' ? (s.courierAccount?.name ?? '—') : (s.driver?.fullName ?? t('fleet.inHouse'))}</dd></div>
+          {s.trackingNumber && <div><dt className="text-muted">{t('fleet.tracking')}</dt><dd dir="ltr">{s.trackingNumber}</dd></div>}
+          <div><dt className="text-muted">{t('orders.customer')}</dt><dd>{s.order?.customerName}</dd></div>
+          <div><dt className="text-muted">{t('orders.phone')}</dt><dd dir="ltr">{s.order?.customerPhone}</dd></div>
+          <div><dt className="text-muted">{t('clients.governorate')}</dt><dd>{locale === 'ar' ? gov?.nameAr : gov?.nameEn}</dd></div>
           {s.order?.paymentMethod === 'COD' && s.order.codAmountPiastres != null && (
-            <div><dt className="text-slate-500">{t('orders.codAmount')}</dt><dd>{formatEgp(s.order.codAmountPiastres, { locale: egpLoc })}</dd></div>
+            <div><dt className="text-muted">{t('orders.codAmount')}</dt><dd>{formatEgp(s.order.codAmountPiastres, { locale: egpLoc })}</dd></div>
           )}
         </dl>
       </Card>
@@ -100,10 +100,10 @@ export default function ShipmentDetailPage() {
           </div>
           <div className="mt-3 flex items-center gap-2 text-sm flex-wrap">
             <Badge tone={SYNC_TONE[s.storeSyncStatus]}>{t(`storeSync.statuses.${s.storeSyncStatus}`)}</Badge>
-            {s.storeSyncedAt && <span className="text-slate-400">{fmtDate(s.storeSyncedAt)}</span>}
-            {s.storeFulfillmentId && <span className="text-slate-500" dir="ltr">#{s.storeFulfillmentId}</span>}
+            {s.storeSyncedAt && <span className="text-faint">{fmtDate(s.storeSyncedAt)}</span>}
+            {s.storeFulfillmentId && <span className="text-muted" dir="ltr">#{s.storeFulfillmentId}</span>}
           </div>
-          {s.storeSyncError && <p className="mt-2 text-xs text-slate-500">{s.storeSyncError}</p>}
+          {s.storeSyncError && <p className="mt-2 text-xs text-muted">{s.storeSyncError}</p>}
         </Card>
       )}
 
@@ -122,7 +122,7 @@ export default function ShipmentDetailPage() {
               <TextField label={t('fleet.recipientName')} value={recipient} onChange={(e) => setRecipient(e.target.value)} />
 
               {/* OTP */}
-              <div className="border border-slate-200 rounded-md p-3 space-y-2">
+              <div className="border border-line rounded-md p-3 space-y-2">
                 <p className="text-sm font-medium">{t('fleet.podOtp')}</p>
                 <div className="flex gap-2 items-end">
                   <Button variant="secondary" onClick={() => reqOtp.mutate()} disabled={reqOtp.isPending}>{t('fleet.sendOtp')}</Button>
@@ -133,22 +133,22 @@ export default function ShipmentDetailPage() {
               </div>
 
               {/* Photo / signature */}
-              <div className="border border-slate-200 rounded-md p-3 space-y-2">
+              <div className="border border-line rounded-md p-3 space-y-2">
                 <p className="text-sm font-medium">{t('fleet.podFile')}</p>
                 <div className="flex gap-4 flex-wrap text-sm">
                   <div>
-                    <span className="block text-xs text-slate-500 mb-1">{t('fleet.photo')}</span>
+                    <span className="block text-xs text-muted mb-1">{t('fleet.photo')}</span>
                     <input ref={photoRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) podPhoto.mutate(f); }} />
                   </div>
                   <div>
-                    <span className="block text-xs text-slate-500 mb-1">{t('fleet.signature')}</span>
+                    <span className="block text-xs text-muted mb-1">{t('fleet.signature')}</span>
                     <input ref={sigRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) podSig.mutate(f); }} />
                   </div>
                 </div>
               </div>
 
               {/* Failed attempt */}
-              <div className="border border-slate-200 rounded-md p-3 space-y-2">
+              <div className="border border-line rounded-md p-3 space-y-2">
                 <p className="text-sm font-medium">{t('fleet.recordFailure')}</p>
                 <div className="flex gap-2 items-end">
                   <Select label={t('fleet.failureReason')} value={failReason} onChange={(e) => setFailReason(e.target.value as DeliveryFailureReason)}>
@@ -156,7 +156,7 @@ export default function ShipmentDetailPage() {
                   </Select>
                   <Button variant="danger" onClick={() => fail.mutate()} disabled={fail.isPending}>{t('fleet.recordFailure')}</Button>
                 </div>
-                <p className="text-xs text-slate-400">{t('fleet.attemptsNote', { count: s.attemptCount })}</p>
+                <p className="text-xs text-faint">{t('fleet.attemptsNote', { count: s.attemptCount })}</p>
               </div>
             </div>
           )}
@@ -169,24 +169,24 @@ export default function ShipmentDetailPage() {
           <h2 className="text-lg font-semibold mb-2">{t('fleet.proofOfDelivery')}</h2>
           <div className="flex items-center gap-2 text-sm flex-wrap">
             <Badge tone="green">{t(`fleet.podMethods.${s.pod.method}`)}</Badge>
-            {s.pod.recipientName && <span className="text-slate-600">{t('fleet.recipientName')}: {s.pod.recipientName}</span>}
-            <span className="text-slate-400">{fmtDate(s.pod.capturedAt)}</span>
+            {s.pod.recipientName && <span className="text-body">{t('fleet.recipientName')}: {s.pod.recipientName}</span>}
+            <span className="text-faint">{fmtDate(s.pod.capturedAt)}</span>
           </div>
-          {s.pod.photoUrl && <p className="text-xs text-slate-400 mt-2" dir="ltr">{s.pod.photoUrl}</p>}
-          {s.pod.signatureUrl && <p className="text-xs text-slate-400 mt-2" dir="ltr">{s.pod.signatureUrl}</p>}
+          {s.pod.photoUrl && <p className="text-xs text-faint mt-2" dir="ltr">{s.pod.photoUrl}</p>}
+          {s.pod.signatureUrl && <p className="text-xs text-faint mt-2" dir="ltr">{s.pod.signatureUrl}</p>}
         </Card>
       )}
 
       {/* Attempts */}
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-3">{t('fleet.attemptHistory')}</h2>
-        {s.attempts.length === 0 ? <p className="text-sm text-slate-400">{t('common.noResults')}</p> : (
+        {s.attempts.length === 0 ? <p className="text-sm text-faint">{t('common.noResults')}</p> : (
           <ol className="space-y-2 text-sm">
             {s.attempts.map((a) => (
               <li key={a.id} className="flex items-center gap-2">
-                <span className="text-slate-400 text-xs whitespace-nowrap">{fmtDate(a.createdAt)}</span>
+                <span className="text-faint text-xs whitespace-nowrap">{fmtDate(a.createdAt)}</span>
                 {a.success ? <Badge tone="green">{t('fleet.delivered')}</Badge> : <Badge tone="red">{a.failureReason ? t(`fleet.failureReasons.${a.failureReason}`) : t('fleet.failed')}</Badge>}
-                <span className="text-slate-500">#{a.attemptNumber}</span>
+                <span className="text-muted">#{a.attemptNumber}</span>
               </li>
             ))}
           </ol>

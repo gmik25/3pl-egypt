@@ -2,11 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Semantic theme tokens (space-separated RGB channels for Tailwind's <alpha-value>). */
+:root {
+  --accent: 21 71 204; /* brand-600 */
+  --canvas: 248 250 252; /* slate-50 */
+  --surface: 255 255 255;
+  --surface-muted: 241 245 249; /* slate-100 */
+  --line: 226 232 240; /* slate-200 */
+  --line-soft: 241 245 249; /* slate-100 */
+  --ink: 15 23 42; /* slate-900 */
+  --body: 51 65 85; /* slate-700 */
+  --muted: 100 116 139; /* slate-500 */
+  --faint: 148 163 184; /* slate-400 */
+}
+
+.dark {
+  --accent: 122 162 255; /* lighter brand for contrast on dark */
+  --canvas: 8 11 18;
+  --surface: 17 24 39; /* slate-900 */
+  --surface-muted: 30 41 59; /* slate-800 */
+  --line: 36 47 66;
+  --line-soft: 28 37 54;
+  --ink: 241 245 249; /* slate-100 */
+  --body: 203 213 225; /* slate-300 */
+  --muted: 148 163 184; /* slate-400 */
+  --faint: 100 116 139; /* slate-500 */
+}
+
 html {
   font-family: 'Cairo', system-ui, sans-serif;
 }
 
-/* EG: RTL is the default. dir attribute is flipped to "ltr" only when locale=en. */
+body {
+  background-color: rgb(var(--canvas));
+  color: rgb(var(--body));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings default to the strong ink tone; explicit text-* utilities still override. */
+@layer base {
+  h1, h2, h3, h4 {
+    color: rgb(var(--ink));
+  }
+}
+
+/* EG: RTL is the default; dir flips to "ltr" only when locale=en. */
 html[dir='rtl'] body {
   text-align: right;
+}
+
+::selection {
+  background-color: rgb(var(--accent) / 0.25);
+}
+
+/* Slimmer, theme-aware scrollbars. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--faint) / 0.5) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--faint) / 0.4);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(var(--faint) / 0.7);
 }
