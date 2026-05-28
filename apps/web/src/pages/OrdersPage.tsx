@@ -38,6 +38,8 @@ export default function OrdersPage() {
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
   const reset = () => setPage(1);
+  const hasFilters = Boolean(search || state || governorate || flaggedOnly);
+  const clearFilters = () => { setSearch(''); setState(''); setGovernorate(''); setFlaggedOnly(false); setPage(1); };
 
   return (
     <div className="max-w-6xl space-y-5">
@@ -130,7 +132,22 @@ export default function OrdersPage() {
                   );
                 })}
                 {data?.items.length === 0 && (
-                  <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>
+                  <tr>
+                    <td colSpan={6}>
+                      <EmptyState
+                        icon={Inbox}
+                        title={hasFilters ? t('orders.emptyFiltered') : t('orders.emptyTitle')}
+                        hint={hasFilters ? undefined : t('orders.emptyHint')}
+                        action={
+                          hasFilters ? (
+                            <Button variant="secondary" onClick={clearFilters}>{t('common.clearFilters')}</Button>
+                          ) : (
+                            <Link to="/orders/new"><Button>{t('orders.addOrder')}</Button></Link>
+                          )
+                        }
+                      />
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>

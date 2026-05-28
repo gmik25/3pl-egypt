@@ -16,7 +16,8 @@
     "loadError": "Failed to load data",
     "close": "Close",
     "empty": "Nothing here yet",
-    "emptyHint": "Items will appear here once added."
+    "emptyHint": "Items will appear here once added.",
+    "clearFilters": "Clear filters"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -299,7 +300,11 @@
       "FAWRY": "Fawry",
       "BANK_TRANSFER": "Bank transfer",
       "WALLET": "Wallet"
-    }
+    },
+    "emptyTitle": "No orders yet",
+    "emptyHint": "Create an order manually, import a CSV, or connect a store to start receiving orders.",
+    "emptyFiltered": "No orders match your filters",
+    "addOrder": "Add order"
   },
   "intake": {
     "SHOPIFY": "Shopify",
