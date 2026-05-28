@@ -117,7 +117,7 @@ export default function RemittancePage() {
                     </td>
                   </tr>
                 ))}
-                {remittances.data?.length === 0 && <tr><td colSpan={5}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
+                {remittances.data?.length === 0 && <tr><td colSpan={5}><EmptyState icon={Inbox} title={t('remittance.emptyTitle')} hint={t('remittance.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

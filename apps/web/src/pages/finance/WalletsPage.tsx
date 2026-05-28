@@ -6,11 +6,12 @@ import { formatEgp } from '@3pl/shared';
 import { listClients } from '../../api/clients';
 import { getStatement, getWallet } from '../../api/finance';
 import type { WalletEntryType } from '../../types';
-import { Card, Select, Badge, TableSkeleton } from '../../components/ui';
+import { Wallet, ReceiptText } from 'lucide-react';
+import { Card, Select, Badge, TableSkeleton, EmptyState } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const ENTRY_TONE: Record<WalletEntryType, 'green' | 'red' | 'blue' | 'amber'> = {
-  COD_CREDIT: 'green', COMMISSION_FEE: 'red', PAYOUT: 'blue', ADJUSTMENT: 'amber',
+  COD_CREDIT: 'green', COMMISSION_FEE: 'red', STORAGE_FEE: 'red', PAYOUT: 'blue', ADJUSTMENT: 'amber',
 };
 
 export default function WalletsPage() {
@@ -37,6 +38,10 @@ export default function WalletsPage() {
           </Select>
         </div>
       </Card>
+
+      {!clientId && (
+        <Card><EmptyState icon={Wallet} title={t('wallets.selectPrompt')} hint={t('wallets.selectHint')} /></Card>
+      )}
 
       {clientId && (
         <>
@@ -70,7 +75,7 @@ export default function WalletsPage() {
                   </tbody>
                 </table>
               </div>
-            ) : <p className="p-6 text-sm text-faint">{t('wallets.noActivity')}</p>}
+            ) : <EmptyState icon={ReceiptText} title={t('wallets.noActivity')} hint={t('wallets.noActivityHint')} />}
           </Card>
         </>
       )}

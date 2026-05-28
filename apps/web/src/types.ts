@@ -414,7 +414,7 @@ export interface CycleCount {
 
 // ---- COD & Finance ----
 
-export type WalletEntryType = 'COD_CREDIT' | 'COMMISSION_FEE' | 'PAYOUT' | 'ADJUSTMENT';
+export type WalletEntryType = 'COD_CREDIT' | 'COMMISSION_FEE' | 'STORAGE_FEE' | 'PAYOUT' | 'ADJUSTMENT';
 export type RemittanceStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED';
 export type PayoutRail = 'INSTAPAY' | 'FAWRY' | 'SWIFT';
 export type PayoutStatus = 'PENDING' | 'PAID' | 'FAILED';

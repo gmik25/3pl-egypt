@@ -90,7 +90,7 @@ export default function PayoutsPage() {
                     </td>
                   </tr>
                 ))}
-                {payouts.data?.length === 0 && <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
+                {payouts.data?.length === 0 && <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('payouts.emptyTitle')} hint={t('payouts.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

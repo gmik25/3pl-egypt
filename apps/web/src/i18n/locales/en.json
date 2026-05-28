@@ -490,7 +490,9 @@
       "PENDING": "Pending",
       "CONFIRMED": "Confirmed",
       "REJECTED": "Rejected"
-    }
+    },
+    "emptyTitle": "No remittances yet",
+    "emptyHint": "Remittances appear here once drivers deposit collected COD."
   },
   "wallets": {
     "title": "Client wallets",
@@ -504,8 +506,12 @@
       "COD_CREDIT": "COD credit",
       "COMMISSION_FEE": "Commission + VAT",
       "PAYOUT": "Payout",
-      "ADJUSTMENT": "Adjustment"
-    }
+      "ADJUSTMENT": "Adjustment",
+      "STORAGE_FEE": "Storage fee"
+    },
+    "selectPrompt": "Select a seller",
+    "selectHint": "Choose a client to view their EGP wallet balance and statement.",
+    "noActivityHint": "COD credits, fees and payouts will appear here."
   },
   "payouts": {
     "title": "Payouts",
@@ -526,7 +532,9 @@
       "PENDING": "Pending",
       "PAID": "Paid",
       "FAILED": "Failed"
-    }
+    },
+    "emptyTitle": "No payouts yet",
+    "emptyHint": "Create a payout to a client using the form above."
   },
   "invoices": {
     "title": "Invoices",
@@ -542,7 +550,9 @@
       "DRAFT": "Draft",
       "ISSUED": "Issued",
       "CANCELLED": "Cancelled"
-    }
+    },
+    "emptyTitle": "No invoices yet",
+    "emptyHint": "Generate an invoice for a client and period using the form above."
   },
   "fleet": {
     "title": "Shipments",

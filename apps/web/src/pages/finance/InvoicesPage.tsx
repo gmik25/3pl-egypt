@@ -74,7 +74,7 @@ export default function InvoicesPage() {
                       <td className="px-4 py-3"><Badge tone={TONE[inv.status]}>{t(`invoices.statuses.${inv.status}`)}</Badge></td>
                     </tr>
                   ))}
-                  {invoices.data?.length === 0 && <tr><td colSpan={3}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
+                  {invoices.data?.length === 0 && <tr><td colSpan={3}><EmptyState icon={Inbox} title={t('invoices.emptyTitle')} hint={t('invoices.emptyHint')} /></td></tr>}
                 </tbody>
               </table>
             </div>
