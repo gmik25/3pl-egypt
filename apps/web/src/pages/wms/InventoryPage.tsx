@@ -12,6 +12,7 @@ import {
   stockBySku,
 } from '../../api/wms';
 import type { Sku, StockStatus } from '../../types';
+import { Link } from 'react-router-dom';
 import { Boxes } from 'lucide-react';
 import { Button, Card, Select, TextField, Spinner, TableSkeleton, EmptyState, Badge, Alert } from '../../components/ui';
 import { currentLocale } from '../../i18n';
@@ -123,7 +124,14 @@ export default function InventoryPage() {
                     ))}
                   </tbody>
                 </table>
-              ) : <EmptyState icon={Boxes} title={t('inventory.noStock')} />}
+              ) : (
+                <EmptyState
+                  icon={Boxes}
+                  title={t('inventory.noStock')}
+                  hint={t('inventory.noStockHint')}
+                  action={<Link to="/receiving"><Button variant="secondary">{t('inventory.receiveStock')}</Button></Link>}
+                />
+              )}
 
               {/* Adjust */}
               <div className="border-t border-line-soft mt-4 pt-4">

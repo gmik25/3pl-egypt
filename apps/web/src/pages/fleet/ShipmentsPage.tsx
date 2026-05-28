@@ -81,7 +81,16 @@ export default function ShipmentsPage() {
                     <td className="px-4 py-3"><ShipmentStatusBadge status={s.status} /></td>
                   </tr>
                 ))}
-                {shipments.data?.length === 0 && <tr><td colSpan={5}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
+                {shipments.data?.length === 0 && (
+                  <tr><td colSpan={5}>
+                    <EmptyState
+                      icon={Inbox}
+                      title={status ? t('fleet.shipmentsEmptyFiltered') : t('fleet.shipmentsEmptyTitle')}
+                      hint={status ? undefined : t('fleet.shipmentsEmptyHint')}
+                      action={status ? <Button variant="secondary" onClick={() => setStatus('')}>{t('common.clearFilters')}</Button> : undefined}
+                    />
+                  </td></tr>
+                )}
               </tbody>
             </table>
           </div>

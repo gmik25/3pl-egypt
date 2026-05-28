@@ -171,7 +171,11 @@
     "building": "Building",
     "street": "Street",
     "district": "District",
-    "saveError": "Failed to save client"
+    "saveError": "Failed to save client",
+    "emptyTitle": "No clients yet",
+    "emptyHint": "Onboard your first seller to manage their orders, storage and billing.",
+    "emptyFiltered": "No clients match your filters",
+    "addClient": "Add client"
   },
   "kyc": {
     "title": "KYC documents",
@@ -422,7 +426,9 @@
       "AVAILABLE": "Available",
       "QUARANTINE": "Quarantine",
       "DAMAGED": "Damaged"
-    }
+    },
+    "noStockHint": "Receive a purchase order to add stock for this SKU.",
+    "receiveStock": "Receive stock"
   },
   "receiving": {
     "title": "Receiving",
@@ -596,7 +602,10 @@
       "CUSTOMER_REFUSED": "Customer refused",
       "POSTPONED": "Postponed",
       "OTHER": "Other"
-    }
+    },
+    "shipmentsEmptyTitle": "No shipments yet",
+    "shipmentsEmptyHint": "Dispatch a packed order above to create a shipment.",
+    "shipmentsEmptyFiltered": "No shipments match this status"
   },
   "drivers": {
     "title": "Drivers / fleet",
@@ -859,7 +868,9 @@
     "resubscribe": "Resync setup",
     "topicsCount": "{{count}} webhooks",
     "backfilledAt": "backfilled {{date}}",
-    "noBackfill": "backfill pending"
+    "noBackfill": "backfill pending",
+    "emptyTitle": "No stores connected yet",
+    "emptyHint": "Connect a Shopify, Salla, Zid or WooCommerce store so orders flow in automatically."
   },
   "myStores": {
     "title": "My stores",

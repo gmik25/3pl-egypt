@@ -31,6 +31,8 @@ export default function ClientsPage() {
   });
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
+  const hasFilters = Boolean(search || governorate);
+  const clearFilters = () => { setSearch(''); setGovernorate(''); setPage(1); };
 
   return (
     <div className="max-w-5xl space-y-5">
@@ -116,7 +118,20 @@ export default function ClientsPage() {
                 })}
                 {data?.items.length === 0 && (
                   <tr>
-                    <td colSpan={5}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td>
+                    <td colSpan={5}>
+                      <EmptyState
+                        icon={Inbox}
+                        title={hasFilters ? t('clients.emptyFiltered') : t('clients.emptyTitle')}
+                        hint={hasFilters ? undefined : t('clients.emptyHint')}
+                        action={
+                          hasFilters ? (
+                            <Button variant="secondary" onClick={clearFilters}>{t('common.clearFilters')}</Button>
+                          ) : (
+                            <Link to="/clients/new"><Button>{t('clients.addClient')}</Button></Link>
+                          )
+                        }
+                      />
+                    </td>
                   </tr>
                 )}
               </tbody>

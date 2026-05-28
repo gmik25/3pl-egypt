@@ -1,4 +1,4 @@
-import { Inbox } from 'lucide-react';
+import { Store } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -97,7 +97,14 @@ export default function StoresPage() {
                   </tr>
                 ))}
                 {stores.data?.length === 0 && (
-                  <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>
+                  <tr><td colSpan={6}>
+                    <EmptyState
+                      icon={Store}
+                      title={t('stores.emptyTitle')}
+                      hint={t('stores.emptyHint')}
+                      action={!showNew && <Button onClick={() => setShowNew(true)}>{t('stores.connect')}</Button>}
+                    />
+                  </td></tr>
                 )}
               </tbody>
             </table>

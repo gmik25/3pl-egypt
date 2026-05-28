@@ -171,7 +171,11 @@
     "building": "المبنى",
     "street": "الشارع",
     "district": "الحي",
-    "saveError": "تعذّر حفظ العميل"
+    "saveError": "تعذّر حفظ العميل",
+    "emptyTitle": "لا يوجد عملاء بعد",
+    "emptyHint": "أضف أول بائع لإدارة طلباته وتخزينه وفوترته.",
+    "emptyFiltered": "لا يوجد عملاء مطابقون للتصفية",
+    "addClient": "إضافة عميل"
   },
   "kyc": {
     "title": "مستندات اعرف عميلك (KYC)",
@@ -422,7 +426,9 @@
       "AVAILABLE": "متاح",
       "QUARANTINE": "محجوز",
       "DAMAGED": "تالف"
-    }
+    },
+    "noStockHint": "استلم أمر شراء لإضافة مخزون لهذا الصنف.",
+    "receiveStock": "استلام مخزون"
   },
   "receiving": {
     "title": "الاستلام",
@@ -596,7 +602,10 @@
       "CUSTOMER_REFUSED": "رفض العميل",
       "POSTPONED": "مؤجل",
       "OTHER": "أخرى"
-    }
+    },
+    "shipmentsEmptyTitle": "لا توجد شحنات بعد",
+    "shipmentsEmptyHint": "أرسل طلبًا مُعبّأً من الأعلى لإنشاء شحنة.",
+    "shipmentsEmptyFiltered": "لا توجد شحنات مطابقة لهذه الحالة"
   },
   "drivers": {
     "title": "المناديب / الأسطول",
@@ -859,7 +868,9 @@
     "resubscribe": "إعادة الإعداد",
     "topicsCount": "{{count}} خطافات",
     "backfilledAt": "تم السحب {{date}}",
-    "noBackfill": "السحب قيد الانتظار"
+    "noBackfill": "السحب قيد الانتظار",
+    "emptyTitle": "لا توجد متاجر مرتبطة بعد",
+    "emptyHint": "اربط متجر شوبيفاي أو سلة أو زد أو ووكومرس لتتدفق الطلبات تلقائيًا."
   },
   "myStores": {
     "title": "متاجري",
