@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -5,7 +6,7 @@ import { GOVERNORATES, type GovernorateCode } from '@3pl/shared';
 
 import { listUsers } from '../../api/users';
 import { listDrivers, registerDriver, updateDriver } from '../../api/fleet';
-import { Button, Card, Select, TextField, Spinner, Badge } from '../../components/ui';
+import { Button, Card, Select, TextField, Badge, TableSkeleton, EmptyState } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 export default function DriversPage() {
@@ -36,7 +37,7 @@ export default function DriversPage() {
       {showNew && <RegisterDriverForm onDone={() => { setShowNew(false); void qc.invalidateQueries({ queryKey: ['drivers'] }); }} />}
 
       <Card>
-        {drivers.isLoading ? <Spinner /> : (
+        {drivers.isLoading ? <TableSkeleton cols={4} /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -64,7 +65,7 @@ export default function DriversPage() {
                     </td>
                   </tr>
                 ))}
-                {drivers.data?.length === 0 && <tr><td colSpan={4} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                {drivers.data?.length === 0 && <tr><td colSpan={4}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

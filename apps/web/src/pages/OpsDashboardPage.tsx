@@ -4,7 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { formatEgp, ORDER_STATES, type OrderState } from '@3pl/shared';
 
 import { getOpsOverview } from '../api/dashboard';
-import { Card, Spinner, Badge } from '../components/ui';
+import { Inbox } from 'lucide-react';
+import { Card, Badge, StatGridSkeleton, CardSkeleton, EmptyState } from '../components/ui';
 import { OrderStateBadge } from '../components/orders/OrderStateBadge';
 import { currentLocale } from '../i18n';
 
@@ -36,7 +37,16 @@ export default function OpsDashboardPage() {
   const egpLoc = locale === 'ar' ? 'ar-EG' : 'en-EG';
   const ops = useQuery({ queryKey: ['ops-overview'], queryFn: getOpsOverview, refetchInterval: 30_000 });
 
-  if (ops.isLoading || !ops.data) return <Spinner />;
+  if (ops.isLoading || !ops.data)
+    return (
+      <div className="space-y-6">
+        <StatGridSkeleton count={6} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <CardSkeleton lines={5} />
+          <CardSkeleton lines={5} />
+        </div>
+      </div>
+    );
   const d = ops.data;
   const maxState = Math.max(1, ...ORDER_STATES.map((s) => d.ordersByState[s] ?? 0));
   const alertTotal = d.alerts.lowStock + d.alerts.slaBreaches + d.alerts.failedSpike;
@@ -154,7 +164,7 @@ export default function OpsDashboardPage() {
                   <td className="px-4 py-3 text-end">{c.deliveryRatePct}%</td>
                 </tr>
               ))}
-              {d.couriers.length === 0 && <tr><td colSpan={4} className="px-4 py-6 text-center text-faint">{t('common.noResults')}</td></tr>}
+              {d.couriers.length === 0 && <tr><td colSpan={4}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
             </tbody>
           </table>
         </div>

@@ -4,6 +4,7 @@ import type {
   SelectHTMLAttributes,
   ReactNode,
 } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 export function Button({
   variant = 'primary',
@@ -88,4 +89,85 @@ export function Alert({ children, tone = 'red' }: { children: ReactNode; tone?: 
     amber: 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300',
   };
   return <div className={`rounded-lg border px-3 py-2 text-sm ${tones[tone]}`}>{children}</div>;
+}
+
+// ---- Loading skeletons + empty state ----
+
+export function Skeleton({ className = '' }: { className?: string }) {
+  return <div className={`animate-pulse rounded-md bg-surface-muted ${className}`} />;
+}
+
+/** Skeleton placeholder for a table/list while data loads. */
+export function TableSkeleton({ rows = 6, cols = 4 }: { rows?: number; cols?: number }) {
+  return (
+    <div className="p-4 space-y-3.5" aria-hidden>
+      <div className="flex gap-4">
+        {Array.from({ length: cols }).map((_, i) => (
+          <Skeleton key={i} className={`h-3 ${i === 0 ? 'w-1/4' : 'flex-1'}`} />
+        ))}
+      </div>
+      {Array.from({ length: rows }).map((_, r) => (
+        <div key={r} className="flex gap-4 items-center">
+          {Array.from({ length: cols }).map((_, c) => (
+            <Skeleton key={c} className={`h-4 ${c === 0 ? 'w-1/4' : 'flex-1'}`} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Skeleton placeholder shaped like a content card. */
+export function CardSkeleton({ lines = 3, className = '' }: { lines?: number; className?: string }) {
+  return (
+    <Card className={`p-6 ${className}`}>
+      <Skeleton className="h-4 w-1/3 mb-4" />
+      <div className="space-y-2.5">
+        {Array.from({ length: lines }).map((_, i) => (
+          <Skeleton key={i} className={`h-3 ${i === lines - 1 ? 'w-2/3' : 'w-full'}`} />
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+/** A grid of stat-card skeletons (dashboards). */
+export function StatGridSkeleton({ count = 4 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {Array.from({ length: count }).map((_, i) => (
+        <Card key={i} className="p-5">
+          <Skeleton className="h-3 w-1/2 mb-3" />
+          <Skeleton className="h-7 w-2/3" />
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+export function EmptyState({
+  icon: Icon,
+  title,
+  hint,
+  action,
+  className = '',
+}: {
+  icon?: LucideIcon;
+  title: string;
+  hint?: string;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`flex flex-col items-center justify-center text-center px-6 py-12 ${className}`}>
+      {Icon && (
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-surface-muted text-muted mb-3">
+          <Icon className="h-5 w-5" />
+        </span>
+      )}
+      <p className="text-sm font-medium text-ink">{title}</p>
+      {hint && <p className="text-sm text-muted mt-1 max-w-sm">{hint}</p>}
+      {action && <div className="mt-4">{action}</div>}
+    </div>
+  );
 }

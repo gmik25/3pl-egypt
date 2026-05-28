@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -6,7 +7,7 @@ import { formatEgp } from '@3pl/shared';
 import { listClients } from '../../api/clients';
 import { generateInvoice, getInvoice, getInvoiceEta, issueInvoice, listInvoices } from '../../api/finance';
 import type { Invoice, InvoiceStatus } from '../../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, Select, TextField, Badge, Alert, TableSkeleton, EmptyState } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const TONE: Record<InvoiceStatus, 'slate' | 'green' | 'red'> = { DRAFT: 'slate', ISSUED: 'green', CANCELLED: 'red' };
@@ -61,7 +62,7 @@ export default function InvoicesPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card>
-          {invoices.isLoading ? <Spinner /> : (
+          {invoices.isLoading ? <TableSkeleton cols={3} /> : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead><tr className="text-muted border-b border-line"><th className="text-start font-medium px-4 py-3">{t('invoices.reference')}</th><th className="text-end font-medium px-4 py-3">{t('quote.gross')}</th><th className="text-start font-medium px-4 py-3">{t('orders.state')}</th></tr></thead>
@@ -73,7 +74,7 @@ export default function InvoicesPage() {
                       <td className="px-4 py-3"><Badge tone={TONE[inv.status]}>{t(`invoices.statuses.${inv.status}`)}</Badge></td>
                     </tr>
                   ))}
-                  {invoices.data?.length === 0 && <tr><td colSpan={3} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                  {invoices.data?.length === 0 && <tr><td colSpan={3}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
                 </tbody>
               </table>
             </div>

@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -12,7 +13,7 @@ import {
   reconcileCycleCount,
 } from '../../api/wms';
 import type { CycleCountStatus } from '../../types';
-import { Button, Card, Select, TextField, Spinner, Badge } from '../../components/ui';
+import { Button, Card, Select, TextField, Badge, TableSkeleton, EmptyState } from '../../components/ui';
 
 const TONE: Record<CycleCountStatus, 'amber' | 'blue' | 'green'> = { OPEN: 'amber', COUNTED: 'blue', RECONCILED: 'green' };
 
@@ -65,7 +66,7 @@ export default function CycleCountPage() {
       </Card>
 
       <Card>
-        {list.isLoading ? <Spinner /> : (
+        {list.isLoading ? <TableSkeleton cols={6} /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -108,7 +109,7 @@ export default function CycleCountPage() {
                     </td>
                   </tr>
                 ))}
-                {list.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                {list.data?.length === 0 && <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

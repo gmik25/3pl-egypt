@@ -10,7 +10,8 @@ import {
   getOpsKpis,
   getRevenuePerClient,
 } from '../api/reports';
-import { Button, Card, TextField, Spinner } from '../components/ui';
+import { Inbox } from 'lucide-react';
+import { Button, Card, TextField, Spinner, TableSkeleton, EmptyState } from '../components/ui';
 import { OrderStateBadge } from '../components/orders/OrderStateBadge';
 import { currentLocale } from '../i18n';
 
@@ -131,7 +132,7 @@ export default function ReportsPage() {
           <h2 className="text-lg font-semibold">{t('reports.courierScorecard')}</h2>
           <Button variant="ghost" onClick={() => downloadCsv('/reports/courier-scorecard.csv', range, 'courier-scorecard.csv')}>{t('reports.exportCsv')}</Button>
         </div>
-        {couriers.isLoading ? <Spinner /> : (
+        {couriers.isLoading ? <TableSkeleton cols={5} /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -153,7 +154,7 @@ export default function ReportsPage() {
                     <td className="px-4 py-3 text-end">{c.avgAttempts}</td>
                   </tr>
                 ))}
-                {couriers.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                {couriers.data?.length === 0 && <tr><td colSpan={5}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

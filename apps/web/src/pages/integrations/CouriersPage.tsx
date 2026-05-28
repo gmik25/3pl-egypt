@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -13,7 +14,7 @@ import {
   type CoverageEntry,
 } from '../../api/integrations';
 import type { CourierTestResult } from '../../types';
-import { Button, Card, TextField, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, TextField, Spinner, Badge, Alert, EmptyState, TableSkeleton } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 export default function CouriersPage() {
@@ -46,7 +47,7 @@ export default function CouriersPage() {
 
       <Card>
         {couriers.isLoading ? (
-          <Spinner />
+          <TableSkeleton cols={6} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -86,7 +87,7 @@ export default function CouriersPage() {
                   </tr>
                 ))}
                 {couriers.data?.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>
+                  <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>
                 )}
               </tbody>
             </table>

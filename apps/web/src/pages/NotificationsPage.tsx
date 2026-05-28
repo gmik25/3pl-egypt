@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -5,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { listClients } from '../api/clients';
 import { generateDigest, listNotifications, runAlertChecks, sendNotification } from '../api/notifications';
 import type { NotificationChannel, NotificationStatus } from '../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../components/ui';
+import { Button, Card, Select, TextField, Badge, Alert, TableSkeleton, EmptyState } from '../components/ui';
 import { currentLocale } from '../i18n';
 
 const CHANNELS: NotificationChannel[] = ['SMS', 'WHATSAPP', 'EMAIL', 'INTERNAL'];
@@ -89,7 +90,7 @@ export default function NotificationsPage() {
       </Card>
 
       <Card>
-        {feed.isLoading ? <Spinner /> : (
+        {feed.isLoading ? <TableSkeleton cols={6} /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -113,7 +114,7 @@ export default function NotificationsPage() {
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[n.status]}>{t(`notifications.statuses.${n.status}`)}</Badge></td>
                   </tr>
                 ))}
-                {feed.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                {feed.data?.length === 0 && <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

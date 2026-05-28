@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -13,7 +14,7 @@ import {
 } from '../../api/finance';
 import type { RemittanceStatus } from '../../types';
 import { useAuthStore } from '../../stores/auth.store';
-import { Button, Card, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, Spinner, Badge, Alert, EmptyState, TableSkeleton } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const STATUS_TONE: Record<RemittanceStatus, 'amber' | 'green' | 'red'> = { PENDING: 'amber', CONFIRMED: 'green', REJECTED: 'red' };
@@ -87,7 +88,7 @@ export default function RemittancePage() {
 
       <Card>
         <div className="px-6 pt-5 pb-2"><h2 className="text-lg font-semibold">{t('remittance.queue')}</h2></div>
-        {remittances.isLoading ? <Spinner /> : (
+        {remittances.isLoading ? <TableSkeleton cols={4} /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -116,7 +117,7 @@ export default function RemittancePage() {
                     </td>
                   </tr>
                 ))}
-                {remittances.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                {remittances.data?.length === 0 && <tr><td colSpan={5}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

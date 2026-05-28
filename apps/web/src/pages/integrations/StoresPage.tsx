@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -5,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { listClients } from '../../api/clients';
 import { connectStore, disconnectStore, listStores, resubscribeStore } from '../../api/integrations';
 import type { ConnectStoreResult, StoreConnectionStatus, StorePlatform } from '../../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, Select, TextField, Badge, Alert, TableSkeleton, EmptyState } from '../../components/ui';
 
 const PLATFORMS: StorePlatform[] = ['SHOPIFY', 'SALLA', 'ZID', 'WOOCOMMERCE'];
 
@@ -50,7 +51,7 @@ export default function StoresPage() {
 
       <Card>
         {stores.isLoading ? (
-          <Spinner />
+          <TableSkeleton cols={6} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -96,7 +97,7 @@ export default function StoresPage() {
                   </tr>
                 ))}
                 {stores.data?.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>
+                  <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>
                 )}
               </tbody>
             </table>

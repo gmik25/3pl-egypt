@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -5,7 +6,7 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
 import { listUsers } from '../api/users';
 import { USER_ROLES, type UserRole } from '@3pl/shared';
-import { Button, Card, Select, TextField, Spinner, Badge } from '../components/ui';
+import { Button, Card, Select, TextField, Badge, TableSkeleton, EmptyState } from '../components/ui';
 import { currentLocale } from '../i18n';
 
 const PAGE_SIZE = 25;
@@ -71,7 +72,7 @@ export default function UsersPage() {
 
       <Card>
         {isLoading ? (
-          <Spinner />
+          <TableSkeleton cols={4} />
         ) : isError ? (
           <p className="p-6 text-red-600 text-sm">{t('common.loadError')}</p>
         ) : (
@@ -114,9 +115,7 @@ export default function UsersPage() {
                 ))}
                 {data?.items.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-faint">
-                      {t('common.noResults')}
-                    </td>
+                    <td colSpan={4}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td>
                   </tr>
                 )}
               </tbody>

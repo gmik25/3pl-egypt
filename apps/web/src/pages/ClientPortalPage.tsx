@@ -4,7 +4,7 @@ import { formatEgp, ORDER_STATES, type OrderState } from '@3pl/shared';
 
 import { getMyContracts } from '../api/portal';
 import { getPortalSummary } from '../api/dashboard';
-import { Card, Spinner, Badge, Alert } from '../components/ui';
+import { Card, Badge, Alert, StatGridSkeleton, CardSkeleton, Skeleton } from '../components/ui';
 import { OrderStateBadge } from '../components/orders/OrderStateBadge';
 import { currentLocale } from '../i18n';
 
@@ -25,7 +25,17 @@ export default function ClientPortalPage() {
   const summary = useQuery({ queryKey: ['portal-summary'], queryFn: getPortalSummary });
   const contracts = useQuery({ queryKey: ['portal-contracts'], queryFn: getMyContracts });
 
-  if (summary.isLoading) return <Spinner />;
+  if (summary.isLoading)
+    return (
+      <div className="max-w-4xl space-y-6">
+        <StatGridSkeleton count={4} />
+        <CardSkeleton lines={6} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <CardSkeleton lines={4} />
+          <CardSkeleton lines={4} />
+        </div>
+      </div>
+    );
   if (summary.isError) return <div className="max-w-2xl"><Alert tone="amber">{t('portal.notLinked')}</Alert></div>;
 
   const d = summary.data!;
@@ -101,7 +111,7 @@ export default function ClientPortalPage() {
       {/* Contracts */}
       <Card className="p-6 space-y-3">
         <h2 className="text-lg font-semibold">{t('contracts.title')}</h2>
-        {contracts.isLoading ? <Spinner /> : contracts.data && contracts.data.length > 0 ? (
+        {contracts.isLoading ? <Skeleton className="h-20 w-full" /> : contracts.data && contracts.data.length > 0 ? (
           <div className="space-y-2">
             {contracts.data.map((c) => (
               <div key={c.id} className="border border-line rounded-md p-3 text-sm">

@@ -6,7 +6,7 @@ import { formatEgp } from '@3pl/shared';
 import { listClients } from '../../api/clients';
 import { getStatement, getWallet } from '../../api/finance';
 import type { WalletEntryType } from '../../types';
-import { Card, Select, Spinner, Badge } from '../../components/ui';
+import { Card, Select, Badge, TableSkeleton } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const ENTRY_TONE: Record<WalletEntryType, 'green' | 'red' | 'blue' | 'amber'> = {
@@ -47,7 +47,7 @@ export default function WalletsPage() {
 
           <Card>
             <div className="px-6 pt-5 pb-2"><h2 className="text-lg font-semibold">{t('wallets.statement')}</h2></div>
-            {statement.isLoading ? <Spinner /> : statement.data && statement.data.entries.length > 0 ? (
+            {statement.isLoading ? <TableSkeleton cols={4} /> : statement.data && statement.data.entries.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>

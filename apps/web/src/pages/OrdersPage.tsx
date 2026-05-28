@@ -5,7 +5,8 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { GOVERNORATES, ORDER_STATES, formatEgp, type GovernorateCode, type OrderState } from '@3pl/shared';
 
 import { listOrders } from '../api/orders';
-import { Button, Card, Select, TextField, Spinner, Badge } from '../components/ui';
+import { Inbox } from 'lucide-react';
+import { Button, Card, Select, TextField, TableSkeleton, EmptyState, Badge } from '../components/ui';
 import { OrderStateBadge } from '../components/orders/OrderStateBadge';
 import { currentLocale } from '../i18n';
 
@@ -81,7 +82,7 @@ export default function OrdersPage() {
 
       <Card>
         {isLoading ? (
-          <Spinner />
+          <TableSkeleton cols={6} />
         ) : isError ? (
           <p className="p-6 text-red-600 text-sm">{t('common.loadError')}</p>
         ) : (
@@ -129,7 +130,7 @@ export default function OrdersPage() {
                   );
                 })}
                 {data?.items.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>
+                  <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>
                 )}
               </tbody>
             </table>

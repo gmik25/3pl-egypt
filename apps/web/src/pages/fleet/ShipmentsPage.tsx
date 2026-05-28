@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +8,7 @@ import { GOVERNORATES, type GovernorateCode } from '@3pl/shared';
 import { listOrders } from '../../api/orders';
 import { createShipment, listShipments, suggestCarriers } from '../../api/fleet';
 import type { OrderListItem, ShipmentStatus } from '../../types';
-import { Button, Card, Select, Spinner, Badge } from '../../components/ui';
+import { Button, Card, Select, Spinner, Badge, EmptyState, TableSkeleton } from '../../components/ui';
 import { ShipmentStatusBadge } from '../../components/fleet/ShipmentStatusBadge';
 import { currentLocale } from '../../i18n';
 
@@ -55,7 +56,7 @@ export default function ShipmentsPage() {
       </Card>
 
       <Card>
-        {shipments.isLoading ? <Spinner /> : (
+        {shipments.isLoading ? <TableSkeleton cols={5} /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -80,7 +81,7 @@ export default function ShipmentsPage() {
                     <td className="px-4 py-3"><ShipmentStatusBadge status={s.status} /></td>
                   </tr>
                 ))}
-                {shipments.data?.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                {shipments.data?.length === 0 && <tr><td colSpan={5}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

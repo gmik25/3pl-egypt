@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -6,7 +7,7 @@ import { egpToPiastres, formatEgp, PAYOUT_RAILS, type PayoutRail } from '@3pl/sh
 import { listClients } from '../../api/clients';
 import { createPayout, listPayouts, markPayoutFailed, markPayoutPaid } from '../../api/finance';
 import type { PayoutStatus } from '../../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, Select, TextField, Badge, Alert, TableSkeleton, EmptyState } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const TONE: Record<PayoutStatus, 'amber' | 'green' | 'red'> = { PENDING: 'amber', PAID: 'green', FAILED: 'red' };
@@ -58,7 +59,7 @@ export default function PayoutsPage() {
       </Card>
 
       <Card>
-        {payouts.isLoading ? <Spinner /> : (
+        {payouts.isLoading ? <TableSkeleton cols={6} /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -89,7 +90,7 @@ export default function PayoutsPage() {
                     </td>
                   </tr>
                 ))}
-                {payouts.data?.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                {payouts.data?.length === 0 && <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

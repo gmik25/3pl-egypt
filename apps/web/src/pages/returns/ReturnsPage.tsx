@@ -16,7 +16,7 @@ import {
 } from '../../api/returns';
 import { listLocations } from '../../api/wms';
 import type { ReturnDisposition, ReturnStatus } from '../../types';
-import { Button, Card, Select, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, Select, Spinner, Badge, Alert, CardSkeleton } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const STATUSES: ReturnStatus[] = ['REQUESTED', 'APPROVED', 'RECEIVED', 'INSPECTED', 'CLOSED', 'REJECTED'];
@@ -100,7 +100,7 @@ function ReturnDetailPanel({ id }: { id: string }) {
     onError,
   });
 
-  if (ret.isLoading || !ret.data) return <Spinner />;
+  if (ret.isLoading || !ret.data) return <CardSkeleton lines={6} />;
   const r = ret.data;
   const allInspected = r.items.every((i) => i.disposition);
 

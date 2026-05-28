@@ -14,7 +14,7 @@ import {
   type CreatePoInput,
 } from '../../api/wms';
 import type { InspectionResult, PurchaseOrderStatus } from '../../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, Select, TextField, Spinner, Badge, Alert, CardSkeleton } from '../../components/ui';
 
 const PO_TONE: Record<PurchaseOrderStatus, 'slate' | 'blue' | 'amber' | 'green' | 'red'> = {
   DRAFT: 'slate', CONFIRMED: 'blue', PARTIALLY_RECEIVED: 'amber', RECEIVED: 'green', CANCELLED: 'red',
@@ -140,7 +140,7 @@ function PoDetail({ poId }: { poId: string }) {
     onError: (e: any) => setError(e?.response?.data?.message ?? t('receiving.receiveError')),
   });
 
-  if (po.isLoading || !po.data) return <Spinner />;
+  if (po.isLoading || !po.data) return <CardSkeleton lines={6} />;
 
   return (
     <Card className="p-6 space-y-4">

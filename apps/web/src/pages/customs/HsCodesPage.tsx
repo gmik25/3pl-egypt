@@ -1,9 +1,10 @@
+import { Inbox } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { listHsCodes, upsertHsCode } from '../../api/customs';
-import { Button, Card, TextField, Spinner } from '../../components/ui';
+import { Button, Card, TextField, TableSkeleton, EmptyState } from '../../components/ui';
 
 export default function HsCodesPage() {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ export default function HsCodesPage() {
       </Card>
 
       <Card>
-        {hsCodes.isLoading ? <Spinner /> : (
+        {hsCodes.isLoading ? <TableSkeleton cols={3} /> : (
           <table className="w-full text-sm">
             <thead>
               <tr className="text-muted border-b border-line">
@@ -58,7 +59,7 @@ export default function HsCodesPage() {
                   <td className="px-4 py-3 text-end">{(h.dutyRateBps / 100).toFixed(2)}%</td>
                 </tr>
               ))}
-              {hsCodes.data?.length === 0 && <tr><td colSpan={3} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+              {hsCodes.data?.length === 0 && <tr><td colSpan={3}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
             </tbody>
           </table>
         )}

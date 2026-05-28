@@ -17,7 +17,7 @@ import {
   type CreateImportInput,
 } from '../../api/customs';
 import type { ImportStatus } from '../../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, Select, TextField, Spinner, Badge, Alert, CardSkeleton } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const TONE: Record<ImportStatus, 'slate' | 'blue' | 'amber' | 'green' | 'red'> = {
@@ -160,7 +160,7 @@ function ImportDetail({ importId }: { importId: string }) {
   const clear = useMutation({ mutationFn: () => clearImport(importId), onSuccess: () => { setError(null); refresh(); }, onError: onErr });
   const release = useMutation({ mutationFn: () => releaseImport(importId, locationId), onSuccess: () => { setError(null); refresh(); }, onError: onErr });
 
-  if (imp.isLoading || !imp.data) return <Spinner />;
+  if (imp.isLoading || !imp.data) return <CardSkeleton lines={6} />;
   const s = imp.data;
 
   const Row = ({ label, value }: { label: string; value: string }) => (

@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
@@ -5,7 +6,7 @@ import { egpToPiastres } from '@3pl/shared';
 
 import { listClients } from '../../api/clients';
 import { createSku, listSkus, type SkuInput } from '../../api/wms';
-import { Button, Card, Select, TextField, Spinner, Badge } from '../../components/ui';
+import { Button, Card, Select, TextField, Badge, TableSkeleton, EmptyState } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const PAGE_SIZE = 25;
@@ -56,7 +57,7 @@ export default function SkuCatalogPage() {
       </Card>
 
       <Card>
-        {skus.isLoading ? <Spinner /> : (
+        {skus.isLoading ? <TableSkeleton cols={6} /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -80,7 +81,7 @@ export default function SkuCatalogPage() {
                     <td className="px-4 py-3 text-body">{s.reorderPointQty || '—'}</td>
                   </tr>
                 ))}
-                {skus.data?.items.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+                {skus.data?.items.length === 0 && <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
               </tbody>
             </table>
           </div>

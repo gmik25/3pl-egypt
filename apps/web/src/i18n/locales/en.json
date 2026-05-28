@@ -14,7 +14,9 @@
     "next": "Next",
     "noResults": "No results",
     "loadError": "Failed to load data",
-    "close": "Close"
+    "close": "Close",
+    "empty": "Nothing here yet",
+    "emptyHint": "Items will appear here once added."
   },
   "nav": {
     "dashboard": "Dashboard",

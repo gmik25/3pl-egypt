@@ -4,7 +4,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { connectMyStore, disconnectMyStore, listMyStores } from '../api/portal';
 import type { ConnectStoreResult, StoreConnectionStatus, StorePlatform } from '../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../components/ui';
+import { Store } from 'lucide-react';
+import { Button, Card, Select, TextField, TableSkeleton, EmptyState, Badge, Alert } from '../components/ui';
 
 const PLATFORMS: StorePlatform[] = ['SHOPIFY', 'SALLA', 'ZID', 'WOOCOMMERCE'];
 const STATUS_TONE: Record<StoreConnectionStatus, 'green' | 'amber' | 'red'> = {
@@ -39,7 +40,7 @@ export default function ClientStoresPage() {
 
       <Card>
         {stores.isLoading ? (
-          <Spinner />
+          <TableSkeleton cols={5} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -67,7 +68,7 @@ export default function ClientStoresPage() {
                   </tr>
                 ))}
                 {stores.data?.length === 0 && (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-faint">{t('myStores.empty')}</td></tr>
+                  <tr><td colSpan={5}><EmptyState icon={Store} title={t('myStores.empty')} /></td></tr>
                 )}
               </tbody>
             </table>

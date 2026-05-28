@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { GOVERNORATES, type GovernorateCode } from '@3pl/shared';
 
 import { getMyAllocations } from '../api/wms';
-import { Card, Spinner, Badge } from '../components/ui';
+import { Boxes } from 'lucide-react';
+import { Card, CardSkeleton, EmptyState, Badge } from '../components/ui';
 import { currentLocale } from '../i18n';
 
 export default function ClientStoragePage() {
@@ -24,7 +25,7 @@ export default function ClientStoragePage() {
       </div>
 
       {allocations.isLoading ? (
-        <Spinner />
+        <div className="space-y-5"><CardSkeleton lines={2} /><CardSkeleton lines={2} /></div>
       ) : allocations.data && allocations.data.length > 0 ? (
         allocations.data.map((g) => {
           const occupied = g.locations.filter((l) => l.units > 0).length;
@@ -56,7 +57,7 @@ export default function ClientStoragePage() {
           );
         })
       ) : (
-        <Card className="p-8 text-center text-faint text-sm">{t('myStorage.empty')}</Card>
+        <Card><EmptyState icon={Boxes} title={t('myStorage.empty')} /></Card>
       )}
     </div>
   );

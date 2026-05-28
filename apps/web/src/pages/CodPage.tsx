@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
@@ -5,7 +6,7 @@ import { formatEgp } from '@3pl/shared';
 
 import { listClients } from '../api/clients';
 import { getCodSummary, listOrders } from '../api/orders';
-import { Card, Select, Spinner } from '../components/ui';
+import { Card, Select, Spinner, EmptyState, TableSkeleton } from '../components/ui';
 import { OrderStateBadge } from '../components/orders/OrderStateBadge';
 import { Link } from 'react-router-dom';
 import { currentLocale } from '../i18n';
@@ -68,7 +69,7 @@ export default function CodPage() {
           <h2 className="text-lg font-semibold">{t('cod.deliveredCodOrders')}</h2>
         </div>
         {codOrders.isLoading ? (
-          <Spinner />
+          <TableSkeleton cols={5} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -94,7 +95,7 @@ export default function CodPage() {
                     </tr>
                   ))}
                 {codOrders.data && codOrders.data.items.filter((o) => o.paymentMethod === 'COD').length === 0 && (
-                  <tr><td colSpan={4} className="px-4 py-8 text-center text-faint">{t('common.noResults')}</td></tr>
+                  <tr><td colSpan={4}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>
                 )}
               </tbody>
             </table>

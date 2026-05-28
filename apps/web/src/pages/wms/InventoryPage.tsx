@@ -12,7 +12,8 @@ import {
   stockBySku,
 } from '../../api/wms';
 import type { Sku, StockStatus } from '../../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
+import { Boxes } from 'lucide-react';
+import { Button, Card, Select, TextField, Spinner, TableSkeleton, EmptyState, Badge, Alert } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 const STATUS_TONE: Record<StockStatus, 'green' | 'amber' | 'red'> = {
@@ -90,7 +91,7 @@ export default function InventoryPage() {
           {sku && (
             <Card className="p-6">
               <h2 className="text-lg font-semibold mb-3"><span dir="ltr">{sku.code}</span> — {locale === 'ar' ? sku.nameAr : (sku.nameEn ?? sku.nameAr)}</h2>
-              {stock.isLoading ? <Spinner /> : stock.data && stock.data.length > 0 ? (
+              {stock.isLoading ? <TableSkeleton cols={5} /> : stock.data && stock.data.length > 0 ? (
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-muted border-b border-line">
@@ -122,7 +123,7 @@ export default function InventoryPage() {
                     ))}
                   </tbody>
                 </table>
-              ) : <p className="text-sm text-faint">{t('inventory.noStock')}</p>}
+              ) : <EmptyState icon={Boxes} title={t('inventory.noStock')} />}
 
               {/* Adjust */}
               <div className="border-t border-line-soft mt-4 pt-4">

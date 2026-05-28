@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -16,7 +17,7 @@ import {
 } from '../../api/wms';
 import { listClients } from '../../api/clients';
 import type { LocationKind, WmsLocation, ZoneType } from '../../types';
-import { Button, Card, Select, TextField, Spinner, Badge, Alert } from '../../components/ui';
+import { Button, Card, Select, TextField, Spinner, Badge, Alert, EmptyState, TableSkeleton } from '../../components/ui';
 import { currentLocale } from '../../i18n';
 
 /** Split a comma/space/newline separated list into trimmed tokens. */
@@ -293,7 +294,7 @@ function LocationsTable({ warehouseId, zones, clientOptions, onChanged }: { ware
         </div>
       )}
 
-      {locs.isLoading ? <Spinner /> : (
+      {locs.isLoading ? <TableSkeleton cols={5} /> : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -317,7 +318,7 @@ function LocationsTable({ warehouseId, zones, clientOptions, onChanged }: { ware
                   <td className="px-3 py-2">{l.occupied ? <Badge tone="amber">{t('warehouses.occupiedUnits', { count: l.units ?? 0 })}</Badge> : <span className="text-faint">{t('warehouses.empty')}</span>}</td>
                 </tr>
               ))}
-              {rows.length === 0 && <tr><td colSpan={6} className="px-3 py-8 text-center text-faint">{t('common.noResults')}</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={6}><EmptyState icon={Inbox} title={t('common.empty')} hint={t('common.emptyHint')} /></td></tr>}
             </tbody>
           </table>
         </div>
